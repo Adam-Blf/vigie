@@ -1,0 +1,81 @@
+{
+  "milestone": "J1",
+  "title": "Corpus EUR-Lex via Cellar HTTPS",
+  "commit": "eed7c0a0ed71e574bf70f5576725d92c9ac2a6f9",
+  "branch": "feat/corpus",
+  "date_utc": "2026-10-02T13:40:46Z",
+  "platform": "Windows 11, Python venv created by uv",
+  "tools": {
+    "python": "3.12.13",
+    "uv": "0.11.32",
+    "ruff": "0.16.10",
+    "mypy": "2.4.0",
+    "pytest": "9.1.1",
+    "pytest-cov": "7.1.0",
+    "coverage": "7.16.2",
+    "httpx": "0.28.1",
+    "beautifulsoup4": "4.15.0",
+    "lxml": "6.1.3",
+    "pydantic": "2.13.5",
+    "pydantic-settings": "2.15.0"
+  },
+  "runs": [
+    {
+      "file": "ingest-update-lock.txt",
+      "command": "time .venv/Scripts/vigie-ingest --update-lock",
+      "note": "First real download from Cellar over HTTPS (8 requests, at most 1 per second), writes data/corpus.lock. Same code as the commit above, run just before it was committed.",
+      "exit_code": 0
+    },
+    {
+      "file": "ingest-check-lock.txt",
+      "command": "rm -f data/cache/*.xhtml && rm -rf data/corpus && .venv/Scripts/vigie-ingest",
+      "note": "Cache emptied, the four texts downloaded again and checked against the committed lock: same sha256, same article counts.",
+      "exit_code": 0
+    },
+    {
+      "file": "jsonl-line-counts.txt",
+      "command": "wc -l data/corpus/*.jsonl",
+      "exit_code": 0
+    },
+    {
+      "file": "sample-chunk-DORA-art28-par1.json",
+      "command": "grep '\"eid\":\"art_28.par_1\"' data/corpus/DORA.jsonl",
+      "exit_code": 0
+    },
+    {
+      "file": "ingest-lock-mismatch.txt",
+      "command": "sed 's/\"articles\": 64/\"articles\": 63/' data/corpus.lock > data/cache/tampered.lock && .venv/Scripts/vigie-ingest --only DORA --lock data/cache/tampered.lock",
+      "note": "Gate seen red: an article count that differs from the lock stops ingestion.",
+      "exit_code": 1
+    },
+    {
+      "file": "ingest-sha-mismatch.txt",
+      "command": "sed 's/\"sha256\": \"b1ae/\"sha256\": \"0000/' data/corpus.lock > data/cache/tampered-sha.lock && .venv/Scripts/vigie-ingest --only DORA --lock data/cache/tampered-sha.lock",
+      "note": "Gate seen red: a hash that differs from the lock stops ingestion.",
+      "exit_code": 1
+    },
+    {
+      "file": "pytest-coverage.txt",
+      "command": ".venv/Scripts/python -m pytest --cov=src/vigie/corpus --cov=src/vigie --cov-report=term-missing",
+      "exit_code": 0
+    },
+    {
+      "file": "lint-typecheck.txt",
+      "command": ".venv/Scripts/python -m ruff check . ; .venv/Scripts/python -m ruff format --check . ; .venv/Scripts/python -m mypy src",
+      "exit_code": 0
+    }
+  ],
+  "results": {
+    "articles": {"DORA": 64, "AIACT": 113, "RGPD": 99, "AMLR": 90},
+    "annexes": {"DORA": 0, "AIACT": 13, "RGPD": 0, "AMLR": 6},
+    "chunks": {"DORA": 106, "AIACT": 185, "RGPD": 100, "AMLR": 120, "total": 511},
+    "tests": "57 passed",
+    "coverage_corpus_percent": 100,
+    "coverage_src_percent": 100
+  },
+  "observations": [
+    "https://publications.europa.eu/resource/celex/{CELEX} answers 303 with a Location in plain HTTP; the fetcher follows it by hand, upgrades it to HTTPS and refuses any other host. The HTTPS form of that Location answers 200 with the same bytes.",
+    "AMLR annex ids carry a no-break space (anx_ followed by U+00A0 then I): eid is cleaned to anx_I, the EUR-Lex link keeps the published id percent-encoded.",
+    "Recitals are excluded by default and indexed with --recitals."
+  ]
+}
