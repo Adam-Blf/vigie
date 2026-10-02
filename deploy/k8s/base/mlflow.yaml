@@ -2,6 +2,8 @@
 #   kubectl -n vigie port-forward svc/mlflow 5710:5000
 # SQLite allows a single writer, hence one worker and the Recreate strategy: two pods
 # writing the same database file during a rolling update would corrupt it.
+# MLflow 3 refuses any Host header but localhost by default; the probes send that
+# header rather than widening the allowed hosts.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -40,6 +42,13 @@ spec:
           env:
             - name: HOME
               value: /tmp
+            # MLflow 3 starts background job workers (GenAI scorers) by default, one
+            # Python process per CPU: 1.6 GiB measured on the dev cluster. Vigie only
+            # tracks runs and the model registry, which needs none of them.
+            - name: MLFLOW_SERVER_ENABLE_JOB_EXECUTION
+              value: "false"
+            - name: MLFLOW_DISABLE_TELEMETRY
+              value: "true"
           ports:
             - name: http
               containerPort: 5000
@@ -47,19 +56,25 @@ spec:
             httpGet:
               path: /health
               port: http
+              httpHeaders:
+                - name: Host
+                  value: localhost
             periodSeconds: 15
           livenessProbe:
             httpGet:
               path: /health
               port: http
+              httpHeaders:
+                - name: Host
+                  value: localhost
             initialDelaySeconds: 60
             periodSeconds: 30
           resources:
             requests:
               cpu: 50m
-              memory: 320Mi
+              memory: 384Mi
             limits:
-              memory: 512Mi
+              memory: 640Mi
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
