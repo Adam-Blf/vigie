@@ -1,0 +1,171 @@
+/*
+ * Fallback design tokens, written to the spec of brief section 11.6.
+ * The designer's lot 1 replaces this file as a whole: components only read these
+ * variables, so swapping the palette never touches a component.
+ *
+ * Hues stay out of the 250 to 310 degree band on purpose. The identity is harbour
+ * teal and spyglass brass, not the purple that every AI product ships with.
+ * Every text pair is checked by scripts/check-contrast.ts, not by eye.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Spacing scale */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  /* Radii */
+  --radius-1: 4px;
+  --radius-2: 8px;
+  --radius-3: 12px;
+  --radius-4: 16px;
+  --radius-pill: 999px;
+
+  /* Type scale */
+  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-size-1: 12px;
+  --font-size-2: 14px;
+  --font-size-3: 16px;
+  --font-size-4: 18px;
+  --font-size-5: 20px;
+  --font-size-6: 24px;
+  --font-size-7: 30px;
+  --font-size-8: 36px;
+  --line-height-text: 1.5;
+  --line-height-title: 1.2;
+  --measure: 68ch;
+
+  /* Layers */
+  --z-base: 0;
+  --z-raised: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-toast: 40;
+
+  /* Motion */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Interaction */
+  --focus-ring-width: 2px;
+  --target-size: 44px;
+  --panel-width: 420px;
+
+  /* Light palette */
+  --color-surface: #f6f8f8;
+  --color-on-surface: #12232a;
+  --color-surface-raised: #ffffff;
+  --color-on-surface-raised: #12232a;
+  --color-surface-sunken: #e9eff0;
+  --color-border: #d2dcdd;
+  --color-border-strong: #6a7d81;
+  --color-text: #12232a;
+  --color-text-muted: #4a5d63;
+  --color-primary: #0b5c6b;
+  --color-on-primary: #ffffff;
+  --color-accent: #94500a;
+  --color-on-accent: #ffffff;
+  --color-success: #1d6b3a;
+  --color-on-success: #ffffff;
+  --color-warning: #855700;
+  --color-on-warning: #ffffff;
+  --color-danger: #b3261e;
+  --color-on-danger: #ffffff;
+  --color-info: #1f5d96;
+  --color-on-info: #ffffff;
+  --color-citation-bg: #fdf0dc;
+  --color-citation-fg: #74390a;
+  --color-focus: #0b5c6b;
+  --color-scrim: rgb(10 20 24 / 45%);
+
+  /* Mascot palette, read by the inline fallback and mirrored in the static SVGs */
+  --color-mascot-body: #24434b;
+  --color-mascot-face: #e4ece9;
+  --color-mascot-brass: #b9782a;
+
+  --shadow-1: 0 1px 2px rgb(18 35 42 / 8%);
+  --shadow-2: 0 2px 8px rgb(18 35 42 / 10%), 0 1px 2px rgb(18 35 42 / 6%);
+  --shadow-3: 0 12px 32px rgb(18 35 42 / 16%), 0 2px 6px rgb(18 35 42 / 8%);
+}
+
+/* Dark palette, shared by the system preference and the explicit toggle */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-surface: #0d1719;
+    --color-on-surface: #e6eef0;
+    --color-surface-raised: #142326;
+    --color-on-surface-raised: #e6eef0;
+    --color-surface-sunken: #091113;
+    --color-border: #26393d;
+    --color-border-strong: #6f888d;
+    --color-text: #e6eef0;
+    --color-text-muted: #a6b8bc;
+    --color-primary: #5cc3d3;
+    --color-on-primary: #062126;
+    --color-accent: #f0a95a;
+    --color-on-accent: #2a1600;
+    --color-success: #6fd391;
+    --color-on-success: #0a2414;
+    --color-warning: #f2c35b;
+    --color-on-warning: #2a1d00;
+    --color-danger: #ff8a80;
+    --color-on-danger: #2d0705;
+    --color-info: #8cc4ff;
+    --color-on-info: #08213d;
+    --color-citation-bg: #2e2312;
+    --color-citation-fg: #ffcf94;
+    --color-focus: #5cc3d3;
+    --color-scrim: rgb(0 0 0 / 60%);
+    --color-mascot-body: #9fc4cb;
+    --color-mascot-face: #17292d;
+    --color-mascot-brass: #e0a25c;
+    --shadow-1: 0 0 0 1px #26393d;
+    --shadow-2: 0 0 0 1px #26393d;
+    --shadow-3: 0 0 0 1px #33494e, 0 16px 40px rgb(0 0 0 / 50%);
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-surface: #0d1719;
+  --color-on-surface: #e6eef0;
+  --color-surface-raised: #142326;
+  --color-on-surface-raised: #e6eef0;
+  --color-surface-sunken: #091113;
+  --color-border: #26393d;
+  --color-border-strong: #6f888d;
+  --color-text: #e6eef0;
+  --color-text-muted: #a6b8bc;
+  --color-primary: #5cc3d3;
+  --color-on-primary: #062126;
+  --color-accent: #f0a95a;
+  --color-on-accent: #2a1600;
+  --color-success: #6fd391;
+  --color-on-success: #0a2414;
+  --color-warning: #f2c35b;
+  --color-on-warning: #2a1d00;
+  --color-danger: #ff8a80;
+  --color-on-danger: #2d0705;
+  --color-info: #8cc4ff;
+  --color-on-info: #08213d;
+  --color-citation-bg: #2e2312;
+  --color-citation-fg: #ffcf94;
+  --color-focus: #5cc3d3;
+  --color-scrim: rgb(0 0 0 / 60%);
+  --color-mascot-body: #9fc4cb;
+  --color-mascot-face: #17292d;
+  --color-mascot-brass: #e0a25c;
+  --shadow-1: 0 0 0 1px #26393d;
+  --shadow-2: 0 0 0 1px #26393d;
+  --shadow-3: 0 0 0 1px #33494e, 0 16px 40px rgb(0 0 0 / 50%);
+}
