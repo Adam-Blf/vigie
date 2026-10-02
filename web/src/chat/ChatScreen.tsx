@@ -4,6 +4,7 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { Citation } from "../api/types.ts";
 import { useApp } from "../app/context.ts";
+import { useReducedMotion } from "../app/useEnvironment.ts";
 import { Mascot } from "../mascot/Mascot.tsx";
 import { resolveMascotState } from "../mascot/state.ts";
 import { useShownState } from "../mascot/useShownState.ts";
@@ -22,12 +23,13 @@ export function ChatScreen() {
   const chat = useChat();
   const [open, setOpen] = useState<{ citation: Citation; corpusDate: string | null } | null>(null);
   const logEndRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
   const mascotState = useShownState(resolveMascotState(mascotSignals(chat.turns, chat.draft, online)));
   const last = chat.turns.at(-1);
 
   useEffect(() => {
-    logEndRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
-  }, [chat.turns.length, last?.status]);
+    logEndRef.current?.scrollIntoView({ block: "end", behavior: reducedMotion ? "auto" : "smooth" });
+  }, [chat.turns.length, last?.status, reducedMotion]);
 
   // Only the settled answer is announced; streaming tokens would flood a screen reader.
   let announcement = "";
