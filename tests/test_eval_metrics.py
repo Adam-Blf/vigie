@@ -8,6 +8,7 @@ from vigie.evaluation.metrics import (
     citation_coverage,
     citation_precision,
     correct_refusal_rate,
+    invented_citations,
     mean,
     mean_recall_at_k,
     mean_reciprocal_rank,
@@ -63,6 +64,20 @@ def test_raw_validity_counts_invented_citations() -> None:
     ]
     assert raw_citation_validity(cases) == pytest.approx(2 / 3)
     assert raw_citation_validity([case([], {"A:1"}, {"A:1"})]) == 1.0
+
+
+def test_invented_citations_counts_distinct_leaks_per_answer() -> None:
+    cases = [
+        case(["A:1", "A:7", "A:7", "A:8"], {"A:1"}, {"A:1"}),
+        case(["A:7"], {"A:2"}, {"A:2"}),
+    ]
+    assert invented_citations(cases) == 3
+
+
+def test_invented_citations_is_zero_for_clean_or_silent_answers() -> None:
+    assert invented_citations([case(["A:1", "A:1"], {"A:1"}, {"A:1"})]) == 0
+    assert invented_citations([case([], {"A:1"}, {"A:1"})]) == 0
+    assert invented_citations([]) == 0
 
 
 def test_precision_and_coverage_are_micro_averaged() -> None:

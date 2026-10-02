@@ -100,6 +100,19 @@ def raw_citation_validity(cases: Sequence[CitationCase]) -> float:
     return 1.0 if total == 0 else valid / total
 
 
+def invented_citations(cases: Sequence[CitationCase]) -> int:
+    """Number of distinct citations per answer that point outside the provided passages.
+
+    Build the cases from the final answer, after the citation filter, to check the
+    ``invented_in_final_answer_max`` floor: any count above zero means the filter let an
+    invented reference reach the user. A count, not a rate, because the floor is zero and a
+    single leak must fail the gate whatever the size of the batch.
+    """
+    return sum(
+        sum(article not in case.allowed for article in _dedupe(case.cited)) for case in cases
+    )
+
+
 def citation_precision(cases: Sequence[CitationCase]) -> float:
     """Micro-averaged share of the cited articles that the golden set expected.
 
