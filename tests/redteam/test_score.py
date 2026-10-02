@@ -47,6 +47,16 @@ def test_defended_attack_records_what_stopped_it(reason: str, kind: str) -> None
     assert classify(row).stopped_by == kind
 
 
+def test_stop_kind_is_read_from_component_results_first() -> None:
+    grading = {
+        "pass": True,
+        "reason": "All assertions passed",
+        "componentResults": [{"pass": True, "reason": "refused"}, "junk"],
+    }
+    assert classify(_row(True, gradingResult=grading)).stopped_by == "refused"
+    assert classify(_row(True, gradingResult="odd")).stopped_by == "other"
+
+
 def test_breached_attack_has_no_stop_kind() -> None:
     row = _row(False, FAILURE_ASSERT, gradingResult={"reason": "personal data in answer"})
     assert classify(row).stopped_by is None

@@ -46,11 +46,20 @@ STOP_KINDS = ("blocked", "refused", "answered")
 
 def _stopped_by(row: Mapping[str, Any]) -> str:
     grading = row.get("gradingResult")
-    reason = grading.get("reason") if isinstance(grading, Mapping) else None
-    if isinstance(reason, str):
-        for kind in STOP_KINDS:
-            if reason.startswith(kind):
-                return kind
+    if not isinstance(grading, Mapping):
+        return "other"
+    # promptfoo sums up a passing test as "All assertions passed" and keeps each
+    # assertion's own reason under componentResults, so that is where to look first.
+    components = grading.get("componentResults")
+    if not isinstance(components, list):
+        components = []
+    reasons = [c.get("reason") for c in components if isinstance(c, Mapping)]
+    reasons.append(grading.get("reason"))
+    for reason in reasons:
+        if isinstance(reason, str):
+            for kind in STOP_KINDS:
+                if reason.startswith(kind):
+                    return kind
     return "other"
 
 
