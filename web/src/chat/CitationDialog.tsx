@@ -43,6 +43,21 @@ export function CitationDialog({ citation, corpusDate, onClose }: CitationDialog
       class="citation-dialog"
       aria-labelledby="citation-title"
       onClose={handleClose}
+      onKeyDown={(event) => {
+        // A modal dialog still lets Tab escape to the browser toolbar; keep it inside.
+        if (event.key !== "Tab" || !dialogRef.current) return;
+        const focusable = [...dialogRef.current.querySelectorAll<HTMLElement>("button, a[href]")];
+        const first = focusable[0];
+        const last = focusable.at(-1);
+        if (!first || !last) return;
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }}
       onClick={(event) => {
         // A click on the backdrop lands on the dialog element itself.
         if (event.target === dialogRef.current) dialogRef.current?.close();
