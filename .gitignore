@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+*.egg-info/
+dist/
+build/
+
+# Secrets and local config
+.env
+*.pem
+terraform.tfvars
+
+# Generated data and runs
+mlruns/
+mlartifacts/
+results/
+data/corpus/
+data/cache/
+.qdrant/
+
+# Terraform
+.terraform/
+*.tfstate*
+.terraform.lock.hcl.bak
+
+# Web
+node_modules/
+web/dist/
+web/test-results/
+web/playwright-report/
+.lighthouseci/
