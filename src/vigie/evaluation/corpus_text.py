@@ -77,10 +77,14 @@ def parse_xhtml_articles(regulation: str, xhtml: str) -> dict[str, str]:
 
 
 def load_xhtml_dir(directory: Path) -> dict[str, str]:
-    """Read the cached Cellar documents, one file per CELEX number (``32022R2554.xhtml``)."""
+    """Read the cached Cellar documents, one file per CELEX number.
+
+    Both names are accepted: ``32022R2554.xhtml`` and the ``32022R2554.fra.xhtml`` that
+    ``vigie-ingest`` writes in its cache, so the validator runs on that cache as it is.
+    """
     articles: dict[str, str] = {}
     for path in sorted(directory.glob("*.xhtml")):
-        regulation = CELEX_REGULATION.get(path.stem)
+        regulation = CELEX_REGULATION.get(path.name.split(".", 1)[0])
         if regulation is None:
             continue
         articles.update(parse_xhtml_articles(regulation, path.read_text(encoding="utf-8")))

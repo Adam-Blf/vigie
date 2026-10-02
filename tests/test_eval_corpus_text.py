@@ -61,6 +61,11 @@ def test_xhtml_dir_maps_files_by_celex(tmp_path: Path) -> None:
     assert set(load_xhtml_dir(tmp_path)) == {"RGPD:6", "RGPD:12a"}
 
 
+def test_xhtml_dir_reads_the_ingest_cache_names(tmp_path: Path) -> None:
+    (tmp_path / "32016R0679.fra.xhtml").write_text(XHTML, encoding="utf-8")
+    assert set(load_xhtml_dir(tmp_path)) == {"RGPD:6", "RGPD:12a"}
+
+
 def test_xhtml_dir_without_known_file_fails_loudly(tmp_path: Path) -> None:
     with pytest.raises(FileNotFoundError, match="32022R2554.xhtml"):
         load_xhtml_dir(tmp_path)
