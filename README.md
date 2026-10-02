@@ -1,13 +1,15 @@
 # Vigie
 
 <!-- adam-badges:start -->
-[![ci](https://github.com/Adam-Blf/vigie/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Adam-Blf/vigie/actions/workflows/ci.yml)
-[![version](https://img.shields.io/badge/version-0.1.0-001329?style=flat-square)](CHANGELOG.md)
+[![commits](https://img.shields.io/github/commit-activity/t/Adam-Blf/vigie?color=001329&label=commits&style=flat-square)](https://github.com/Adam-Blf/vigie/commits)
 [![visites](https://hits.sh/github.com/Adam-Blf/vigie.svg?style=flat-square&label=visites&color=001329)](https://hits.sh/github.com/Adam-Blf/vigie/)
-[![licence](https://img.shields.io/badge/licence-MIT-D4A437?style=flat-square)](LICENSE)
+[![last commit](https://img.shields.io/github/last-commit/Adam-Blf/vigie?color=D4A437&style=flat-square&label=dernier%20push)](https://github.com/Adam-Blf/vigie/commits)
+[![top language](https://img.shields.io/github/languages/top/Adam-Blf/vigie?style=flat-square)](https://github.com/Adam-Blf/vigie)
+[![license](https://img.shields.io/github/license/Adam-Blf/vigie?style=flat-square&color=D4A437)](LICENSE)
+[![ci](https://img.shields.io/github/actions/workflow/status/Adam-Blf/vigie/ci.yml?branch=main&style=flat-square&label=ci)](https://github.com/Adam-Blf/vigie/actions/workflows/ci.yml)
+[![version](https://img.shields.io/badge/version-0.1.0-001329?style=flat-square)](CHANGELOG.md)
+[![release](https://img.shields.io/github/v/release/Adam-Blf/vigie?style=flat-square&color=001329&label=release)](https://github.com/Adam-Blf/vigie/releases)
 [![python](https://img.shields.io/badge/python-3.12-D4A437?style=flat-square&logo=python&logoColor=white)](pyproject.toml)
-[![fastapi](https://img.shields.io/badge/FastAPI-API-001329?style=flat-square&logo=fastapi&logoColor=white)](src/vigie/api)
-[![qdrant](https://img.shields.io/badge/Qdrant-recherche%20hybride-001329?style=flat-square)](src/vigie/retrieval)
 [![llm](https://img.shields.io/badge/LLM-Ministral%203%203B%20local-001329?style=flat-square)](docs/adr)
 [![k3s](https://img.shields.io/badge/k3s-canary%20Argo%20Rollouts-001329?style=flat-square&logo=kubernetes&logoColor=white)](deploy/k8s)
 <!-- adam-badges:end -->
@@ -26,24 +28,45 @@ Projet pédagogique, non affilié officiellement à l'EFREI.
 
 ```mermaid
 flowchart LR
-    user([Utilisateur]):::input --> web[Interface PWA]:::input
-    web -->|jeton Bearer| api[API FastAPI]:::process
-    api --> guardIn{Garde-fou d'entrée}:::process
-    guardIn -->|injection détectée| blocked[Réponse bloquée]:::error
-    guardIn -->|question saine| search[Recherche hybride dense + BM25]:::process
-    search <--> qdrant[(Qdrant)]:::store
-    search --> llm[Ministral 3 3B via Ollama]:::process
-    llm --> guardOut{Garde-fou de sortie}:::process
-    guardOut -->|citation inventée retirée| answer[Réponse citée]:::ok
-    api --> audit[(Usage SQLite et journal d'audit)]:::store
-    eurlex[EUR-Lex via Cellar]:::input --> ingest[Ingestion et découpage par article]:::process
+    user["Utilisateur"]
+    web["Interface PWA"]
+    api["API FastAPI"]
+    guardIn{"Garde-fou d'entrée"}
+    blocked["Réponse bloquée"]
+    search["Recherche hybride, dense et BM25"]
+    qdrant[("Qdrant")]
+    llm["Ministral 3 3B via Ollama"]
+    guardOut{"Garde-fou de sortie"}
+    answer["Réponse citée"]
+    audit[("Usage SQLite et journal d'audit")]
+    eurlex["EUR-Lex via Cellar"]
+    ingest["Ingestion et découpage par article"]
+
+    user --> web
+    web -->|"jeton Bearer"| api
+    api --> guardIn
+    guardIn -->|"injection détectée"| blocked
+    guardIn -->|"question saine"| search
+    search --> qdrant
+    qdrant --> search
+    search --> llm
+    llm --> guardOut
+    guardOut -->|"citation inventée retirée"| answer
+    api --> audit
+    eurlex --> ingest
     ingest --> qdrant
 
-    classDef input fill:#2563eb,stroke:#1e3a8a,color:#fff
-    classDef process fill:#0f766e,stroke:#134e4a,color:#fff
-    classDef store fill:#f59e0b,stroke:#92400e,color:#111
-    classDef ok fill:#16a34a,stroke:#14532d,color:#fff
-    classDef error fill:#dc2626,stroke:#7f1d1d,color:#fff
+    classDef input fill:#2563eb,stroke:#1e3a8a,color:#ffffff
+    classDef process fill:#0f766e,stroke:#134e4a,color:#ffffff
+    classDef store fill:#f59e0b,stroke:#92400e,color:#111111
+    classDef ok fill:#16a34a,stroke:#14532d,color:#ffffff
+    classDef error fill:#dc2626,stroke:#7f1d1d,color:#ffffff
+
+    class user,web,eurlex input
+    class api,guardIn,search,llm,guardOut,ingest process
+    class qdrant,audit store
+    class answer ok
+    class blocked error
 ```
 
 Chaque bloc correspond à un module de `src/vigie/`, avec une seule responsabilité par
