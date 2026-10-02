@@ -4,7 +4,7 @@
   "commit": "eed7c0a0ed71e574bf70f5576725d92c9ac2a6f9",
   "branch": "feat/corpus",
   "date_utc": "2026-10-02T13:40:46Z",
-  "platform": "Windows 11, Python venv created by uv",
+  "platform": "Windows 11, Python 3.12 environment managed by uv",
   "tools": {
     "python": "3.12.13",
     "uv": "0.11.32",
@@ -22,13 +22,13 @@
   "runs": [
     {
       "file": "ingest-update-lock.txt",
-      "command": "time .venv/Scripts/vigie-ingest --update-lock",
+      "command": "time vigie-ingest --update-lock",
       "note": "First real download from Cellar over HTTPS (8 requests, at most 1 per second), writes data/corpus.lock. Same code as the commit above, run just before it was committed.",
       "exit_code": 0
     },
     {
       "file": "ingest-check-lock.txt",
-      "command": "rm -f data/cache/*.xhtml && rm -rf data/corpus && .venv/Scripts/vigie-ingest",
+      "command": "rm -f data/cache/*.xhtml && rm -rf data/corpus && vigie-ingest",
       "note": "Cache emptied, the four texts downloaded again and checked against the committed lock: same sha256, same article counts.",
       "exit_code": 0
     },
@@ -44,24 +44,24 @@
     },
     {
       "file": "ingest-lock-mismatch.txt",
-      "command": "sed 's/\"articles\": 64/\"articles\": 63/' data/corpus.lock > data/cache/tampered.lock && .venv/Scripts/vigie-ingest --only DORA --lock data/cache/tampered.lock",
+      "command": "sed 's/\"articles\": 64/\"articles\": 63/' data/corpus.lock > data/cache/tampered.lock && vigie-ingest --only DORA --lock data/cache/tampered.lock",
       "note": "Gate seen red: an article count that differs from the lock stops ingestion.",
       "exit_code": 1
     },
     {
       "file": "ingest-sha-mismatch.txt",
-      "command": "sed 's/\"sha256\": \"b1ae/\"sha256\": \"0000/' data/corpus.lock > data/cache/tampered-sha.lock && .venv/Scripts/vigie-ingest --only DORA --lock data/cache/tampered-sha.lock",
+      "command": "sed 's/\"sha256\": \"b1ae/\"sha256\": \"0000/' data/corpus.lock > data/cache/tampered-sha.lock && vigie-ingest --only DORA --lock data/cache/tampered-sha.lock",
       "note": "Gate seen red: a hash that differs from the lock stops ingestion.",
       "exit_code": 1
     },
     {
       "file": "pytest-coverage.txt",
-      "command": ".venv/Scripts/python -m pytest --cov=src/vigie/corpus --cov=src/vigie --cov-report=term-missing",
+      "command": "python -m pytest --cov=src/vigie/corpus --cov=src/vigie --cov-report=term-missing",
       "exit_code": 0
     },
     {
       "file": "lint-typecheck.txt",
-      "command": ".venv/Scripts/python -m ruff check . ; .venv/Scripts/python -m ruff format --check . ; .venv/Scripts/python -m mypy src",
+      "command": "python -m ruff check . ; python -m ruff format --check . ; python -m mypy src",
       "exit_code": 0
     }
   ],
