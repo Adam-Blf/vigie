@@ -26,7 +26,7 @@ from vigie.rag.static_retriever import StaticRetriever
 def main(
     argv: Sequence[str] | None = None, out: TextIO = sys.stdout, live: TextIO = sys.stderr
 ) -> int:
-    parser = argparse.ArgumentParser(prog="vigie-ask", description=__doc__)
+    parser = argparse.ArgumentParser(prog="python -m vigie.rag.cli", description=__doc__)
     parser.add_argument("question")
     parser.add_argument("--passages", type=Path, required=True)
     args = parser.parse_args(argv)

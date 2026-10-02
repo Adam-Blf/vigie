@@ -43,3 +43,10 @@ def test_cli_streams_then_prints_the_validated_answer(monkeypatch: pytest.Monkey
         "[DORA art. 28 §3]",
         "[DORA art. 28 §4]",
     }
+
+
+def test_usage_names_the_module_command(capsys: pytest.CaptureFixture[str]) -> None:
+    # No console script is installed, so the usage line must show the command that works.
+    with pytest.raises(SystemExit):
+        main(["--help"])
+    assert capsys.readouterr().out.startswith("usage: python -m vigie.rag.cli")
