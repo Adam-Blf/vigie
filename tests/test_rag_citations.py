@@ -114,3 +114,64 @@ def test_long_passage_gives_a_bounded_excerpt() -> None:
     excerpt = report.citations[0].excerpt
     assert excerpt.endswith("...")
     assert len(excerpt) <= EXCERPT_CHARS + 3
+
+
+# Variant formats seen in review: each one used to slip past the validator untouched.
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("[DORA, art. 99 §1]", RawCitation("DORA", "99", "1")),
+        ("[AI Act art. 5]", RawCitation("AIACT", "5", None)),
+        ("[ai act, article 5 § 2]", RawCitation("AIACT", "5", "2")),
+        ("[AI-Act art. 5]", RawCitation("AIACT", "5", None)),
+        ("[RGPD article 6]", RawCitation("RGPD", "6", None)),
+        ("[GDPR Art. 6]", RawCitation("RGPD", "6", None)),
+        ("[gdpr art. 6 §1]", RawCitation("RGPD", "6", "1")),
+        ("[LCB-FT art. 12]", RawCitation("AMLR", "12", None)),
+        ("[amlr art. 12]", RawCitation("AMLR", "12", None)),
+        ("[DORA Article 28 paragraph 1]", RawCitation("DORA", "28", "1")),
+        ("[règlement DORA art. 28]", RawCitation("DORA", "28", None)),
+        ("[art. 6 RGPD]", RawCitation("RGPD", "6", None)),
+        ("[article 5 §1 du AI Act]", RawCitation("AIACT", "5", "1")),
+        ("[art. 28 §1, DORA]", RawCitation("DORA", "28", "1")),
+        ("[art. 28 §4(e) DORA]", RawCitation("DORA", "28", "4")),
+        ("[art. 5 de l'AI Act]", RawCitation("AIACT", "5", None)),
+        ("[EU AI Act art. 5]", RawCitation("AIACT", "5", None)),
+    ],
+)
+def test_extracts_variant_formats(text: str, expected: RawCitation) -> None:
+    assert extract_citations(f"Une phrase {text}.") == [expected]
+
+
+@pytest.mark.parametrize(
+    "label",
+    [
+        "[DORA, art. 99 §1]",
+        "[AI Act art. 5]",
+        "[RGPD article 6]",
+        "[gdpr art. 6]",
+        "[LCB-FT art. 12]",
+        "[art. 6 RGPD]",
+    ],
+)
+def test_unbacked_variant_citation_is_removed_and_counted(label: str) -> None:
+    text = f"Première règle [DORA art. 28 §1]. Autre règle {label}."
+    report = validate_citations(text, [passage()])
+    assert report.text == "Première règle [DORA art. 28 §1]. Autre règle."
+    assert len(report.removed) == 1
+    assert (report.raw_total, report.raw_valid) == (2, 1)
+
+
+def test_backed_alias_citation_is_rewritten_to_the_canonical_label() -> None:
+    backed = passage("5", "2", regulation="AIACT")
+    report = validate_citations("Interdiction [AI Act, article 5 § 2].", [backed])
+    assert report.text == "Interdiction [AIACT art. 5 §2]."
+    assert [c.label for c in report.citations] == ["[AIACT art. 5 §2]"]
+    gdpr = validate_citations("Base légale [GDPR art. 6].", [passage("6", "1", regulation="RGPD")])
+    assert [c.label for c in gdpr.citations] == ["[RGPD art. 6]"]
+
+
+def test_unknown_code_is_kept_as_written_and_never_backed() -> None:
+    report = validate_citations("Règle [NIS 2 art. 21].", [passage()])
+    assert report.text == "Règle."
+    assert report.removed == ["[NIS2 art. 21]"]

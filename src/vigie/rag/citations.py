@@ -14,18 +14,52 @@ from dataclasses import dataclass, field
 from vigie.rag.labels import format_label
 from vigie.rag.types import Citation, Passage
 
-# Tolerant on purpose: models write "art." or "article", "§1", "§ 1" or "paragraphe 1".
-# Any bracketed "[CODE art. N]" is caught, even with an unknown code, so that a citation
-# to a regulation outside the corpus is removed instead of slipping through untouched.
+# Tolerant on purpose: anything in brackets that reads like a regulation citation is
+# caught, whatever the spelling, so that an unbacked one is removed instead of slipping
+# through untouched. Models write "art." or "article", "§1", "§ 1" or "paragraphe 1",
+# put a comma after the code, use an alias ("AI Act", "GDPR", "LCB-FT"), lowercase it, or
+# put the article first ("[art. 6 RGPD]"). An unknown code is still caught, and since no
+# passage carries it, the citation is removed.
 # Ministral 3B also adds the point under a paragraph ("§4 a", "§4, point c)"). Chunks stop
 # at the paragraph, so the point is read and dropped: the label is checked at that level.
-_POINT = r"(?:\s*,?\s*(?:point\s*)?\(?[a-z]{1,4}\))"
-LABEL_RE = re.compile(
-    r"(?P<space>[ \t]*)\[\s*(?P<code>[A-Za-z][A-Za-z0-9]{1,9})\s+art(?:icle|\.)?\s*"
-    r"(?P<article>\d+[a-z]?)"
-    r"(?:\s*,?\s*(?:§|paragraphe|par\.)\s*(?P<paragraph>\d+[a-z]?)"
-    rf"(?:{_POINT}{{1,2}}|\s*,?\s*(?:point\s*)?[a-z]{{1,4}})?)?\s*\]"
+_CODE = (
+    r"(?:(?:r[èe]glement|regulation)\s+)?"
+    r"(?P<{name}>[^\W\d_][\w-]{{0,9}}(?:[ -]\w{{1,6}}){{0,2}})"
 )
+_ART = r"art(?:icle|\.)?\s*(?P<{name}>\d+[a-z]?)"
+_PARA = r"\s*,?\s*(?:§|paragraphe?|para\.?|par\.)\s*(?P<{name}>\d+[a-z]?)"
+_POINT = r"(?:\s*,?\s*(?:point\s*)?\(?[a-z]{1,4}\))"
+_BARE_POINT = r"\s*,?\s*(?:point\s*)?[a-z]{1,4}"
+_OF = r"\s*,?\s*(?:(?:du|de\s+la|de|of\s+the|of)\s+|de\s+l['’]\s*)?"
+_CODE_FIRST = (
+    _CODE.format(name="code")
+    + r"\s*,?\s*"
+    + _ART.format(name="article")
+    + rf"(?:{_PARA.format(name='paragraph')}(?:{_POINT}{{1,2}}|{_BARE_POINT})?)?"
+)
+# With the code last, a bare point letter would be read as the code, so only "(c)" points.
+_ARTICLE_FIRST = (
+    _ART.format(name="r_article")
+    + rf"(?:{_PARA.format(name='r_paragraph')}{_POINT}{{0,2}})?"
+    + _OF
+    + _CODE.format(name="r_code")
+)
+LABEL_RE = re.compile(
+    rf"(?P<space>[ \t]*)\[\s*(?:{_CODE_FIRST}|{_ARTICLE_FIRST})\s*\]", re.IGNORECASE
+)
+
+# Spellings a model uses for the regulations of the corpus, after upper-casing and
+# dropping spaces and hyphens. Anything else keeps its own normalized code.
+ALIASES: dict[str, str] = {
+    "DORA": "DORA",
+    "AIACT": "AIACT",
+    "EUAIACT": "AIACT",
+    "RIA": "AIACT",
+    "RGPD": "RGPD",
+    "GDPR": "RGPD",
+    "AMLR": "AMLR",
+    "LCBFT": "AMLR",
+}
 
 EXCERPT_CHARS = 240
 
@@ -55,11 +89,22 @@ class CitationReport:
         return self.raw_valid / self.raw_total if self.raw_total else None
 
 
+def normalize_code(code: str) -> str:
+    key = re.sub(r"[\s-]+", "", code).upper()
+    return ALIASES.get(key, key)
+
+
 def _parse(match: re.Match[str]) -> RawCitation:
+    if match["code"] is not None:
+        return RawCitation(
+            regulation=normalize_code(match["code"]),
+            article=match["article"].lower(),
+            paragraph=match["paragraph"].lower() if match["paragraph"] else None,
+        )
     return RawCitation(
-        regulation=match["code"].upper(),
-        article=match["article"],
-        paragraph=match["paragraph"],
+        regulation=normalize_code(match["r_code"]),
+        article=match["r_article"].lower(),
+        paragraph=match["r_paragraph"].lower() if match["r_paragraph"] else None,
     )
 
 
