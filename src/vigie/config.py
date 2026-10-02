@@ -83,7 +83,8 @@ class Settings(BaseSettings):
     lakera_api_key: SecretStr | None = Field(
         default=None, validation_alias=AliasChoices("LAKERA_API_KEY", "VIGIE_LAKERA_API_KEY")
     )
-    mlflow_tracking_uri: str = "file:./mlruns"
+    # MLflow 3 refuses the plain file store, SQLite keeps it local and dependency free.
+    mlflow_tracking_uri: str = "sqlite:///mlflow.db"
     bench_mlflow_experiment: str = "guardbench"
 
 

@@ -9,7 +9,7 @@ def test_benchmark_defaults_pin_models_and_stay_local(monkeypatch: pytest.Monkey
     settings = Settings(_env_file=None)
     assert settings.bench_deberta_model == "protectai/deberta-v3-base-prompt-injection-v2"
     assert settings.bench_llamaguard_model == "llama-guard3:1b"
-    assert settings.mlflow_tracking_uri == "file:./mlruns"
+    assert settings.mlflow_tracking_uri == "sqlite:///mlflow.db"
     assert settings.lakera_api_key is None
 
 
