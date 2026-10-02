@@ -12,3 +12,8 @@ output "kube_tunnel_command" {
   description = "Opens the Kubernetes API on localhost:6443 through SSH, since 6443 is never public."
   value       = "ssh -i ~/.ssh/vigie_deploy -N -L 6443:127.0.0.1:6443 ubuntu@${oci_core_instance.vigie.public_ip}"
 }
+
+output "backup_bucket" {
+  description = "Object Storage bucket for Qdrant and MLflow backups."
+  value       = oci_objectstorage_bucket.backups.name
+}
