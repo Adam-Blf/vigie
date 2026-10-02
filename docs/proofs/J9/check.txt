@@ -1,0 +1,28 @@
++ C:\Users\adamb\Documents\Projets\school\vigie\.claude\worktrees\wf_20d9e5ec-694-3\.venv\Scripts\python.exe -m ruff check .
+All checks passed!
++ C:\Users\adamb\Documents\Projets\school\vigie\.claude\worktrees\wf_20d9e5ec-694-3\.venv\Scripts\python.exe -m ruff format --check .
+32 files already formatted
++ C:\Users\adamb\Documents\Projets\school\vigie\.claude\worktrees\wf_20d9e5ec-694-3\.venv\Scripts\python.exe -m mypy src
+Success: no issues found in 17 source files
++ C:\Users\adamb\Documents\Projets\school\vigie\.claude\worktrees\wf_20d9e5ec-694-3\.venv\Scripts\python.exe -m pytest --cov=src --cov-report=term-missing
+.....................................................                    [100%]
+=============================== tests coverage ================================
+______________ coverage: platform win32, python 3.12.13-final-0 _______________
+
+Name                           Stmts   Miss Branch BrPart  Cover   Missing
+--------------------------------------------------------------------------
+src\guardbench\__init__.py         1      0      0      0   100%
+src\vigie\__init__.py              1      0      0      0   100%
+src\vigie\config.py               55      0      0      0   100%
+src\vigie\drift\__init__.py        6      0      0      0   100%
+src\vigie\drift\detectors.py      42      0     10      0   100%
+src\vigie\drift\embedder.py       26      0      8      0   100%
+src\vigie\drift\metrics.py        20      0      2      0   100%
+src\vigie\drift\monitor.py       102      0     18      0   100%
+src\vigie\drift\reference.py      46      0      8      0   100%
+src\vigie\drift\window.py         25      0      8      0   100%
+--------------------------------------------------------------------------
+TOTAL                            324      0     54      0   100%
+
+7 empty files skipped.
+53 passed in 33.59s
