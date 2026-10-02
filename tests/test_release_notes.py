@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pytest
 from scripts.release_notes import ReleaseError, main, section
+from scripts.sync_version import ROOT, read_version
 
 CHANGELOG = """# Changelog
 
@@ -66,4 +67,5 @@ def test_usage_without_arguments() -> None:
 
 
 def test_repository_changelog_has_current_version() -> None:
-    assert main(["v0.1.0", "--verify-tag"]) == 0
+    version = read_version(ROOT / "pyproject.toml")
+    assert main([f"v{version}", "--verify-tag"]) == 0
