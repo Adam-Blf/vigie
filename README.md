@@ -1,18 +1,16 @@
 # Vigie
 
+<p align="center">
 <!-- adam-badges:start -->
-[![commits](https://img.shields.io/github/commit-activity/t/Adam-Blf/vigie?color=001329&label=commits&style=flat-square)](https://github.com/Adam-Blf/vigie/commits)
-[![visites](https://hits.sh/github.com/Adam-Blf/vigie.svg?style=flat-square&label=visites&color=001329)](https://hits.sh/github.com/Adam-Blf/vigie/)
-[![last commit](https://img.shields.io/github/last-commit/Adam-Blf/vigie?color=D4A437&style=flat-square&label=dernier%20push)](https://github.com/Adam-Blf/vigie/commits)
-[![top language](https://img.shields.io/github/languages/top/Adam-Blf/vigie?style=flat-square)](https://github.com/Adam-Blf/vigie)
-[![license](https://img.shields.io/github/license/Adam-Blf/vigie?style=flat-square&color=D4A437)](LICENSE)
-[![ci](https://img.shields.io/github/actions/workflow/status/Adam-Blf/vigie/ci.yml?branch=main&style=flat-square&label=ci)](https://github.com/Adam-Blf/vigie/actions/workflows/ci.yml)
-[![version](https://img.shields.io/badge/version-0.1.0-001329?style=flat-square)](CHANGELOG.md)
-[![release](https://img.shields.io/github/v/release/Adam-Blf/vigie?style=flat-square&color=001329&label=release)](https://github.com/Adam-Blf/vigie/releases)
-[![python](https://img.shields.io/badge/python-3.12-D4A437?style=flat-square&logo=python&logoColor=white)](pyproject.toml)
-[![llm](https://img.shields.io/badge/LLM-Ministral%203%203B%20local-001329?style=flat-square)](docs/adr)
-[![k3s](https://img.shields.io/badge/k3s-canary%20Argo%20Rollouts-001329?style=flat-square&logo=kubernetes&logoColor=white)](deploy/k8s)
+<a href="https://github.com/Adam-Blf/vigie/releases"><img alt="release" src="https://img.shields.io/github/v/release/Adam-Blf/vigie?style=flat-square&color=001329&label=release"></a>
+<a href="https://github.com/Adam-Blf/vigie/actions/workflows/ci.yml"><img alt="ci" src="https://img.shields.io/github/actions/workflow/status/Adam-Blf/vigie/ci.yml?branch=main&style=flat-square&label=ci&color=001329"></a>
+<a href="https://github.com/Adam-Blf/vigie/commits"><img alt="commits" src="https://img.shields.io/github/commit-activity/t/Adam-Blf/vigie?style=flat-square&color=001329&label=commits"></a>
+<a href="https://hits.sh/github.com/Adam-Blf/vigie/"><img alt="visites" src="https://hits.sh/github.com/Adam-Blf/vigie.svg?style=flat-square&label=visites&color=001329"></a>
+<a href="https://github.com/Adam-Blf/vigie/commits"><img alt="dernier push" src="https://img.shields.io/github/last-commit/Adam-Blf/vigie?style=flat-square&color=D4A437&label=dernier%20push"></a>
+<a href="https://github.com/Adam-Blf/vigie"><img alt="langage" src="https://img.shields.io/github/languages/top/Adam-Blf/vigie?style=flat-square&color=D4A437"></a>
+<a href="LICENSE"><img alt="licence" src="https://img.shields.io/badge/licence-propri%C3%A9taire-D4A437?style=flat-square"></a>
 <!-- adam-badges:end -->
+</p>
 
 Version 0.1.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
 
@@ -92,6 +90,11 @@ portent le préfixe `VIGIE_` et sont lues par `src/vigie/config.py`.
 
 Une branche par jalon, une pull request par branche, fusion par commit de merge une fois
 la CI verte. Chaque commit crédite le binôme (auteur ou co-auteur).
+
+## Licence
+
+Code propriétaire, tous droits réservés. Le dépôt est public pour consultation, toute
+réutilisation demande un accord écrit des auteurs (voir `LICENSE`).
 
 ## Auteurs
 
