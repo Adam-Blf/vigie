@@ -12,7 +12,7 @@
 <!-- adam-badges:end -->
 </p>
 
-Version 0.1.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
+Version 0.1.1 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
 
 Copilote de conformité pour les banques. Vigie répond aux questions sur DORA, l'AI Act, le
 RGPD et le règlement anti-blanchiment en citant l'article exact, dit quand il ne trouve
@@ -69,7 +69,9 @@ flowchart LR
 
 Chaque bloc correspond à un module de `src/vigie/`, avec une seule responsabilité par
 module. Le détail des composants, du budget mémoire et du chemin de livraison est dans
-`docs/architecture.md`.
+`docs/architecture.md`. Les risques OWASP LLM sont cartographiés dans
+`docs/risk-map.md`, les menaces dans `docs/threat-model.md` et les choix structurants dans
+`docs/adr/`.
 
 ## Démarrage local
 
@@ -77,7 +79,11 @@ module. Le détail des composants, du budget mémoire et du chemin de livraison 
 uv venv --python 3.12 .venv
 uv pip install --python .venv -e ".[dev]"
 python tasks.py check
+python tasks.py typo
 ```
+
+`python tasks.py typo` refuse tirets longs, demi-cadratins, médiopoints et caractères
+invisibles dans tous les fichiers suivis.
 
 Le lancement complet en une commande (`docker compose up`) arrive avec le jalon J7.
 
@@ -89,7 +95,8 @@ portent le préfixe `VIGIE_` et sont lues par `src/vigie/config.py`.
 ## Contribuer
 
 Une branche par jalon, une pull request par branche, fusion par commit de merge une fois
-la CI verte. Chaque commit crédite le binôme (auteur ou co-auteur).
+la CI verte. Chaque commit crédite le binôme (auteur ou co-auteur). Règles détaillées
+dans `CONTRIBUTING.md`.
 
 ## Licence
 
