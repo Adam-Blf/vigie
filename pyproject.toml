@@ -42,6 +42,7 @@ dev = [
 ]
 
 [project.scripts]
+vigie-eval = "vigie.evaluation.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/vigie", "src/guardbench"]
