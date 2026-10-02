@@ -35,7 +35,7 @@ def lint(_: Sequence[str]) -> int:
 
 @task
 def typecheck(_: Sequence[str]) -> int:
-    return run(py("mypy", "src"))
+    return run(py("mypy"))
 
 
 @task
@@ -44,8 +44,13 @@ def test(args: Sequence[str]) -> int:
 
 
 @task
+def version_check(_: Sequence[str]) -> int:
+    return run([sys.executable, "scripts/sync_version.py", "--check"])
+
+
+@task
 def check(args: Sequence[str]) -> int:
-    for step in (lint, typecheck, test):
+    for step in (lint, version_check, typecheck, test):
         code = step(args if step is test else [])
         if code:
             return code
