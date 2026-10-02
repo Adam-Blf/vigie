@@ -14,6 +14,41 @@ les notes reprennent la section correspondante.
 
 - Licence propriétaire, tous droits réservés, dépôt public en consultation seule.
 
+## [0.3.0] - 2026-10-02
+
+### Added
+
+- Couche LLM du jalon J3 : interface de génération en flux commune à trois fournisseurs,
+  Ollama local par défaut (Ministral 3 3B), Mistral payant désactivé sans clé, et faux LLM
+  déterministe pour les tests et les tirs de charge (`src/vigie/llm/`).
+- Chaîne RAG question, passages, prompt, génération et contrôle des citations
+  (`src/vigie/rag/`) : le prompt système français (version v2) délimite chaque passage et
+  impose de recopier son étiquette, et toute réponse qui ne s'appuie sur aucun passage
+  devient le refus explicite « Je ne trouve pas de réponse dans les textes indexés. »
+- Validateur de citations qui reconnaît les variantes d'écriture d'un renvoi (virgule après
+  le code, article en tête, `article`, `para.`, `§`, lettre de point, alias AI Act, GDPR,
+  LCB-FT) et retire de la réponse finale toute citation qui ne correspond à aucun passage
+  fourni, en la listant dans `removed_citations`.
+- Commande `python -m vigie.rag.cli --passages <fichier.json> "question"` qui affiche la
+  réponse en flux et écrit la réponse validée en JSON, avec les temps du premier jeton et de
+  la réponse complète.
+- Réglages `VIGIE_LLM_*`, `VIGIE_MISTRAL_URL`, `VIGIE_MISTRAL_MODEL`, `VIGIE_RAG_MIN_SCORE`,
+  `VIGIE_RAG_REQUIRE_CITATION` et `FAKE_LLM_HALLUCINATE`, décrits dans `.env.example`.
+- Preuves du jalon J3 dans `docs/proofs/J3/` : trois réponses réelles de Ministral 3B sur
+  DORA art. 28 (premier jeton à 6,1 s modèle chaud, réponse complète en 49 s sur le poste
+  de développement) et une citation inventée par le faux LLM retirée de la réponse.
+
+### Changed
+
+- Une réponse qui contient la phrase de refus à côté d'au moins une citation valide est
+  gardée comme réponse partielle, la phrase de refus en moins.
+- La version du prompt n'existe plus que dans `vigie.rag.prompt`, le réglage
+  `prompt_version` inutilisé est supprimé.
+
+### Fixed
+
+- Les clients HTTP d'Ollama et de Mistral sont fermés après chaque question.
+
 ## [0.2.0] - 2026-10-02
 
 ### Added
