@@ -14,6 +14,44 @@ les notes reprennent la section correspondante.
 
 - Licence propriétaire, tous droits réservés, dépôt public en consultation seule.
 
+## [0.4.0] - 2026-10-02
+
+### Added
+
+- Jeu de référence du jalon J8 (`data/golden/questions.jsonl`) : 80 questions sur DORA,
+  l'AI Act, le RGPD et l'AMLR, dont 60 dans le périmètre, 10 hors périmètre et 10 pièges,
+  56 en français et 24 en anglais. Chaque question porte ses articles attendus et une
+  citation de référence vérifiée mot pour mot dans le texte Cellar par le second auteur.
+- Répartition stratifiée en 54 questions `dev` et 26 questions `test`, la partie `test`
+  scellée par son empreinte SHA-256 dans `data/golden/test.sha256` ; `data/golden/README.md`
+  donne le tableau par catégorie et les lignes utilisées par chaque indicateur.
+- Commande `vigie-eval` : `validate-golden` vérifie chaque question contre le corpus
+  (articles connus, citation présente dans le texte, statut vérifié, sceau intact) et
+  sort en erreur au moindre écart, `seal-golden` réécrit le sceau et exige `--force` si
+  la partie `test` a changé.
+- Indicateurs déterministes dans `src/vigie/evaluation/metrics.py` : rappel@k, MRR, taux de
+  refus correct, validité brute des citations, nombre de citations inventées restées dans
+  la réponse finale, précision et couverture des citations, intervalle de confiance par
+  bootstrap.
+- Seuils d'évaluation écrits avant toute mesure dans `eval/thresholds.yaml` (rappel@5 au
+  moins 0,80, MRR au moins 0,60, aucune citation inventée dans la réponse finale, refus
+  correct au moins 0,90, recul maximal de 2 points face au champion).
+- Réglages `VIGIE_GOLDEN_PATH` et `VIGIE_GOLDEN_SEAL_PATH`, décrits dans `.env.example`.
+- Preuves du jalon J8 dans `docs/proofs/J8/` : validation verte sur les 366 articles du
+  corpus, et deux validations vues rouges (questions encore en brouillon, copie dégradée).
+
+### Changed
+
+- Le taux de refus correct se mesure sur les 10 questions hors périmètre, `dev` et `test`
+  réunies, et non sur les 3 de la partie `test`, pour éviter des pas de 33 points.
+- La table des numéros CELEX de l'évaluation se déduit du registre du corpus au lieu d'en
+  garder une copie.
+
+### Fixed
+
+- `vigie-eval validate-golden` lit aussi les fichiers `<CELEX>.fra.xhtml` du cache de
+  `vigie-ingest`, qu'il ignorait faute de reconnaître leur nom.
+
 ## [0.3.0] - 2026-10-02
 
 ### Added

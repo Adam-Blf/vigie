@@ -12,7 +12,7 @@
 <!-- adam-badges:end -->
 </p>
 
-Version 0.3.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
+Version 0.4.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
 
 Copilote de conformité pour les banques. Vigie répond aux questions sur DORA, l'AI Act, le
 RGPD et le règlement anti-blanchiment en citant l'article exact, dit quand il ne trouve
@@ -88,6 +88,17 @@ invisibles dans tous les fichiers suivis.
 Le corpus réglementaire se construit avec `vigie-ingest`, qui télécharge les quatre textes
 depuis Cellar, les vérifie contre `data/corpus.lock` et écrit un JSONL par règlement dans
 `data/corpus/` (détail dans [docs/corpus.md](docs/corpus.md)).
+
+Le jeu de référence (`data/golden/`, 80 questions vérifiées contre Cellar, partie `test`
+scellée) se contrôle avec `vigie-eval`, qui sort en erreur au moindre écart. Il lit les
+JSONL de `data/corpus/` par défaut, ou les XHTML Cellar que `vigie-ingest` garde dans
+`data/cache/` :
+
+```sh
+vigie-eval validate-golden --corpus data/cache
+```
+
+Les seuils que l'évaluation devra tenir sont fixés d'avance dans `eval/thresholds.yaml`.
 
 Une question se pose déjà au modèle sur un jeu de passages fixe, en attendant l'index
 Qdrant :
