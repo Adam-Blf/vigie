@@ -42,6 +42,7 @@ dev = [
 ]
 
 [project.scripts]
+vigie-drift = "vigie.drift.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/vigie", "src/guardbench"]

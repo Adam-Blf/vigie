@@ -50,6 +50,12 @@ def test_integration(args: Sequence[str]) -> int:
 
 
 @task
+def drift_reference(args: Sequence[str]) -> int:
+    """Build data/drift/reference.npy and anchors.npy, see docs/drift.md."""
+    return run(py("vigie.drift.cli", "build-reference", *args))
+
+
+@task
 def check(args: Sequence[str]) -> int:
     for step in (lint, typecheck, test):
         code = step(args if step is test else [])
