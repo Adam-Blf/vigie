@@ -14,6 +14,31 @@ les notes reprennent la section correspondante.
 
 - Licence propriétaire, tous droits réservés, dépôt public en consultation seule.
 
+## [0.1.1] - 2026-10-02
+
+### Added
+
+- Cartographie des risques OWASP LLM 2025 appliquée aux surfaces de Vigie
+  (`docs/risk-map.md`) et modèle de menaces STRIDE flux par flux
+  (`docs/threat-model.md`).
+- Trois décisions d'architecture : hébergement à coût nul, Oracle Cloud Always Free, LLM
+  local Ministral 3 3B servi par Ollama (`docs/adr/`).
+- Description des chemins de requête et de livraison dans `docs/architecture.md`.
+- Guide de contribution du binôme (`CONTRIBUTING.md`) et avis de réutilisation des textes
+  EUR-Lex (`NOTICE`).
+- Tâche `python tasks.py typo` qui refuse tirets longs, demi-cadratins, médiopoints et
+  caractères invisibles dans les fichiers suivis du dépôt.
+- Preuves du jalon J0 cadrage dans `docs/proofs/J0-cadrage/`.
+
+### Changed
+
+- Les tests de configuration ne lisent plus le fichier `.env` local, ils passent par une
+  sous-classe typée de `Settings`, ce qui rend `mypy tests src` propre.
+
+### Fixed
+
+- Journal de preuve du J0 outillage débarrassé des chemins locaux de la machine de build.
+
 ## [0.1.0] - 2026-10-02
 
 ### Added

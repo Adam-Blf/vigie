@@ -1,0 +1,9 @@
+d0043cd Emilien Morice | test(config): isolate settings from .env through a typed subclass | Adam Beloucif <adam.beloucif@efrei.net>
+f437e67 Emilien Morice | chore: add proprietary license and EUR-Lex reuse notice | Adam Beloucif <adam.beloucif@efrei.net>
+78e385a Emilien Morice | docs: add contributing guide with pair commit rules | Adam Beloucif <adam.beloucif@efrei.net>
+6344d21 Emilien Morice | docs(security): add STRIDE threat model per flow | Adam Beloucif <adam.beloucif@efrei.net>
+e97c936 Emilien Morice | docs(architecture): describe request and delivery paths | Adam Beloucif <adam.beloucif@efrei.net>
+bba9a65 Emilien Morice | docs(adr): record local Ministral 3 3B served by Ollama | Adam Beloucif <adam.beloucif@efrei.net>
+b0cb6ef Emilien Morice | docs(adr): record zero-cost hosting on Oracle Always Free | Adam Beloucif <adam.beloucif@efrei.net>
+4213373 Emilien Morice | docs(risk): map OWASP LLM 2025 risks to Vigie surfaces | Adam Beloucif <adam.beloucif@efrei.net>
+bc02365 Emilien Morice | chore(tasks): add typography check for banned characters | Adam Beloucif <adam.beloucif@efrei.net>

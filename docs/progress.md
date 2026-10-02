@@ -6,6 +6,7 @@ n'est pas `DONE`. Statuts possibles : `DONE`, `PARTIEL`, `BLOQUÉ`.
 | Date | Jalon | Statut | Preuve | Motif | Suite |
 |---|---|---|---|---|---|
 | 2026-10-02 | J0 outillage | DONE | `docs/proofs/J0/` (check vert, co-auteurs) | | cadrage en cours sur `docs/framing` |
+| 2026-10-02 | J0 cadrage | DONE | `docs/proofs/J0-cadrage/` (check vert, typo vert et vu rouge, mypy tests) | | jalons de construction à partir du corpus |
 
 ## Décisions par défaut appliquées (section 10 du brief)
 
