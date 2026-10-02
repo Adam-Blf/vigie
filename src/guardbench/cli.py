@@ -12,7 +12,7 @@ import httpx
 from guardbench.datasets import Sample, load_deepset, load_seed
 from guardbench.guards import GUARD_NAMES, build_guards
 from guardbench.report import plot_quality_latency, write_csv, write_markdown
-from guardbench.runner import GuardRun, run_all
+from guardbench.runner import GuardRun, pin_torch_threads, run_all
 from guardbench.validation import validate_seed
 from vigie.config import Settings
 
@@ -55,6 +55,7 @@ def _print_summary(runs: Sequence[GuardRun]) -> None:
 def _benchmark(
     samples: Sequence[Sample], dataset: str, out: Path, args: argparse.Namespace, s: Settings
 ) -> None:
+    pin_torch_threads(s.bench_torch_threads)
     with httpx.Client(timeout=s.bench_http_timeout_s) as client:
         guards = build_guards([g for g in args.guards.split(",") if g], s, client)
         runs = run_all(guards, samples, s.bench_warmup_calls)

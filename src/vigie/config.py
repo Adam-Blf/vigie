@@ -67,6 +67,9 @@ class Settings(BaseSettings):
     bench_output_dir: Path = Path("results/guardbench")
     bench_warmup_calls: int = Field(default=3, ge=0)
     bench_http_timeout_s: float = 30.0
+    # Two threads, like the 2 OCPU Oracle VM; the default (every core) also made the
+    # timings swing with whatever else ran on the laptop.
+    bench_torch_threads: int = Field(default=2, ge=1)
     bench_deepset_repo: str = "deepset/prompt-injections"
     bench_deberta_model: str = "protectai/deberta-v3-base-prompt-injection-v2"
     bench_gliguard_model: str = "fastino/gliguard-LLMGuardrails-300M"

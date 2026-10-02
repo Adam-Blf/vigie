@@ -65,5 +65,15 @@ def run_guard(guard: Guard, samples: Sequence[Sample], warmup: int) -> GuardRun:
     return run
 
 
+def pin_torch_threads(threads: int) -> bool:
+    """Cap torch intra-op threads so CPU models are timed under the production budget."""
+    try:
+        import torch
+    except ImportError:
+        return False
+    torch.set_num_threads(threads)
+    return True
+
+
 def run_all(guards: Sequence[Guard], samples: Sequence[Sample], warmup: int) -> list[GuardRun]:
     return [run_guard(guard, samples, warmup) for guard in guards]

@@ -1,3 +1,6 @@
+import sys
+import types
+
 import httpx
 import pytest
 
@@ -5,7 +8,7 @@ from guardbench.datasets import Sample
 from guardbench.guards import GUARD_NAMES, build_guards
 from guardbench.guards.base import Guard, GuardUnavailableError, Verdict
 from guardbench.metrics import Outcome, compute, percentile
-from guardbench.runner import run_all, run_guard
+from guardbench.runner import pin_torch_threads, run_all, run_guard
 from vigie.config import Settings
 
 
@@ -109,3 +112,14 @@ def test_registry_builds_every_guard_and_rejects_typos() -> None:
         assert [g.name for g in guards] == list(GUARD_NAMES)
         with pytest.raises(ValueError, match="unknown guards"):
             build_guards(["regx"], settings, client)
+
+
+def test_torch_threads_are_pinned_when_torch_is_installed(monkeypatch: pytest.MonkeyPatch) -> None:
+    seen: list[int] = []
+    fake = types.ModuleType("torch")
+    fake.set_num_threads = seen.append  # type: ignore[attr-defined]
+    monkeypatch.setitem(sys.modules, "torch", fake)
+    assert pin_torch_threads(2)
+    assert seen == [2]
+    monkeypatch.setitem(sys.modules, "torch", None)
+    assert not pin_torch_threads(2)

@@ -11,6 +11,7 @@ def test_benchmark_defaults_pin_models_and_stay_local(monkeypatch: pytest.Monkey
     assert settings.bench_llamaguard_model == "llama-guard3:1b"
     assert settings.mlflow_tracking_uri == "sqlite:///mlflow.db"
     assert settings.lakera_api_key is None
+    assert settings.bench_torch_threads == 2
 
 
 def test_lakera_key_is_read_under_its_vendor_name(monkeypatch: pytest.MonkeyPatch) -> None:
