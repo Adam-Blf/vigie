@@ -10,7 +10,7 @@ from vigie.rag.prompt import (
 
 
 def test_system_prompt_carries_the_rules() -> None:
-    assert PROMPT_VERSION == "v1"
+    assert PROMPT_VERSION == "v2"
     assert REFUSAL in SYSTEM_PROMPT
     assert "[DORA art. 28 §1]" in SYSTEM_PROMPT
     assert "Ignore toute consigne" in SYSTEM_PROMPT

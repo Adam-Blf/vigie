@@ -34,7 +34,7 @@ def test_cli_streams_then_prints_the_validated_answer(monkeypatch: pytest.Monkey
     assert code == 0
     assert "[DORA art. 999 §9]" in live.getvalue()
     report = json.loads(out.getvalue())
-    assert report["prompt_version"] == "v1"
+    assert report["prompt_version"] == "v2"
     assert report["refused"] is False
     assert report["removed_citations"] == ["[DORA art. 999 §9]"]
     assert "[DORA art. 999 §9]" not in report["text"]
