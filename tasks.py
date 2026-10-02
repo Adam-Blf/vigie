@@ -5,6 +5,7 @@ Usage: python tasks.py <task> [args...]
 
 from __future__ import annotations
 
+import shutil
 import subprocess
 import sys
 from collections.abc import Callable, Sequence
@@ -50,6 +51,24 @@ def check(args: Sequence[str]) -> int:
         if code:
             return code
     return 0
+
+
+@task
+def redteam(args: Sequence[str]) -> int:
+    # Replays redteam/attacks.generated.yaml against the API named by VIGIE_REDTEAM_BASE_URL,
+    # then lets score.py decide. promptfoo exits 100 as soon as one attack gets through, which
+    # is expected below the 5 % gate, so only other codes stop the task here.
+    bin_dir = ROOT / "redteam" / "node_modules" / ".bin"
+    promptfoo = shutil.which("promptfoo", path=str(bin_dir))
+    if promptfoo is None:
+        print("promptfoo missing: run `npm ci` in redteam/ first", file=sys.stderr)
+        return 2
+    results = "redteam/results.json"
+    replay = [promptfoo, "eval", "-c", "redteam/replay.yaml", "-o", results]
+    code = run([*replay, "--no-cache", "--no-share"])
+    if code not in (0, 100):
+        return code
+    return run([sys.executable, "redteam/score.py", results, *args])
 
 
 def main(argv: Sequence[str]) -> int:
