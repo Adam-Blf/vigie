@@ -5,6 +5,11 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: vigie-ingest
+  annotations:
+    # A Job template is immutable, so a new image tag or bundle hash would make the
+    # whole Flux apply fail. This lets Flux recreate the Job instead, which also
+    # re-runs the ingestion for each new build, as it should.
+    kustomize.toolkit.fluxcd.io/force: Enabled
 spec:
   backoffLimit: 3
   ttlSecondsAfterFinished: 86400

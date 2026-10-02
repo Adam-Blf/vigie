@@ -109,6 +109,9 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: ollama-pull
+  annotations:
+    # Immutable template: let Flux recreate the Job when the model tag changes.
+    kustomize.toolkit.fluxcd.io/force: Enabled
 spec:
   backoffLimit: 6
   ttlSecondsAfterFinished: 3600

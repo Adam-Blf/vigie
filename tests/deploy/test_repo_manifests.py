@@ -112,6 +112,16 @@ def test_analysis_never_passes_on_an_empty_series() -> None:
         assert (metric["failureLimit"], metric["inconclusiveLimit"]) == (1, 2)
 
 
+def test_jobs_can_be_recreated_by_flux() -> None:
+    # Found on the dev cluster: a changed Job template is refused as immutable, which
+    # would block every later Flux apply of the overlay.
+    jobs = [d for d in _base_docs() if d["kind"] == "Job"]
+    assert jobs
+    for job in jobs:
+        annotations = job["metadata"].get("annotations", {})
+        assert annotations.get("kustomize.toolkit.fluxcd.io/force") == "Enabled", job
+
+
 def test_yaml_files_parse() -> None:
     for path in K8S.rglob("*.yaml"):
         list(yaml.safe_load_all(path.read_text(encoding="utf-8")))
