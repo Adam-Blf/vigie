@@ -88,7 +88,8 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
+# "scripts" lets tests import the standalone CI scripts by module name.
+pythonpath = [".", "scripts"]
 addopts = "-q -m 'not integration'"
 markers = ["integration: loads a real embedding model, slower than unit tests"]
 
