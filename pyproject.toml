@@ -28,7 +28,15 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-bench = []
+bench = [
+  "gliner2[local]>=2.0",
+  "transformers>=4.44,<5",
+  "torch>=2.3",
+  "presidio-analyzer>=2.2",
+  "matplotlib>=3.8",
+  "huggingface-hub>=0.24",
+  "pyarrow>=15",
+]
 tracking = ["mlflow>=2.16"]
 quant = ["onnx>=1.16", "onnxruntime>=1.18"]
 load = ["locust>=2.31"]
