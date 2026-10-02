@@ -1,10 +1,10 @@
-+ C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe -m ruff check .
++ python -m ruff check .
 All checks passed!
-+ C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe -m ruff format --check .
++ python -m ruff format --check .
 16 files already formatted
-+ C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe -m mypy src
++ python -m mypy src
 Success: no issues found in 11 source files
-+ C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe -m pytest --cov=src --cov-report=term-missing
++ python -m pytest --cov=src --cov-report=term-missing
 .....                                                                    [100%]
 =============================== tests coverage ================================
 ______________ coverage: platform win32, python 3.12.13-final-0 _______________
