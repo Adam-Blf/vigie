@@ -52,6 +52,14 @@ def check(args: Sequence[str]) -> int:
     return 0
 
 
+@task
+def infra_retry(_: Sequence[str]) -> int:
+    # Lazy import: the other tasks must keep working in an environment without the package.
+    from vigie.infra.retry import main as retry_main
+
+    return retry_main(ROOT)
+
+
 def main(argv: Sequence[str]) -> int:
     if not argv or argv[0] not in TASKS:
         print("tasks:", ", ".join(sorted(TASKS)))
