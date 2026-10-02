@@ -1,0 +1,12 @@
+[2026-10-02 15:42:07,252] PC/INFO/locust.main: Starting Locust 2.46.6
+[2026-10-02 15:42:07,279] PC/ERROR/root: Uncaught exception in event handler:
+Traceback (most recent call last):
+  File "<repo>\.venv\Lib\site-packages\locust\event.py", line 47, in fire
+    handler(**kwargs)
+  File "<repo>\load\locustfile.py", line 62, in refuse_unsafe_runs
+    check_load_profile(environment.host, options.num_users or 1)
+  File "<repo>\src\vigie\loadtest\guard.py", line 51, in check_load_profile
+    raise LoadGuardError(
+vigie.loadtest.guard.LoadGuardError: 9 users against https://vigie.example.org refused: a host that is not local is limited to 8 concurrent users (liveness check only). Search for the limit on 127.0.0.1.
+
+exit=1
