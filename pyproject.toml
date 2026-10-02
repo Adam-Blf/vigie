@@ -47,9 +47,11 @@ dev = [
   "mypy>=1.11",
   "pre-commit>=3.8",
   "types-requests",
+  "matplotlib>=3.8",
 ]
 
 [project.scripts]
+guardbench = "guardbench.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/vigie", "src/guardbench"]
