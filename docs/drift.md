@@ -28,9 +28,59 @@ est marqué `ready: false` et ne lève aucune alerte : un test statistique sur u
 de points ne mesure que du bruit.
 
 Le test de Kolmogorov-Smirnov est écrit avec numpy (valeur p asymptotique, correction de
-Stephens) pour ne pas embarquer scipy dans l'image de l'API. Sur une grande fenêtre, il
-devient très sensible : le seuil `VIGIE_DRIFT_KS_ALPHA` se règle si des alertes
-apparaissent sans changement visible des deux autres indicateurs.
+Stephens) pour ne pas embarquer scipy dans l'image de l'API.
+
+### Limite connue : la marge du test KS est mince
+
+Sur la preuve J9, le lot de 30 questions DORA reste sous le seuil, mais de peu : la
+statistique KS vaut 0,302 et la valeur p 0,088, pour un seuil de 0,01. La référence
+mélange les quatre règlements alors que le lot ne parle que de DORA, et cette seule
+différence de répartition suffit à écarter les deux distributions de similarité.
+
+Avec une référence de 34 questions, l'écart D qu'il faut atteindre pour passer sous
+`VIGIE_DRIFT_KS_ALPHA` = 0,01 se resserre quand la fenêtre grossit :
+
+| Taille de la fenêtre | D critique (alpha 0,01) | D critique (alpha 0,001) |
+|---|---|---|
+| 30 | 0,395 | 0,475 |
+| 150 | 0,305 | 0,365 |
+| 500 | 0,285 | 0,340 |
+
+Conséquence : un trafic légitime mais concentré sur un seul règlement, avec le même écart
+que le lot DORA, déclencherait une alerte `ks_test` seule à partir d'environ 150
+questions dans la fenêtre, alors que la distance entre centroïdes et la part hors
+périmètre restent basses. Le test d'intégration ne couvre que des lots de 30 questions
+et ne prouve donc pas l'absence de fausse alerte sur une fenêtre pleine.
+
+Pistes, à trancher avec le jeu de référence réel (J8) : reconstruire la référence sur le
+jeu `data/golden/` (au moins 80 questions, ce qui réduit le bruit côté référence),
+abaisser `VIGIE_DRIFT_KS_ALPHA` à 0,001, ou ne compter une alerte `ks_test` qu'en
+présence d'un second indicateur. Une alerte `ks_test` isolée se lit d'abord comme un
+changement de répartition entre règlements, pas comme une dérive hors sujet.
+
+## Construire la référence
+
+```bash
+python tasks.py drift-reference
+# équivalent, une fois le paquet installé :
+vigie-drift build-reference
+```
+
+La commande écrit `data/drift/reference.npy` et `data/drift/anchors.npy` (chemins
+`VIGIE_DRIFT_REFERENCE_PATH` et `VIGIE_DRIFT_ANCHORS_PATH`, ou `--reference-out` et
+`--anchors-out`) avec le modèle `VIGIE_DENSE_MODEL` (ou `--model`).
+
+- Questions : `data/golden/questions.jsonl`, en ne gardant que les lignes `in_scope`,
+  `verified` et hors du découpage `test` ; le jeu scellé ne sert jamais à régler quoi
+  que ce soit. Sans ce fichier, la commande retombe sur `tests/fixtures/drift_questions.json`.
+  `--questions` force une autre source (`.jsonl` lu comme le jeu de référence, sinon
+  comme la fixture).
+- Ancres : un centroïde par règlement, calculé sur les chunks de `data/corpus/*.jsonl`
+  (champs `regulation` et `text`). Sans corpus, la commande retombe sur les passages de
+  la fixture. `--corpus` (répétable) désigne un fichier ou un dossier précis.
+
+La sortie indique la source réellement utilisée, ce qui évite de livrer par mégarde une
+référence construite sur la fixture.
 
 ## Alerte
 
@@ -72,6 +122,18 @@ cuisine autour de 0.
 2. Après chaque réponse, `monitor.record(embedding)` avec l'embedding déjà calculé pour la
    recherche, sans le texte.
 3. `GET /v1/admin/drift` renvoie `monitor.evaluate().to_dict()`.
+
+## Tests
+
+`python tasks.py test` lance les tests unitaires avec un faux embedder déterministe ; les
+tests marqués `integration`, qui téléchargent et exécutent le vrai MiniLM, sont exclus
+par défaut (`addopts` de `pyproject.toml`). Pour les lancer :
+
+```bash
+python tasks.py test-integration
+# ou directement
+python -m pytest -m integration
+```
 
 ## Preuve
 
