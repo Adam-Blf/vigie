@@ -1,0 +1,33 @@
+{
+  "milestone": "J15",
+  "scope": "CI/CD workflows, validated locally; activation waits for the GitHub repository",
+  "date": "2026-10-02",
+  "commit": "63387f4180bcc4145454344bb0edd20a5582f679",
+  "base_commit": "25d2623",
+  "commands": {
+    "actionlint.txt": [
+      "actionlint -version",
+      "actionlint -verbose -no-color -shellcheck <tmp>/sc/Scripts/shellcheck.exe"
+    ],
+    "check.txt": "python tasks.py check",
+    "coauthors-green.txt": "python scripts/check_coauthors.py 25d2623..ci/pipelines",
+    "action-shas.txt": "gh api repos/<owner>/<repo>/git/refs/tags/<tag>, then gh api repos/<owner>/<repo>/git/tags/<sha> when the tag is annotated, for each pinned action"
+  },
+  "outputs": ["actionlint.txt", "check.txt", "coauthors-green.txt", "action-shas.txt"],
+  "notes": [
+    "actionlint was downloaded to a temporary directory outside the repository and checked against actionlint_1.7.12_checksums.txt (sha256 6e7241b51e6817ea6a047693d8e6fed13b31819c9a0dd6c5a726e1592d22f6e9 for windows_amd64).",
+    "shellcheck came from the shellcheck-py 0.11.0.1 wheel in a throwaway virtual environment, so actionlint ran with its shellcheck rule enabled.",
+    "Absolute local paths are replaced by <repo> and <tmp> in the outputs."
+  ],
+  "tools": {
+    "python": "3.12.13",
+    "uv": "0.11.32",
+    "git": "2.53.0.windows.2",
+    "gh": "2.90.0",
+    "ruff": "0.16.10",
+    "mypy": "2.4.0",
+    "pytest": "9.1.1",
+    "actionlint": "1.7.12",
+    "shellcheck": "0.11.0"
+  }
+}

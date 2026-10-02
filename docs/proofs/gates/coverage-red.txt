@@ -1,0 +1,9 @@
+$ python tasks.py coverage-gate
++ python scripts/coverage_gate.py coverage.json --total 80 --path src/vigie/guard=95 --path src/vigie/rag/citations.py=95 --path src/vigie/api/auth=95 --path src/vigie/api/usage=95 --path src/vigie/drift=95
+ok   total 88.9% (floor 80.0%)
+ok   src/vigie/guard 100.0% (floor 95.0%)
+absent src/vigie/rag/citations.py (floor 95.0% applies once it exists)
+absent src/vigie/api/auth (floor 95.0% applies once it exists)
+absent src/vigie/api/usage (floor 95.0% applies once it exists)
+FAIL src/vigie/drift 0.0% (floor 95.0%)
+exit code: 1

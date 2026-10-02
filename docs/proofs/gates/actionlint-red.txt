@@ -1,0 +1,14 @@
+$ <tmp>/actionlint.exe -no-color -shellcheck <tmp>/sc/Scripts/shellcheck.exe .github/workflows/bad.yml
+.github/workflows/bad.yml:5:9: calling function "hashFiles" is not allowed here. "hashFiles" is only available in "jobs.<job_id>.steps.continue-on-error", "jobs.<job_id>.steps.env", "jobs.<job_id>.steps.if", "jobs.<job_id>.steps.name", "jobs.<job_id>.steps.run", "jobs.<job_id>.steps.timeout-minutes", "jobs.<job_id>.steps.with", "jobs.<job_id>.steps.working-directory". see https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability for more details [expression]
+  |
+5 |     if: hashFiles('web/package-lock.json') != ''
+  |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.github/workflows/bad.yml:9:9: shellcheck reported issue in this script: SC2086:info:1:47: Double quote to prevent globbing and word splitting [shellcheck]
+  |
+9 |       - run: echo ${{ github.event.pull_request.title }} > $GITHUB_OUTPUT
+  |         ^~~~
+.github/workflows/bad.yml:9:23: "github.event.pull_request.title" is potentially untrusted. avoid using it directly in inline scripts. instead, pass it through an environment variable. see https://docs.github.com/en/actions/reference/security/secure-use#good-practices-for-mitigating-script-injection-attacks for more details [expression]
+  |
+9 |       - run: echo ${{ github.event.pull_request.title }} > $GITHUB_OUTPUT
+  |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+exit code: 1
