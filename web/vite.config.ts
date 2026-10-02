@@ -4,6 +4,7 @@ import { defineConfig } from "vitest/config";
 import { mockApi } from "./plugins/mock-api.ts";
 import { staticAssets } from "./plugins/static-assets.ts";
 import { manifest } from "./plugins/manifest.ts";
+import { SECURITY_HEADERS } from "./plugins/security-headers.ts";
 import packageJson from "./package.json" with { type: "json" };
 
 // Port 4710 is the one reserved for the Vigie web app; bound to loopback only.
@@ -12,7 +13,8 @@ const server = { host: "127.0.0.1", port: 4710, strictPort: true };
 export default defineConfig({
   define: { __APP_VERSION__: JSON.stringify(packageJson.version) },
   server,
-  preview: server,
+  // The dev server needs inline HMR code, so the strict policy applies to preview only.
+  preview: { ...server, headers: SECURITY_HEADERS },
   build: {
     target: "es2022",
     sourcemap: false,
@@ -33,6 +35,8 @@ export default defineConfig({
         // The Rive runtime is only fetched when a .riv file is configured.
         globIgnores: ["vendor/**", "**/rive-*.js"],
         cleanupOutdatedCaches: true,
+        // One self-contained worker: importScripts() is a Trusted Types sink under our CSP.
+        inlineWorkboxRuntime: true,
         runtimeCaching: [
           {
             // Anything carrying a token is personal: never stored, whatever its path.

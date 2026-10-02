@@ -31,3 +31,28 @@ test("no request ever leaves the app origin", async ({ page, context, baseURL })
 
   expect(foreign).toEqual([]);
 });
+
+test("the app runs under the production CSP without a single violation", async ({ page, context }) => {
+  await context.addInitScript(() => {
+    const store = window as unknown as { cspViolations: string[] };
+    store.cspViolations = [];
+    document.addEventListener("securitypolicyviolation", (event) => {
+      store.cspViolations.push(`${event.violatedDirective} ${event.blockedURI}`);
+    });
+  });
+  await useConfig(context);
+  await withToken(context);
+  await mockAsk(context, streamOf(fixture("gdpr-breach")));
+  const response = await page.goto("/");
+  expect(response?.headers()["content-security-policy"]).toContain("require-trusted-types-for 'script'");
+  expect(response?.headers()["x-content-type-options"]).toBe("nosniff");
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await ask(page, "Délai de notification ?");
+  await expect(page.locator(".bubble-answer")).toContainText("72 heures");
+  await page.locator(".citation-chip").click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  const violations = await page.evaluate(
+    () => (window as unknown as { cspViolations: string[] }).cspViolations,
+  );
+  expect(violations).toEqual([]);
+});

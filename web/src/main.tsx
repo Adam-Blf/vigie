@@ -8,6 +8,7 @@ import { detectLocale, isLocale } from "./i18n/translate.ts";
 import { isDemoRequested, loadConfig } from "./lib/config.ts";
 import { KEYS, readItem } from "./lib/storage.ts";
 import { getToken } from "./lib/token.ts";
+import { installTrustedTypesPolicy } from "./lib/trusted-types.ts";
 import { watchInstallPrompt } from "./pwa/install.ts";
 import "./styles/tokens.css";
 import "./styles/icons.css";
@@ -15,6 +16,7 @@ import "./styles/base.css";
 import "./styles/layout.css";
 import "./styles/chat.css";
 
+installTrustedTypesPolicy();
 watchInstallPrompt();
 
 async function start(): Promise<void> {
