@@ -41,7 +41,26 @@ def typecheck(_: Sequence[str]) -> int:
 
 @task
 def test(args: Sequence[str]) -> int:
-    return run(py("pytest", "--cov=src", "--cov-report=term-missing", *args))
+    return run(py("pytest", "--cov=src", "--cov-report=term-missing", "--cov-report=json", *args))
+
+
+# Floors from brief section 11.3. A module listed here but not written yet is reported as
+# absent, so the list can stay complete from the start.
+COVERAGE_TOTAL = "80"
+COVERAGE_FLOORS = (
+    "src/vigie/guard=95",
+    "src/vigie/rag/citations.py=95",
+    "src/vigie/api/auth=95",
+    "src/vigie/api/usage=95",
+    "src/vigie/drift=95",
+)
+
+
+@task
+def coverage_gate(_: Sequence[str]) -> int:
+    floors = [arg for floor in COVERAGE_FLOORS for arg in ("--path", floor)]
+    gate = [sys.executable, "scripts/coverage_gate.py", "coverage.json"]
+    return run([*gate, "--total", COVERAGE_TOTAL, *floors])
 
 
 @task
@@ -63,7 +82,7 @@ def version_check(_: Sequence[str]) -> int:
 
 @task
 def check(args: Sequence[str]) -> int:
-    for step in (lint, version_check, typecheck, test):
+    for step in (lint, version_check, typecheck, test, coverage_gate):
         code = step(args if step is test else [])
         if code:
             return code
