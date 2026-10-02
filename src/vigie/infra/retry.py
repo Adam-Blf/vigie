@@ -115,9 +115,9 @@ def retry_apply(plan: RetryPlan, runner: Runner, sleep: Sleeper) -> int:
         if not is_retryable(output):
             log.write(f"attempt {attempt}: non-capacity error ({code}), stopping:\n{output}")
             return code
-        wait = f"{plan.interval_s:.0f} s"
-        log.write(f"attempt {attempt}/{plan.max_attempts}: no capacity, next try in {wait}")
+        log.write(f"attempt {attempt}/{plan.max_attempts}: no capacity")
         if attempt < plan.max_attempts:
+            log.write(f"next try in {plan.interval_s:.0f} s")
             sleep(plan.interval_s)
 
     log.write("attempts exhausted, switch to the k3d fallback (decision 6)")
