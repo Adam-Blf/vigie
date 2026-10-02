@@ -18,7 +18,8 @@
     "lhci": "lhci autorun",
     "contrast": "node scripts/check-contrast.ts",
     "assets": "node scripts/build-icons.ts && node scripts/export-mascot.ts && node scripts/export-icons.ts",
-    "check-rive": "node scripts/check-rive.ts"
+    "check-rive": "node scripts/check-rive.ts",
+    "capture": "node scripts/capture-proofs.ts"
   },
   "dependencies": {
     "@phosphor-icons/web": "^2.1.2",
