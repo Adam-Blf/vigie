@@ -161,6 +161,34 @@ test("Shift+Enter breaks the line, the counter follows, the example buttons ask"
   await expect(page.locator(".bubble-answer").last()).toContainText("parlent à une IA");
 });
 
+test("after 8 s the slow search notice offers to cancel", async ({ page }) => {
+  await page.clock.install();
+  await withToken(page);
+  await mockAsk(page, () => new Promise(() => undefined));
+  await page.goto("/");
+  await ask(page, "Question lente");
+  await expect(page.locator(".conversation .mascot")).toHaveAttribute("data-state", "searching");
+  await expect(page.getByText("La recherche prend plus de temps que prévu.")).toHaveCount(0);
+  await page.clock.fastForward(8000);
+  await expect(page.getByText("La recherche prend plus de temps que prévu.")).toBeVisible();
+  await page.getByRole("button", { name: "Annuler" }).click();
+  await expect(page.getByText("Question annulée.")).toBeVisible();
+});
+
+test("copy with citations keeps the AI notice, and View source opens the first citation", async ({ page, context }) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await withToken(page);
+  await mockAsk(page, streamOf(fixture("dora-register")));
+  await page.goto("/");
+  await ask(page, "Contrats TIC ?");
+  await page.getByRole("button", { name: "Copier avec les citations" }).click();
+  const copied = await page.evaluate(() => navigator.clipboard.readText());
+  expect(copied).toContain("[DORA art. 28 §3] https://eur-lex.europa.eu/");
+  expect(copied).toContain("Réponse générée par une IA, à vérifier dans le texte officiel.");
+  await page.getByRole("button", { name: "Voir la source" }).click();
+  await expect(page.getByRole("dialog", { name: "[DORA art. 28 §3]" })).toBeVisible();
+});
+
 test("demo mode answers from the frozen fixtures without any API call", async ({ page }) => {
   await useConfig(page, true);
   const calls = await mockAsk(page, (route) => route.abort());
