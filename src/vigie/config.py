@@ -30,6 +30,22 @@ class Settings(BaseSettings):
     sparse_model: str = "Qdrant/bm25"
     top_k: int = Field(default=6, ge=1, le=20)
 
+    # Corpus ingestion. Cellar is the only EUR-Lex door that answers robots, and only over
+    # HTTPS here: its redirects point to plain HTTP, the fetcher upgrades them.
+    cellar_base_url: str = "https://publications.europa.eu/resource/celex/"
+    cellar_allowed_host: str = "publications.europa.eu"
+    eurlex_base_url: str = "https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:"
+    corpus_language: str = "fra"
+    corpus_user_agent: str = "vigie-corpus/0.1 (EFREI MLOps course; adam.beloucif@efrei.net)"
+    corpus_cache_dir: Path = Path("data/cache")
+    corpus_lock_path: Path = Path("data/corpus.lock")
+    corpus_min_interval_s: float = Field(default=1.0, ge=1.0)
+    corpus_max_retries: int = Field(default=4, ge=0, le=10)
+    corpus_backoff_s: float = Field(default=2.0, gt=0.0)
+    corpus_timeout_s: float = 60.0
+    corpus_max_redirects: int = 5
+    corpus_split_words: int = Field(default=1200, ge=50)
+
     # LLM
     llm_provider: LLMProvider = "ollama"
     ollama_url: str = "http://127.0.0.1:11434"
