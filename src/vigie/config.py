@@ -61,8 +61,8 @@ class Settings(BaseSettings):
     guard_input_threshold: float = 0.5
     guard_enabled: bool = True
 
-    # Load test (J11). Thresholds mirror the local load targets of the brief; the attack
-    # leak ceiling is the complement of the 0.90 guard recall floor.
+    # Load test (J11). The thresholds are written in eval/thresholds.yaml (section load);
+    # these defaults must stay equal to it, which tests/loadtest enforces.
     load_token: SecretStr | None = None
     load_p95_ms: float = Field(default=500.0, gt=0)
     load_max_error_ratio: float = Field(default=0.01, ge=0.0, le=1.0)
