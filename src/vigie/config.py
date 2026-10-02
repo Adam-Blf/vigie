@@ -40,7 +40,6 @@ class Settings(BaseSettings):
     llm_timeout_s: float = 120.0
     mistral_api_key: str | None = None
     mistral_model: str = "ministral-3b-latest"
-    prompt_version: str = "v1"
     mistral_url: str = "https://api.mistral.ai"
     # The fake LLM flag keeps its historical unprefixed name so the load and red teaming
     # scripts can flip it without knowing about the VIGIE_ convention.

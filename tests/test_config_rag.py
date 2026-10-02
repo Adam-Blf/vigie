@@ -23,3 +23,9 @@ def test_negative_min_score_is_rejected(monkeypatch: pytest.MonkeyPatch) -> None
     monkeypatch.setenv("VIGIE_RAG_MIN_SCORE", "-1")
     with pytest.raises(ValidationError):
         Settings(_env_file=None)
+
+
+def test_prompt_version_is_not_a_setting() -> None:
+    # The version is tied to the prompt wording in vigie.rag.prompt, its single source:
+    # a setting could claim a version that the code does not actually send.
+    assert "prompt_version" not in Settings.model_fields
