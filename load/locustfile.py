@@ -109,9 +109,12 @@ def refresh_loop_clock(**_: Any) -> None:
     gevent.get_hub().loop.update_now()
 
 
-# Registered by call rather than decorator: Locust's decorator is untyped and would erase
-# the signatures above for the type checker. The clock refresh goes last so nothing runs
-# between it and the timer.
+# Registered by call rather than decorator. EventHook.add_listener is unannotated, so under
+# mypy --strict the decorator form makes each handler untyped, while the call form only
+# reports the untyped call. Neither form makes Locust check a handler against the event's
+# arguments, and load/ sits outside the mypy packages of pyproject.toml: the typed, tested
+# logic lives in src/vigie/loadtest/. The clock refresh goes last so nothing runs between
+# it and the timer.
 events.init.add_listener(refuse_unsafe_runs)
 events.init.add_listener(refresh_loop_clock)
 events.quitting.add_listener(apply_verdict)
