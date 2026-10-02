@@ -39,6 +39,8 @@ dev = [
   "mypy>=1.11",
   "pre-commit>=3.8",
   "types-requests",
+  "pyyaml>=6.0",
+  "types-PyYAML",
 ]
 
 [project.scripts]
