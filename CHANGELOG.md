@@ -6,6 +6,14 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+### Changed
+
+- Bandeau de badges du README réduit à sept badges cohérents et centrés.
+
+### Added
+
+- Licence propriétaire, tous droits réservés, dépôt public en consultation seule.
+
 ## [0.1.0] - 2026-10-02
 
 ### Added
