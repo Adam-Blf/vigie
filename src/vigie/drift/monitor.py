@@ -148,12 +148,15 @@ class DriftMonitor:
             rising = report.alert and not self._alerting
             falling = self._alerting and not report.alert
             self._alerting = report.alert
-        if self.metrics is not None:
-            self.metrics.publish(report)
-        if rising:
-            self._log(logging.WARNING, "drift_alert", report)
-        elif falling:
-            self._log(logging.INFO, "drift_recovered", report)
+            # Publishing and logging stay under the lock: otherwise a slower thread
+            # could overwrite the gauges with an older report, or log a recovery
+            # before the alert it closes.
+            if self.metrics is not None:
+                self.metrics.publish(report)
+            if rising:
+                self._log(logging.WARNING, "drift_alert", report)
+            elif falling:
+                self._log(logging.INFO, "drift_recovered", report)
         return report
 
     def _compute(self) -> DriftReport:

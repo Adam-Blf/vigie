@@ -9,7 +9,7 @@ from prometheus_client import CollectorRegistry
 from drift_fakes import HashingEmbedder, cluster, load_questions, thresholds
 from vigie.config import Settings
 from vigie.drift.metrics import DriftMetrics
-from vigie.drift.monitor import DriftMonitor, DriftThresholds
+from vigie.drift.monitor import DriftMonitor, DriftReport, DriftThresholds
 from vigie.drift.reference import ReferenceSet
 
 DIM = 16
@@ -98,6 +98,20 @@ def test_gauges_move_on_their_own_every_n_questions() -> None:
     monitor.record(cluster(9, 1, DIM, seed=1))
     assert registry.get_sample_value("vigie_drift_alert", labels) == 1.0
     assert registry.get_sample_value("vigie_drift_out_of_scope_ratio", labels) == 1.0
+
+
+def test_gauges_are_published_while_the_evaluation_lock_is_held() -> None:
+    held: list[bool] = []
+
+    class SpyMetrics(DriftMetrics):
+        def publish(self, report: DriftReport) -> None:
+            held.append(monitor._lock.locked())
+
+    monitor = _monitor(metrics=SpyMetrics(CollectorRegistry(), "test"))
+    monitor.record(_in_scope(10, seed=3))
+    monitor.evaluate()
+
+    assert held == [True]
 
 
 def test_evaluate_every_must_be_positive() -> None:
