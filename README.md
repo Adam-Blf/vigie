@@ -1,5 +1,17 @@
 # Vigie
 
+<!-- adam-badges:start -->
+[![ci](https://github.com/Adam-Blf/vigie/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Adam-Blf/vigie/actions/workflows/ci.yml)
+[![version](https://img.shields.io/badge/version-0.1.0-001329?style=flat-square)](CHANGELOG.md)
+[![visites](https://hits.sh/github.com/Adam-Blf/vigie.svg?style=flat-square&label=visites&color=001329)](https://hits.sh/github.com/Adam-Blf/vigie/)
+[![licence](https://img.shields.io/badge/licence-MIT-D4A437?style=flat-square)](LICENSE)
+[![python](https://img.shields.io/badge/python-3.12-D4A437?style=flat-square&logo=python&logoColor=white)](pyproject.toml)
+[![fastapi](https://img.shields.io/badge/FastAPI-API-001329?style=flat-square&logo=fastapi&logoColor=white)](src/vigie/api)
+[![qdrant](https://img.shields.io/badge/Qdrant-recherche%20hybride-001329?style=flat-square)](src/vigie/retrieval)
+[![llm](https://img.shields.io/badge/LLM-Ministral%203%203B%20local-001329?style=flat-square)](docs/adr)
+[![k3s](https://img.shields.io/badge/k3s-canary%20Argo%20Rollouts-001329?style=flat-square&logo=kubernetes&logoColor=white)](deploy/k8s)
+<!-- adam-badges:end -->
+
 Version 0.1.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
 
 Copilote de conformité pour les banques. Vigie répond aux questions sur DORA, l'AI Act, le
