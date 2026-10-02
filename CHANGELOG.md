@@ -14,6 +14,36 @@ les notes reprennent la section correspondante.
 
 - Licence propriétaire, tous droits réservés, dépôt public en consultation seule.
 
+## [0.2.0] - 2026-10-02
+
+### Added
+
+- Corpus réglementaire du jalon J1 : DORA, AI Act, RGPD et AMLR téléchargés en français
+  depuis Cellar, en HTTPS uniquement, avec cache local, une requête par seconde au plus et
+  reprises avec repli progressif (`src/vigie/corpus/`).
+- Découpage du XHTML du Journal officiel par article et par paragraphe, annexes comprises,
+  chaque morceau portant son ancre EUR-Lex (`eid`) et son URL de citation ; 511 morceaux sur
+  les quatre textes, considérants exclus par défaut.
+- Commande `vigie-ingest` (`--only`, `--recitals`, `--update-lock`, `--lock`, `--out`,
+  `--from-url`) qui écrit un fichier JSONL par règlement dans `data/corpus/`, documentée
+  dans `docs/corpus.md`.
+- Verrou `data/corpus.lock` qui fige CELEX, empreinte sha256 et nombre d'articles des
+  textes téléchargés le 2026-10-02 : une ingestion s'arrête dès qu'un texte diffère.
+- Lecture d'un corpus JSONL déjà publié comme solution de repli quand Cellar ne répond pas.
+- Réglages d'ingestion `VIGIE_CORPUS_*`, `VIGIE_CELLAR_*` et `VIGIE_EURLEX_BASE_URL`,
+  décrits dans `.env.example`.
+- Preuves du jalon J1 dans `docs/proofs/J1/`, dont les deux refus du verrou vus en rouge.
+
+### Changed
+
+- `NOTICE` liste les quatre règlements avec leur CELEX et les conditions de réutilisation
+  d'EUR-Lex.
+
+### Fixed
+
+- Le paquet déclare la licence propriétaire sur toutes les branches, plus aucune mention
+  MIT héritée.
+
 ## [0.1.1] - 2026-10-02
 
 ### Added

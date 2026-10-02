@@ -12,7 +12,7 @@
 <!-- adam-badges:end -->
 </p>
 
-Version 0.1.1 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
+Version 0.2.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
 
 Copilote de conformité pour les banques. Vigie répond aux questions sur DORA, l'AI Act, le
 RGPD et le règlement anti-blanchiment en citant l'article exact, dit quand il ne trouve
@@ -84,6 +84,10 @@ python tasks.py typo
 
 `python tasks.py typo` refuse tirets longs, demi-cadratins, médiopoints et caractères
 invisibles dans tous les fichiers suivis.
+
+Le corpus réglementaire se construit avec `vigie-ingest`, qui télécharge les quatre textes
+depuis Cellar, les vérifie contre `data/corpus.lock` et écrit un JSONL par règlement dans
+`data/corpus/` (détail dans [docs/corpus.md](docs/corpus.md)).
 
 Le lancement complet en une commande (`docker compose up`) arrive avec le jalon J7.
 
