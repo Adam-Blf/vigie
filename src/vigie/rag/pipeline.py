@@ -2,10 +2,17 @@
 
 The retriever is a protocol so this layer can be built and tested before the Qdrant
 index exists; any object with search(question, top_k) fits.
+
+Refusal rules, in order: no passage above the score floor gives the refusal without a
+generation; an answer left with no valid citation (when citations are required) or a
+refusal sentence with no valid citation gives the refusal; a refusal sentence next to at
+least one valid citation is a partial answer, kept with refused=False and the refusal
+sentence removed.
 """
 
 from __future__ import annotations
 
+import re
 import time
 import uuid
 from collections.abc import Callable, Generator, Iterator
@@ -18,6 +25,8 @@ from vigie.rag.prompt import REFUSAL, build_messages
 from vigie.rag.types import Answer, Passage, Timings
 
 _REFUSAL_KEY = REFUSAL.rstrip(".").casefold()
+# The refusal sentence as the model writes it, with or without the French quotes.
+_REFUSAL_RE = re.compile(r"\s*«?\s*" + re.escape(REFUSAL.rstrip(".")) + r"\.?\s*»?", re.IGNORECASE)
 
 
 class Retriever(Protocol):
@@ -127,6 +136,11 @@ class RagPipeline:
         said_no = _REFUSAL_KEY in result.text.casefold()
         # With every citation filtered out, nothing backs the text any more.
         unsupported = self._require_citation and not report.citations
-        if said_no or unsupported:
+        if unsupported or (said_no and not report.citations):
             return replace(answer, text=REFUSAL, citations=[], refused=True)
+        if said_no:
+            # Mixed answer: the model refused one part and answered another with a valid
+            # citation. The cited part is grounded, so it is kept and the refusal sentence
+            # is cut, otherwise the reader would see both "no answer" and an answer.
+            return replace(answer, text=_REFUSAL_RE.sub(" ", answer.text).strip())
         return answer

@@ -121,3 +121,28 @@ def test_retriever_receives_question_and_top_k() -> None:
     retriever = StubRetriever([passage()])
     RagPipeline(retriever, FakeLLM(), top_k=4).answer("Q ?")
     assert retriever.calls == [("Q ?", 4)]
+
+
+# Mixed answer: the model says it cannot answer one part, then answers another part with a
+# valid citation. The cited part is grounded, so it is kept and the refusal sentence goes.
+@pytest.mark.parametrize(
+    "text",
+    [
+        f"{REFUSAL} Toutefois, les entités gèrent ce risque [DORA art. 28 §1].",
+        f"Les entités gèrent ce risque [DORA art. 28 §1]. « {REFUSAL} »",
+    ],
+)
+def test_refusal_with_a_valid_citation_keeps_the_cited_part(text: str) -> None:
+    answer = pipeline(ScriptedLLM(text), passage()).answer("Q ?")
+    assert not answer.refused
+    assert REFUSAL not in answer.text
+    assert "[DORA art. 28 §1]" in answer.text
+    assert [c.label for c in answer.citations] == ["[DORA art. 28 §1]"]
+
+
+def test_refusal_with_only_invented_citations_stays_a_refusal() -> None:
+    llm = ScriptedLLM(f"{REFUSAL} Sauf peut-être [DORA art. 999 §9].")
+    answer = pipeline(llm, passage(), require_citation=False).answer("Q ?")
+    assert answer.refused
+    assert answer.text == REFUSAL
+    assert answer.removed_citations == ["[DORA art. 999 §9]"]
