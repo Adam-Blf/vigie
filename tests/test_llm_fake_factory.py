@@ -74,3 +74,9 @@ def test_factory_refuses_mistral_without_a_key(monkeypatch: pytest.MonkeyPatch) 
     with pytest.raises(LLMError) as err:
         build_llm(Settings(_env_file=None))
     assert err.value.kind == "disabled"
+
+
+def test_fake_llm_works_as_a_context_manager() -> None:
+    with FakeLLM() as llm:
+        assert llm.generate(build_messages("Q ?", [passage()])).text
+    assert llm.is_closed

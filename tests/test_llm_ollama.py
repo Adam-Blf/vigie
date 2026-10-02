@@ -114,3 +114,10 @@ def test_from_settings_pins_the_configured_tag() -> None:
     )
     assert llm.model == settings.ollama_model
     assert llm.generate(MESSAGES).text == "ok"
+
+
+def test_context_manager_closes_the_http_client() -> None:
+    transport = httpx.MockTransport(lambda request: httpx.Response(200))
+    with client(transport) as llm:
+        assert not llm.is_closed
+    assert llm.is_closed

@@ -32,17 +32,19 @@ def main(
     args = parser.parse_args(argv)
 
     settings = get_settings()
-    pipeline = RagPipeline(
-        StaticRetriever.from_json(args.passages),
-        build_llm(settings),
-        top_k=settings.top_k,
-        min_score=settings.rag_min_score,
-        require_citation=settings.rag_require_citation,
-    )
-    stream = pipeline.stream(args.question)
-    for delta in stream:
-        live.write(delta)
-        live.flush()
+    # The with block closes the HTTP client of the real providers once the answer is in.
+    with build_llm(settings) as llm:
+        pipeline = RagPipeline(
+            StaticRetriever.from_json(args.passages),
+            llm,
+            top_k=settings.top_k,
+            min_score=settings.rag_min_score,
+            require_citation=settings.rag_require_citation,
+        )
+        stream = pipeline.stream(args.question)
+        for delta in stream:
+            live.write(delta)
+            live.flush()
     live.write("\n")
 
     report: dict[str, object] = {"question": args.question, "prompt_version": PROMPT_VERSION}

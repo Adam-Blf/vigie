@@ -99,3 +99,10 @@ def test_stream_without_done_marker_still_ends() -> None:
     body = sse({"choices": [{"delta": {"content": "fin"}}]})
     llm = client(httpx.MockTransport(lambda _: httpx.Response(200, content=body)))
     assert llm.generate(MESSAGES).text == "fin"
+
+
+def test_close_releases_the_http_client() -> None:
+    llm = client(httpx.MockTransport(lambda request: httpx.Response(200)))
+    assert not llm.is_closed
+    llm.close()
+    assert llm.is_closed

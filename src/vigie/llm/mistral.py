@@ -57,6 +57,10 @@ class MistralClient(LLMClient):
             transport=transport,
         )
 
+    def close(self) -> None:
+        self._client.close()
+        super().close()
+
     def _deltas(self, messages: Sequence[ChatMessage]) -> Generator[str, None, Usage]:
         payload = {
             "model": self.model,

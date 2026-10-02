@@ -52,6 +52,10 @@ class OllamaClient(LLMClient):
             transport=transport,
         )
 
+    def close(self) -> None:
+        self._client.close()
+        super().close()
+
     def _payload(self, messages: Sequence[ChatMessage]) -> dict[str, Any]:
         return {
             "model": self.model,

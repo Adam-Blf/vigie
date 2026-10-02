@@ -10,7 +10,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections.abc import Generator, Iterator, Sequence
 from dataclasses import dataclass
-from typing import Literal
+from types import TracebackType
+from typing import Literal, TypeVar
 
 Role = Literal["system", "user", "assistant"]
 
@@ -73,10 +74,36 @@ class LLMStream:
         return self._result
 
 
+_Client = TypeVar("_Client", bound="LLMClient")
+
+
 class LLMClient(ABC):
-    """A chat model. `model` is the exact tag reported in answers and metrics."""
+    """A chat model. `model` is the exact tag reported in answers and metrics.
+
+    Clients that hold a connection pool release it in close(); use them in a with block,
+    or call close() when the client is done, so no socket outlives its owner.
+    """
 
     model: str
+    _closed: bool = False
+
+    def close(self) -> None:
+        self._closed = True
+
+    @property
+    def is_closed(self) -> bool:
+        return self._closed
+
+    def __enter__(self: _Client) -> _Client:
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        tb: TracebackType | None,
+    ) -> None:
+        self.close()
 
     @abstractmethod
     def _deltas(self, messages: Sequence[ChatMessage]) -> Generator[str, None, Usage]:
