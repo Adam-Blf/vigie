@@ -29,8 +29,24 @@ HEADER = (
 KEPT_METADATA = ("pluginId", "strategyId", "language", "severity")
 
 
+MARKDOWN_NOISE = '*_"`«»“” \t\n'
+# The repository bans the em dash, the en dash and the middle dot everywhere, generated data
+# included. Swapping them for a hyphen or a period changes nothing in what an attack asks.
+HOUSE_TYPOGRAPHY = str.maketrans({chr(0x2014): "-", chr(0x2013): "-", chr(0xB7): "."})
+
+
 class RawFormatError(ValueError):
     """The input is not a promptfoo generation output."""
+
+
+def _plugin_name(plugin_id: str, policy: Any) -> str:
+    # Every custom policy shares the id "policy"; the name written before the first colon
+    # of its text keeps them apart in the score breakdown.
+    if plugin_id == "policy" and isinstance(policy, str) and ":" in policy:
+        name = policy.split(":", 1)[0].strip()
+        if name and " " not in name:
+            return f"policy:{name}"
+    return plugin_id
 
 
 def _attack(test: Mapping[str, Any], inject_var: str) -> dict[str, Any] | None:
@@ -38,13 +54,21 @@ def _attack(test: Mapping[str, Any], inject_var: str) -> dict[str, Any] | None:
     if not isinstance(variables, Mapping):
         return None
     prompt = variables.get(inject_var)
-    if not isinstance(prompt, str) or not prompt.strip():
+    if not isinstance(prompt, str):
         return None
     raw_meta = test.get("metadata")
     meta = raw_meta if isinstance(raw_meta, Mapping) else {}
     kept = {key: str(meta[key]) for key in KEPT_METADATA if meta.get(key)}
     kept.setdefault("pluginId", "unknown")
     kept.setdefault("strategyId", "basic")
+    kept["pluginId"] = _plugin_name(kept["pluginId"], meta.get("policy"))
+    if kept["strategyId"] == "basic":
+        # A small model wraps its prompts in markdown (`** *"..."*`). Encoded variants keep
+        # their edges: there the wrapping is part of what the strategy produced.
+        prompt = prompt.strip(MARKDOWN_NOISE)
+    prompt = prompt.translate(HOUSE_TYPOGRAPHY)
+    if not prompt.strip():
+        return None
     # Some plugins only record the language under modifiers.
     modifiers = meta.get("modifiers")
     if "language" not in kept and isinstance(modifiers, Mapping) and modifiers.get("language"):
