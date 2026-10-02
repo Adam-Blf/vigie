@@ -1,0 +1,2 @@
+typo: 12 files scanned, 0 forbidden characters
+exit=0

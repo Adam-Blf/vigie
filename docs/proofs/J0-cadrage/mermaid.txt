@@ -1,0 +1,9 @@
+Mermaid blocks extracted from the framing docs and rendered with @mermaid-js/mermaid-cli 11.17.0.
+Each render exited 0 and no output SVG contains "Syntax error".
+
+docs/risk-map.md      block 0 (flowchart, attack surfaces)      -> 32360 bytes SVG, exit 0
+docs/architecture.md  block 0 (sequenceDiagram, request path)   -> 37857 bytes SVG, exit 0
+docs/architecture.md  block 1 (flowchart, delivery path)        -> 31313 bytes SVG, exit 0
+docs/threat-model.md  block 0 (flowchart, trust boundaries)     -> 30675 bytes SVG, exit 0
+
+grep -lci "syntax error" *.svg -> no match, exit 1
