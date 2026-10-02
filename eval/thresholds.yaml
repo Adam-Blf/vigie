@@ -19,7 +19,8 @@ citations:
   coverage_min: 0.80
 
 refusal:
-  # At least 9 correct refusals out of 10 out-of-scope questions.
+  # At least 9 correct refusals out of 10 out-of-scope questions. Measured on all 10
+  # out-of-scope rows, dev and test, not on the test split alone (see data/golden/README.md).
   correct_refusal_rate_min: 0.90
 
 # Relative gate, added on top of the floors: compared with the current champion, recall@k
