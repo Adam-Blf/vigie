@@ -1,0 +1,46 @@
+oci_budget_budget.vigie: Creating...
+oci_identity_policy.objectstorage_lifecycle: Creating...
+oci_objectstorage_bucket.backups: Creating...
+oci_core_vcn.vigie: Creating...
+oci_objectstorage_bucket.backups: Creation complete after 1s [id=n/<namespace>/b/vigie-backups]
+oci_budget_budget.vigie: Creation complete after 1s [id=<ocid>]
+oci_identity_policy.objectstorage_lifecycle: Creation complete after 2s [id=<ocid>]
+oci_core_vcn.vigie: Creation complete after 2s [id=<ocid>]
+oci_budget_alert_rule.first_cent: Creating...
+oci_objectstorage_object_lifecycle_policy.backups: Creating...
+oci_core_security_list.public: Creating...
+oci_core_internet_gateway.vigie: Creating...
+oci_budget_alert_rule.first_cent: Creation complete after 0s [id=<ocid>]
+oci_core_internet_gateway.vigie: Creation complete after 1s [id=<ocid>]
+oci_core_route_table.public: Creating...
+oci_core_security_list.public: Creation complete after 1s [id=<ocid>]
+oci_core_route_table.public: Creation complete after 0s [id=<ocid>]
+oci_core_subnet.public: Creating...
+oci_core_subnet.public: Creation complete after 2s [id=<ocid>]
+oci_core_instance.vigie: Creating...
+oci_objectstorage_object_lifecycle_policy.backups: Still creating... [00m10s elapsed]
+oci_objectstorage_object_lifecycle_policy.backups: Still creating... [00m20s elapsed]
+oci_objectstorage_object_lifecycle_policy.backups: Still creating... [00m30s elapsed]
+oci_objectstorage_object_lifecycle_policy.backups: Still creating... [00m40s elapsed]
+oci_objectstorage_object_lifecycle_policy.backups: Still creating... [00m50s elapsed]
+oci_objectstorage_object_lifecycle_policy.backups: Still creating... [01m00s elapsed]
+oci_objectstorage_object_lifecycle_policy.backups: Still creating... [01m10s elapsed]
+oci_objectstorage_object_lifecycle_policy.backups: Still creating... [01m20s elapsed]
+oci_objectstorage_object_lifecycle_policy.backups: Still creating... [01m30s elapsed]
+oci_objectstorage_object_lifecycle_policy.backups: Still creating... [01m40s elapsed]
+oci_objectstorage_object_lifecycle_policy.backups: Creation complete after 1m41s [id=n/<namespace>/b/vigie-backups/l]
+
+Error: 500-InternalError, Out of host capacity.
+Suggestion: The service for this resource encountered an error. Please contact support for help with service: Core Instance
+Documentation: https://registry.terraform.io/providers/oracle/oci/latest/docs/resources/core_instance
+API Reference: https://docs.oracle.com/iaas/api/#/en/iaas/20160918/Instance/LaunchInstance
+Request Target: POST https://iaas.eu-paris-1.oraclecloud.com/20160918/instances
+Provider version: 7.32.0, released on 2026-01-27. This provider is 35 Update(s) behind to current.
+Service: Core Instance
+Operation Name: LaunchInstance
+OPC request ID: <redacted>
+
+
+  with oci_core_instance.vigie,
+  on main.tf line 35, in resource "oci_core_instance" "vigie":
+  35: resource "oci_core_instance" "vigie" {
