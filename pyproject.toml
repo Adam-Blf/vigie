@@ -57,6 +57,10 @@ select = ["E", "F", "I", "B", "UP", "SIM", "N", "S"]
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101"]
 
+[tool.ruff.lint.isort]
+# The red teaming scripts sit at the repo root next to their promptfoo config.
+known-first-party = ["vigie", "guardbench", "redteam"]
+
 [tool.mypy]
 python_version = "3.10"
 mypy_path = "src"
