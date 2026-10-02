@@ -4,7 +4,7 @@ from vigie.corpus.render import css_classes, normalize, render, word_count
 
 
 def test_normalize_collapses_no_break_and_invisible_spaces() -> None:
-    raw = "1.   Les entités financières​﻿ gèrent\n"
+    raw = "1.   Les entités financières\u200b\ufeff gèrent\n"
     assert normalize(raw) == "1. Les entités financières gèrent"
 
 

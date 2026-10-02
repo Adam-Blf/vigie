@@ -16,7 +16,7 @@ from bs4.element import NavigableString
 # Python's \s already covers the no-break spaces (U+00A0, U+202F, U+2009) the Official
 # Journal sprinkles everywhere; zero-width spaces are not whitespace, so they go separately.
 _SPACES = re.compile(r"\s+")
-_INVISIBLE = re.compile("[​‌‍⁠﻿]")
+_INVISIBLE = re.compile("[\u200b\u200c\u200d\u2060\ufeff]")
 _EMPTY_NOTE_CALL = re.compile(r"\s*\(\s*\)")
 # A list label is short ("a)", "iii)", "12.", "-"); anything longer is a real table cell.
 _MAX_LABEL_CHARS = 10
