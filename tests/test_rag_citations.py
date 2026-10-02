@@ -20,10 +20,23 @@ from vigie.rag.labels import eurlex_url
         ("[AIACT art. 5 paragraphe 2]", RawCitation("AIACT", "5", "2")),
         ("[AMLR art.12a par. 4b]", RawCitation("AMLR", "12a", "4b")),
         ("[NIS2 art. 21]", RawCitation("NIS2", "21", None)),
+        # Ministral 3B wrote these during the J3 measurement: a point under a paragraph.
+        ("[DORA art. 28 §4 a]", RawCitation("DORA", "28", "4")),
+        ("[DORA art. 28 §4, point c)]", RawCitation("DORA", "28", "4")),
+        ("[DORA art. 28 §1 b) ii)]", RawCitation("DORA", "28", "1")),
+        ("[DORA art. 28 §4(e)]", RawCitation("DORA", "28", "4")),
     ],
 )
 def test_extracts_label_variants(text: str, expected: RawCitation) -> None:
     assert extract_citations(f"Une phrase {text}.") == [expected]
+
+
+def test_point_under_a_paragraph_is_cited_at_paragraph_level() -> None:
+    report = validate_citations(
+        "Évaluer les risques :\n   [DORA art. 28 §4 c].", [passage("28", "4")]
+    )
+    assert report.text == "Évaluer les risques :\n   [DORA art. 28 §4]."
+    assert [c.label for c in report.citations] == ["[DORA art. 28 §4]"]
 
 
 def test_ignores_brackets_that_are_not_citations() -> None:

@@ -17,10 +17,14 @@ from vigie.rag.types import Citation, Passage
 # Tolerant on purpose: models write "art." or "article", "§1", "§ 1" or "paragraphe 1".
 # Any bracketed "[CODE art. N]" is caught, even with an unknown code, so that a citation
 # to a regulation outside the corpus is removed instead of slipping through untouched.
+# Ministral 3B also adds the point under a paragraph ("§4 a", "§4, point c)"). Chunks stop
+# at the paragraph, so the point is read and dropped: the label is checked at that level.
+_POINT = r"(?:\s*,?\s*(?:point\s*)?\(?[a-z]{1,4}\))"
 LABEL_RE = re.compile(
     r"(?P<space>[ \t]*)\[\s*(?P<code>[A-Za-z][A-Za-z0-9]{1,9})\s+art(?:icle|\.)?\s*"
     r"(?P<article>\d+[a-z]?)"
-    r"(?:\s*,?\s*(?:§|paragraphe|par\.)\s*(?P<paragraph>\d+[a-z]?))?\s*\]"
+    r"(?:\s*,?\s*(?:§|paragraphe|par\.)\s*(?P<paragraph>\d+[a-z]?)"
+    rf"(?:{_POINT}{{1,2}}|\s*,?\s*(?:point\s*)?[a-z]{{1,4}})?)?\s*\]"
 )
 
 EXCERPT_CHARS = 240
