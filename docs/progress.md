@@ -8,6 +8,7 @@ n'est pas `DONE`. Statuts possibles : `DONE`, `PARTIEL`, `BLOQUÉ`.
 | 2026-10-02 | J0 outillage | DONE | `docs/proofs/J0/` (check vert, co-auteurs) | | cadrage en cours sur `docs/framing` |
 | 2026-10-02 | J0 cadrage | DONE | `docs/proofs/J0-cadrage/` (check vert, typo vert et vu rouge, mypy tests) | | jalons de construction à partir du corpus |
 | 2026-10-02 | J1 corpus | DONE | `docs/proofs/J1/` (ingestion réelle, verrou vu rouge sur l'empreinte et le nombre d'articles, couverture) | | indexation hybride dans Qdrant |
+| 2026-10-02 | J3 LLM et RAG | DONE | `docs/proofs/J3/` (trois réponses réelles de Ministral 3B, citation inventée retirée, couverture 99 %) | | brancher la recherche Qdrant à la place des passages fixes ; seuil de latence mesuré sur la VM au J7 et au J14 |
 
 ## Décisions par défaut appliquées (section 10 du brief)
 

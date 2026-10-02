@@ -12,7 +12,7 @@
 <!-- adam-badges:end -->
 </p>
 
-Version 0.2.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
+Version 0.3.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
 
 Copilote de conformité pour les banques. Vigie répond aux questions sur DORA, l'AI Act, le
 RGPD et le règlement anti-blanchiment en citant l'article exact, dit quand il ne trouve
@@ -88,6 +88,18 @@ invisibles dans tous les fichiers suivis.
 Le corpus réglementaire se construit avec `vigie-ingest`, qui télécharge les quatre textes
 depuis Cellar, les vérifie contre `data/corpus.lock` et écrit un JSONL par règlement dans
 `data/corpus/` (détail dans [docs/corpus.md](docs/corpus.md)).
+
+Une question se pose déjà au modèle sur un jeu de passages fixe, en attendant l'index
+Qdrant :
+
+```sh
+python -m vigie.rag.cli --passages tests/fixtures/dora_art28_passages.json "Quelles vérifications avant de conclure avec un prestataire TIC ?"
+```
+
+La réponse s'affiche en flux, puis la réponse validée sort en JSON : toute citation qui ne
+renvoie à aucun passage fourni en est retirée, et une réponse sans citation valide devient
+un refus explicite. Le fournisseur se choisit avec `VIGIE_LLM_PROVIDER` (`ollama` par
+défaut, `fake` pour les tests).
 
 Le lancement complet en une commande (`docker compose up`) arrive avec le jalon J7.
 
