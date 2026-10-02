@@ -1,18 +1,15 @@
 """The four regulations the golden set may point at, by short code and CELEX number.
 
-The corpus milestone owns the full source registry (titles, public links). The evaluation
+The corpus registry is the single source of the codes and CELEX numbers. The evaluation
 only needs the code to CELEX mapping to check that a question and its articles agree, so
-it keeps this small table instead of importing the ingestion code and its dependencies.
+it derives that mapping here instead of keeping a second copy that could drift.
 """
 
 from __future__ import annotations
 
-REGULATION_CELEX: dict[str, str] = {
-    "DORA": "32022R2554",
-    "AIACT": "32024R1689",
-    "RGPD": "32016R0679",
-    "AMLR": "32024R1624",
-}
+from vigie.corpus.sources import REGULATIONS
+
+REGULATION_CELEX: dict[str, str] = {regulation.code: regulation.celex for regulation in REGULATIONS}
 
 CELEX_REGULATION: dict[str, str] = {celex: code for code, celex in REGULATION_CELEX.items()}
 
