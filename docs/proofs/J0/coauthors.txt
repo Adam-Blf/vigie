@@ -1,0 +1,4 @@
+351e0dd Adam Beloucif | merge: bootstrap tooling | Emilien Morice <261297658+emilien754@users.noreply.github.com>
+d02b6c9 Adam Beloucif | chore: scaffold tooling | Emilien Morice <261297658+emilien754@users.noreply.github.com>
+5a7623c Adam Beloucif | ci: add quality workflow | Emilien Morice <261297658+emilien754@users.noreply.github.com>
+84f8435 Adam Beloucif | chore: initialize repository | Emilien Morice <261297658+emilien754@users.noreply.github.com>
