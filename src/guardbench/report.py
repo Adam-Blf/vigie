@@ -110,17 +110,17 @@ def plot_quality_latency(runs: Sequence[GuardRun], path: Path) -> None:
     from matplotlib import pyplot as plt
 
     fig, ax = plt.subplots(figsize=(7, 4.2), dpi=150)
-    for run in runs:
-        if run.in_scope is None:
-            continue
+    plotted = [(run.name, run.in_scope) for run in runs if run.in_scope is not None]
+    for i, (name, scoped) in enumerate(plotted):
         # A log axis cannot place zero; a regex can report a p95 that rounds to it.
-        latency = max(run.in_scope.p95_ms, 0.01)
-        ax.scatter(latency, run.in_scope.f1, s=60, color="#1f5f8b", zorder=3)
+        latency = max(scoped.p95_ms, 0.01)
+        ax.scatter(latency, scoped.f1, s=60, color="#1f5f8b", zorder=3)
+        # Alternating label sides keeps neighbours with similar scores readable.
         ax.annotate(
-            run.name,
-            (latency, run.in_scope.f1),
+            name,
+            (latency, scoped.f1),
             textcoords="offset points",
-            xytext=(6, 6),
+            xytext=(6, 6 if i % 2 == 0 else -14),
             fontsize=9,
         )
     ax.set_xscale("log")
