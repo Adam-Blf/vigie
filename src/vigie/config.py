@@ -61,6 +61,13 @@ class Settings(BaseSettings):
     guard_input_threshold: float = 0.5
     guard_enabled: bool = True
 
+    # Kubernetes budget of the single Always Free node (12 GB, 2 OCPU, brief 11.7).
+    # 1.5 GB stays outside Kubernetes for the OS; k3s itself takes the reserve.
+    k8s_requests_budget_mib: int = 8704
+    k8s_limits_budget_mib: int = 10752
+    k8s_system_reserve_mib: int = 1229
+    k8s_cpu_requests_budget_m: int = 1800
+
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
