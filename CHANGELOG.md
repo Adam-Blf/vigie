@@ -16,7 +16,9 @@ les notes reprennent la section correspondante.
 - Hook de co-auteur du binôme sur chaque commit local.
 - CI qualité sur chaque pull request et sur `main`, `main` protégée par un ruleset.
 - Suivi de progression dans `docs/progress.md` et preuve du J0 outillage.
-- README avec badges, ligne de version et architecture en Mermaid coloré.
+- README avec badges, ligne de version et architecture en Mermaid coloré, compatible avec
+  le rendu de GitHub.
+- Politique de sécurité `SECURITY.md` avant le passage du dépôt en public.
 - Synchronisation de la version du README depuis `pyproject.toml`
   (`scripts/sync_version.py`) et notes de release tirées du CHANGELOG
   (`scripts/release_notes.py`).
