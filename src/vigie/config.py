@@ -10,7 +10,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field
+from pydantic import AliasChoices, Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 LLMProvider = Literal["ollama", "mistral", "fake"]
@@ -60,6 +60,31 @@ class Settings(BaseSettings):
     # Guardrails
     guard_input_threshold: float = 0.5
     guard_enabled: bool = True
+
+    # Guardrail benchmark (J4). Model ids are pinned here so a rerun months later compares
+    # the same checkpoints, not whatever the hub serves that day.
+    bench_seed_path: Path = Path("data/seed.jsonl")
+    bench_output_dir: Path = Path("results/guardbench")
+    bench_warmup_calls: int = Field(default=3, ge=0)
+    bench_http_timeout_s: float = 30.0
+    bench_deepset_repo: str = "deepset/prompt-injections"
+    bench_deberta_model: str = "protectai/deberta-v3-base-prompt-injection-v2"
+    bench_gliguard_model: str = "fastino/gliguard-LLMGuardrails-300M"
+    bench_llamaguard_model: str = "llama-guard3:1b"
+    bench_presidio_entities: list[str] = [
+        "EMAIL_ADDRESS",
+        "IBAN_CODE",
+        "CREDIT_CARD",
+        "PHONE_NUMBER",
+    ]
+    bench_presidio_threshold: float = Field(default=0.5, ge=0.0, le=1.0)
+    lakera_url: str = "https://api.lakera.ai/v2/guard"
+    # The Lakera key keeps its vendor name so the same secrets file works for their own CLI.
+    lakera_api_key: SecretStr | None = Field(
+        default=None, validation_alias=AliasChoices("LAKERA_API_KEY", "VIGIE_LAKERA_API_KEY")
+    )
+    mlflow_tracking_uri: str = "file:./mlruns"
+    bench_mlflow_experiment: str = "guardbench"
 
 
 @lru_cache(maxsize=1)
