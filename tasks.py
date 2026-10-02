@@ -44,6 +44,12 @@ def test(args: Sequence[str]) -> int:
 
 
 @task
+def test_integration(args: Sequence[str]) -> int:
+    """Tests marked ``integration``: they download and run the real embedding model."""
+    return run(py("pytest", "-m", "integration", *args))
+
+
+@task
 def check(args: Sequence[str]) -> int:
     for step in (lint, typecheck, test):
         code = step(args if step is test else [])

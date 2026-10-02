@@ -66,7 +66,7 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q"
+addopts = "-q -m 'not integration'"
 markers = ["integration: loads a real embedding model, slower than unit tests"]
 
 [tool.coverage.run]
