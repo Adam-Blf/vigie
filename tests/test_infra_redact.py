@@ -16,5 +16,20 @@ def test_namespace_and_request_id_are_masked() -> None:
     assert redact(text) == "[id=n/<namespace>/b/vigie-backups/l]\nOPC request ID: <redacted>"
 
 
+def test_plan_attributes_that_identify_the_tenancy_are_masked() -> None:
+    text = (
+        '+ availability_domain = "TYWr:EU-PARIS-1-AD-1"\n'
+        '+ namespace    = "axrsabcdef"\n'
+        '+ recipients     = "jane.doe@example.org"\n'
+        '+ "ssh_authorized_keys" = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIabc+/= vigie-deploy"'
+    )
+    assert redact(text) == (
+        '+ availability_domain = "<prefix>:EU-PARIS-1-AD-1"\n'
+        '+ namespace    = "<namespace>"\n'
+        '+ recipients     = "<email>"\n'
+        '+ "ssh_authorized_keys" = "ssh-ed25519 <public-key>"'
+    )
+
+
 def test_plain_text_is_untouched() -> None:
     assert redact("Apply complete! Resources: 1 added.") == "Apply complete! Resources: 1 added."
