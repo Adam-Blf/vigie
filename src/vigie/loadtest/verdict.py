@@ -23,7 +23,12 @@ class LoadThresholds:
 
 @dataclass(frozen=True)
 class LoadResult:
-    """Raw counters of a run, attack requests excluded from ``requests`` and ``failures``."""
+    """Raw counters of a run.
+
+    ``requests`` and ``failures`` cover every call, attacks included: an HTTP error is an
+    error whoever sent the request. ``p95_ms`` covers the answering path only, because a
+    blocked attack returns early and would make the latency look better than it is.
+    """
 
     requests: int
     failures: int
