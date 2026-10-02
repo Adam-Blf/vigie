@@ -1,0 +1,5 @@
+    185 data/corpus/AIACT.jsonl
+    120 data/corpus/AMLR.jsonl
+    106 data/corpus/DORA.jsonl
+    100 data/corpus/RGPD.jsonl
+    511 total
