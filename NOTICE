@@ -1,6 +1,25 @@
 Vigie
-Copyright (c) 2026 Adam Beloucif et Emilien Morice. Tous droits réservés, code sous licence propriétaire (voir LICENSE).
+Copyright (c) 2026 Adam Beloucif et Emilien Morice. Tous droits réservés, code sous licence
+propriétaire (voir LICENSE).
 
-Textes réglementaires du corpus :
+Textes réglementaires
+---------------------
 
-© Union européenne, https://eur-lex.europa.eu/, réutilisation autorisée avec mention de la source (décision 2011/833/UE). Textes non altérés. Seule la version publiée au Journal officiel fait foi.
+Les textes indexés par Vigie proviennent d'EUR-Lex, téléchargés depuis le référentiel
+Cellar de l'Office des publications de l'Union européenne :
+
+- Règlement (UE) 2022/2554 (DORA), CELEX 32022R2554
+- Règlement (UE) 2024/1689 (AI Act), CELEX 32024R1689
+- Règlement (UE) 2016/679 (RGPD), CELEX 32016R0679
+- Règlement (UE) 2024/1624 (AMLR), CELEX 32024R1624
+
+Source : EUR-Lex, https://eur-lex.europa.eu, © Union européenne, 1998-2026.
+
+Réutilisation autorisée avec mention de la source, conformément à la décision 2011/833/UE
+de la Commission du 12 décembre 2011 relative à la réutilisation des documents de la
+Commission.
+
+Seuls les textes publiés au Journal officiel de l'Union européenne font foi. Vigie découpe
+les textes par article et normalise leur mise en forme (espaces, listes présentées en
+tableaux), sans en modifier le contenu. Les réponses de Vigie ne constituent pas un conseil
+juridique.

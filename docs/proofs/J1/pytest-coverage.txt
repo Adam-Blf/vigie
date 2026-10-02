@@ -1,0 +1,22 @@
+.........................................................                [100%]
+=============================== tests coverage ================================
+______________ coverage: platform win32, python 3.12.13-final-0 _______________
+
+Name                          Stmts   Miss Branch BrPart  Cover   Missing
+-------------------------------------------------------------------------
+src\vigie\__init__.py             1      0      0      0   100%
+src\vigie\config.py              59      0      0      0   100%
+src\vigie\corpus\cli.py          94      0     18      0   100%
+src\vigie\corpus\fetch.py        75      0     22      0   100%
+src\vigie\corpus\jsonl.py        16      0      2      0   100%
+src\vigie\corpus\lock.py         37      0     10      0   100%
+src\vigie\corpus\models.py       17      0      0      0   100%
+src\vigie\corpus\parse.py       105      0     34      0   100%
+src\vigie\corpus\remote.py       24      0      6      0   100%
+src\vigie\corpus\render.py       66      0     32      0   100%
+src\vigie\corpus\sources.py      21      0      4      0   100%
+-------------------------------------------------------------------------
+TOTAL                           515      0    128      0   100%
+
+8 empty files skipped.
+57 passed in 8.58s
