@@ -1,0 +1,35 @@
+
+> vigie-web@0.1.0 build
+> npm run typecheck && vite build && node scripts/check-bundle.ts
+
+
+> vigie-web@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+[36mvite v8.3.2 [32mbuilding client environment for production...[36m[39m
+transforming...
+<script src="/theme-init.js"> in "/index.html" can't be bundled without type="module" attribute
+✓ 58 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/theme-init.js                                   0.59 kB
+dist/manifest.webmanifest                            0.62 kB
+dist/index.html                                      1.32 kB │ gzip:   0.59 kB
+dist/assets/Phosphor-DtdjzkpE.woff2                147.38 kB
+dist/vendor/rive.wasm                            1,992.30 kB │ gzip: 836.60 kB
+dist/assets/index-Bq8dEsp0.css                      20.98 kB │ gzip:   4.81 kB
+dist/assets/rive-loader-BzImYFXL.js                  1.79 kB │ gzip:   1.01 kB
+dist/assets/workbox-window.prod.es5-Bd17z0YL.js      5.65 kB │ gzip:   2.20 kB
+dist/assets/index-MdhVwrGu.js                       77.90 kB │ gzip:  27.29 kB
+dist/assets/rive-C87B3fK5.js                       209.49 kB │ gzip:  59.70 kB
+
+[32m✓ built in 554ms[39m
+
+PWA v1.3.0
+mode      generateSW
+precache  56 entries (327.64 KiB)
+files generated
+  dist/sw.js
+    0.3 KB gzip  /theme-init.js
+   26.5 KB gzip  /assets/index-MdhVwrGu.js
+ok initial JS 26.8 KB gzip (budget 120 KB)

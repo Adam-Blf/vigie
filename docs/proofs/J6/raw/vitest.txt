@@ -1,0 +1,50 @@
+
+ RUN  v5.0.3 <repo>/web
+      Coverage enabled with v8
+
+
+ Test Files  14 passed (14)
+      Tests  93 passed (93)
+   Start at  18:32:46
+   Duration  15.96s (environment 84%, transform 5%, worker 4%, tests 4%, import 2%)
+
+Environment  jsdom was created 14 times , 21.79s total, 84% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
+[34m % [39m[2mCoverage report from [22m[33mv8[39m
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   63.85 |     77.5 |   56.46 |    64.6 |
+ src/api           |   98.56 |    91.27 |   95.65 |     100 |
+  client.ts        |   98.21 |    84.78 |   88.88 |     100 | ...43,57-58,68,86
+  schema.ts        |    90.9 |    97.43 |     100 |     100 | 30
+  sse.ts           |     100 |    88.09 |     100 |     100 | 24,30,65-66,81
+ src/app           |      25 |    68.18 |   18.18 |   25.53 |
+  context.ts       |       0 |        0 |       0 |       0 | 30-35
+  routes.ts        |   57.69 |    93.75 |      50 |   57.14 | 35-45
+  ...nvironment.ts |       0 |        0 |       0 |       0 | 7-40
+ src/boot          |       0 |        0 |       0 |       0 |
+  theme-init.ts    |       0 |        0 |       0 |       0 | 5-13
+ src/chat          |   36.22 |    52.94 |   33.33 |   36.93 |
+  useChat.ts       |       0 |        0 |       0 |       0 | 13-130
+ src/demo          |   97.67 |    88.88 |     100 |     100 |
+  fixtures.ts      |   95.83 |    83.33 |     100 |     100 | 188
+ src/lib           |   96.72 |    95.65 |   95.23 |   96.42 |
+  storage.ts       |    90.9 |      100 |     100 |    90.9 | 10
+  theme.ts         |     100 |     87.5 |     100 |     100 | 19,28
+  trusted-types.ts |    90.9 |      100 |      75 |   88.88 | 23
+ src/mascot        |      55 |    66.03 |   37.03 |   56.32 |
+  rive-loader.ts   |       0 |        0 |       0 |       0 | 26-72
+  useShownState.ts |       0 |        0 |       0 |       0 | 7-25
+ src/pwa           |   16.12 |       60 |   11.11 |   17.24 |
+  install.ts       |   16.12 |       60 |   11.11 |   17.24 | 21-58
+-------------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 63.85% ( 371/581 )
+Branches     : 77.5% ( 286/369 )
+Functions    : 56.46% ( 83/147 )
+Lines        : 64.6% ( 323/500 )
+================================================================================
