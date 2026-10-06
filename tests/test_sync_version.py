@@ -49,3 +49,14 @@ def test_non_string_version_is_rejected(tmp_path: Path) -> None:
 
 def test_repository_readme_is_in_sync() -> None:
     assert main(["--check"]) == 0
+
+
+def test_package_version_is_synced_too(tmp_path: Path) -> None:
+    root = make_project(tmp_path, "0.2.0", readme=README.replace("0.0.9", "0.2.0"))
+    init = root / "src" / "vigie" / "__init__.py"
+    init.parent.mkdir(parents=True)
+    init.write_text('"""Doc."""\n\n__version__ = "0.0.9"\n', encoding="utf-8")
+    assert main(["--check"], root) == 1
+    assert main([], root) == 0
+    assert '__version__ = "0.2.0"' in init.read_text(encoding="utf-8")
+    assert main(["--check"], root) == 0
