@@ -6,13 +6,24 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
-### Changed
-
-- Bandeau de badges du README réduit à sept badges cohérents et centrés.
+## [0.5.0] - 2026-10-06
 
 ### Added
 
+- Banc d'essai des garde-fous du jalon J4 (`src/guardbench`, commande `guardbench`) : jeu
+  maison bilingue de 174 exemples en neuf catégories, découpage `dev` et `test` figé par
+  paire, adaptateurs regex de référence, DeBERTa v3 ProtectAI, GLiGuard 300M, Presidio,
+  Llama Guard 3 1B via Ollama et Lakera Guard, mesure chronométrée avec échauffement,
+  rapports CSV, Markdown et graphique qualité contre latence, suivi MLflow en SQLite.
+- Rapport `docs/guardrails-benchmark.md` et preuves du jalon dans `docs/proofs/J4/bench/`
+  (jeu maison `test` et contrôle `deepset/prompt-injections`).
+- Réglages `VIGIE_BENCH_*`, `VIGIE_LAKERA_URL` et `VIGIE_MLFLOW_TRACKING_URI`, décrits dans
+  `.env.example`.
 - Licence propriétaire, tous droits réservés, dépôt public en consultation seule.
+
+### Changed
+
+- Bandeau de badges du README réduit à sept badges cohérents et centrés.
 
 ## [0.4.0] - 2026-10-02
 
