@@ -10,7 +10,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import AliasChoices, Field
+from pydantic import AliasChoices, Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 LLMProvider = Literal["ollama", "mistral", "fake"]
@@ -107,6 +107,58 @@ class Settings(BaseSettings):
     # Guardrails
     guard_input_threshold: float = 0.5
     guard_enabled: bool = True
+
+    # Red teaming: share of replayed attacks allowed to get through before CI fails (brief 11.3)
+    redteam_max_attack_success_rate: float = Field(default=0.05, ge=0.0, le=1.0)
+
+    # Load test (J11). The thresholds are written in eval/thresholds.yaml (section load);
+    # these defaults must stay equal to it, which tests/loadtest enforces.
+    load_token: SecretStr | None = None
+    load_p95_ms: float = Field(default=500.0, gt=0)
+    load_max_error_ratio: float = Field(default=0.01, ge=0.0, le=1.0)
+    load_max_attack_leak_ratio: float = Field(default=0.10, ge=0.0, le=1.0)
+
+    # Drift. The defaults were calibrated on the multilingual MiniLM model: in-scope
+    # questions sit above 0.3 of similarity to the nearest corpus centroid, off-topic
+    # ones around 0, so 0.3 leaves room on both sides.
+    drift_reference_path: Path = Path("data/drift/reference.npy")
+    drift_anchors_path: Path = Path("data/drift/anchors.npy")
+    drift_window_size: int = Field(default=500, ge=10)
+    drift_min_window: int = Field(default=30, ge=5)
+    drift_evaluate_every: int = Field(default=10, ge=1)
+    drift_centroid_threshold: float = Field(default=0.3, gt=0.0, le=2.0)
+    drift_out_of_scope_similarity: float = Field(default=0.3, ge=-1.0, le=1.0)
+    drift_out_of_scope_ratio: float = Field(default=0.25, gt=0.0, le=1.0)
+    drift_ks_alpha: float = Field(default=0.01, gt=0.0, lt=1.0)
+
+    # Guardrail benchmark (J4). Model ids are pinned here so a rerun months later compares
+    # the same checkpoints, not whatever the hub serves that day.
+    bench_seed_path: Path = Path("data/seed.jsonl")
+    bench_output_dir: Path = Path("results/guardbench")
+    bench_warmup_calls: int = Field(default=3, ge=0)
+    bench_http_timeout_s: float = 30.0
+    # Two threads, like the 2 OCPU Oracle VM; the default (every core) also made the
+    # timings swing with whatever else ran on the laptop.
+    bench_torch_threads: int = Field(default=2, ge=1)
+    bench_deepset_repo: str = "deepset/prompt-injections"
+    bench_deberta_model: str = "protectai/deberta-v3-base-prompt-injection-v2"
+    bench_gliguard_model: str = "fastino/gliguard-LLMGuardrails-300M"
+    bench_llamaguard_model: str = "llama-guard3:1b"
+    bench_presidio_entities: list[str] = [
+        "EMAIL_ADDRESS",
+        "IBAN_CODE",
+        "CREDIT_CARD",
+        "PHONE_NUMBER",
+    ]
+    bench_presidio_threshold: float = Field(default=0.5, ge=0.0, le=1.0)
+    lakera_url: str = "https://api.lakera.ai/v2/guard"
+    # The Lakera key keeps its vendor name so the same secrets file works for their own CLI.
+    lakera_api_key: SecretStr | None = Field(
+        default=None, validation_alias=AliasChoices("LAKERA_API_KEY", "VIGIE_LAKERA_API_KEY")
+    )
+    # MLflow 3 refuses the plain file store, SQLite keeps it local and dependency free.
+    mlflow_tracking_uri: str = "sqlite:///mlflow.db"
+    bench_mlflow_experiment: str = "guardbench"
 
     # Evaluation
     golden_path: Path = Path("data/golden/questions.jsonl")

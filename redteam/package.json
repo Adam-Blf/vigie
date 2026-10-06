@@ -1,0 +1,17 @@
+{
+  "name": "vigie-redteam",
+  "private": true,
+  "description": "Promptfoo red teaming harness for the Vigie API.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "scripts": {
+    "generate": "promptfoo redteam generate -c promptfooconfig.yaml -o attacks.raw.yaml --no-cache --force",
+    "replay": "promptfoo eval -c replay.yaml -o results.json --no-cache --no-share",
+    "replay:local": "promptfoo eval -c replay.yaml -o results.json --no-cache --no-share --max-concurrency 1"
+  },
+  "devDependencies": {
+    "promptfoo": "0.123.1"
+  }
+}

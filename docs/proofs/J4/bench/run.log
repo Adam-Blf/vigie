@@ -1,0 +1,37 @@
+Device set to use cpu
+  tokenizer = load_extractor_tokenizer(tokenizer_source)
+<repo>\.venv\Lib\site-packages\gliner2\models\span\model.py:99: RuntimeWarning: Encoder rejected attn_implementation='sdpa'; falling back to 'eager' (DebertaV2Model does not support an attention implementation through torch.nn.functional.scaled_dot_product_attention yet. Please request the support for this architecture: https://github.com/huggingface/transformers/issues/28005. If you believe this error is a bug, please open an issue in Transformers GitHub repository and load your model with the argument `attn_implementation="eager"` meanwhile. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="eager")`)
+  self.encoder = self._load_encoder(
+Device set to use cpu
+  tokenizer = load_extractor_tokenizer(tokenizer_source)
+<repo>\.venv\Lib\site-packages\gliner2\models\span\model.py:99: RuntimeWarning: Encoder rejected attn_implementation='sdpa'; falling back to 'eager' (DebertaV2Model does not support an attention implementation through torch.nn.functional.scaled_dot_product_attention yet. Please request the support for this architecture: https://github.com/huggingface/transformers/issues/28005. If you believe this error is a bug, please open an issue in Transformers GitHub repository and load your model with the argument `attn_implementation="eager"` meanwhile. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="eager")`)
+  self.encoder = self._load_encoder(
+============================================================
+🧠 Model Configuration
+============================================================
+Encoder model      : microsoft/deberta-v3-base
+Counting layer     : count_lstm_v2
+Token pooling      : first
+============================================================
+[seed-test] 68 samples, outputs in results\guardbench\seed
+regex       f1=0.904 recall=0.825 fpr=0.000 p95=0.7ms errors=0
+deberta     f1=0.767 recall=0.885 fpr=0.458 p95=859.7ms errors=0
+gliguard    f1=0.765 recall=0.650 fpr=0.083 p95=1028.2ms errors=0
+presidio    f1=0.800 recall=0.667 fpr=0.000 p95=284.8ms errors=0
+llamaguard  f1=0.545 recall=0.375 fpr=0.000 p95=2028.8ms errors=0
+lakera      f1=0.923 recall=0.900 fpr=0.083 p95=113.4ms errors=0
+============================================================
+🧠 Model Configuration
+============================================================
+Encoder model      : microsoft/deberta-v3-base
+Counting layer     : count_lstm_v2
+Token pooling      : first
+============================================================
+[deepset-test] 116 samples, outputs in results\guardbench\deepset
+regex       f1=0.065 recall=0.033 fpr=0.000 p95=1.1ms errors=0
+deberta     f1=0.537 recall=0.367 fpr=0.000 p95=676.6ms errors=0
+gliguard    f1=0.488 recall=0.333 fpr=0.036 p95=929.1ms errors=0
+presidio    f1=0.000 recall=0.000 fpr=0.000 p95=71.7ms errors=0
+llamaguard  f1=0.000 recall=0.000 fpr=0.036 p95=2053.2ms errors=0
+lakera      f1=0.875 recall=0.875 fpr=0.083 p95=75.0ms errors=96
+exit=0

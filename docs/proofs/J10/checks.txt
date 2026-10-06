@@ -1,0 +1,37 @@
++ .\.venv\Scripts\python.exe -m ruff check .
+All checks passed!
++ .\.venv\Scripts\python.exe -m ruff format --check .
+25 files already formatted
++ .\.venv\Scripts\python.exe -m mypy src
+Success: no issues found in 11 source files
++ .\.venv\Scripts\python.exe -m pytest --cov=src --cov-report=term-missing
+..................................................                       [100%]
+=============================== tests coverage ================================
+______________ coverage: platform win32, python 3.12.13-final-0 _______________
+
+Name                         Stmts   Miss Branch BrPart  Cover   Missing
+------------------------------------------------------------------------
+src\guardbench\__init__.py       1      0      0      0   100%
+src\vigie\__init__.py            1      0      0      0   100%
+src\vigie\config.py             47      0      0      0   100%
+------------------------------------------------------------------------
+TOTAL                           49      0      0      0   100%
+
+8 empty files skipped.
+50 passed in 6.63s
+check exit=0
+Success: no issues found in 3 source files
+mypy redteam exit=0
+.............................................                            [100%]
+=============================== tests coverage ================================
+______________ coverage: platform win32, python 3.12.13-final-0 _______________
+
+Name                Stmts   Miss Branch BrPart  Cover   Missing
+---------------------------------------------------------------
+redteam\curate.py      80      1     28      1    98%   137
+redteam\score.py      117      1     30      2    98%   59->58, 193
+---------------------------------------------------------------
+TOTAL                 197      2     58      3    98%
+
+1 empty file skipped.
+redteam coverage exit=0
