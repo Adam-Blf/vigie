@@ -1,0 +1,22 @@
++ python -m ruff check .
+All checks passed!
++ python -m ruff format --check .
+24 files already formatted
++ python -m mypy src
+Success: no issues found in 11 source files
++ python -m pytest --cov=src --cov-report=term-missing
+.............                                                            [100%]
+=============================== tests coverage ================================
+______________ coverage: platform win32, python 3.12.13-final-0 _______________
+
+Name                         Stmts   Miss Branch BrPart  Cover   Missing
+------------------------------------------------------------------------
+src\guardbench\__init__.py       1      0      0      0   100%
+src\vigie\__init__.py            1      0      0      0   100%
+src\vigie\config.py             46      0      0      0   100%
+------------------------------------------------------------------------
+TOTAL                           48      0      0      0   100%
+
+8 empty files skipped.
+13 passed in 10.91s
+exit=0

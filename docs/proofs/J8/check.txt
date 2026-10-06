@@ -1,0 +1,28 @@
++ .venv\Scripts\python.exe -m ruff check .
+All checks passed!
++ .venv\Scripts\python.exe -m ruff format --check .
+28 files already formatted
++ .venv\Scripts\python.exe -m mypy src
+Success: no issues found in 17 source files
++ .venv\Scripts\python.exe -m pytest --cov=src --cov-report=term-missing
+................................................................         [100%]
+=============================== tests coverage ================================
+______________ coverage: platform win32, python 3.12.13-final-0 _______________
+
+Name                                  Stmts   Miss Branch BrPart  Cover   Missing
+---------------------------------------------------------------------------------
+src\guardbench\__init__.py                1      0      0      0   100%
+src\vigie\__init__.py                     1      0      0      0   100%
+src\vigie\config.py                      48      0      0      0   100%
+src\vigie\evaluation\cli.py              58      0     10      0   100%
+src\vigie\evaluation\corpus_text.py      57      0     20      0   100%
+src\vigie\evaluation\golden.py           72      0     10      0   100%
+src\vigie\evaluation\metrics.py          84      0     30      0   100%
+src\vigie\evaluation\regulations.py      10      0      2      0   100%
+src\vigie\evaluation\validate.py         79      0     40      0   100%
+---------------------------------------------------------------------------------
+TOTAL                                   410      0    112      0   100%
+
+8 empty files skipped.
+64 passed in 12.31s
+exit=0

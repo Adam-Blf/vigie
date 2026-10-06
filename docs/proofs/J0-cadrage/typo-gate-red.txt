@@ -1,0 +1,6 @@
+degraded-sample.md:1:6: em dash U+2014
+degraded-sample.md:1:11: en dash U+2013
+degraded-sample.md:1:16: middle dot U+00B7
+degraded-sample.md:1:21: zero width space U+200B
+typo: 1 files scanned, 4 forbidden characters
+exit=1

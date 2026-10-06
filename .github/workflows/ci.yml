@@ -21,6 +21,6 @@ jobs:
       - name: Ruff
         run: uv run --no-sync ruff check . && uv run --no-sync ruff format --check .
       - name: Mypy
-        run: uv run --no-sync mypy src
+        run: uv run --no-sync mypy
       - name: Pytest
         run: uv run --no-sync pytest --cov=src --cov-report=term-missing
