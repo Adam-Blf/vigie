@@ -1,3 +1,3 @@
 """Vigie, a compliance copilot that answers with the exact article it relies on."""
 
-__version__ = "0.15.0"
+__version__ = "0.16.0"

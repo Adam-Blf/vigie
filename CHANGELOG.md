@@ -6,7 +6,7 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
-## [0.15.0] - 2026-10-06
+## [0.16.0] - 2026-10-06
 
 ### Added
 
@@ -22,6 +22,32 @@ les notes reprennent la section correspondante.
   configuration Lighthouse CI.
 - Description de chaque écran dans `docs/design/screens.md` et preuves du jalon dans
   `docs/proofs/J6/`.
+
+## [0.15.0] - 2026-10-06
+
+### Added
+
+- Étude de quantization du jalon J12 (`src/vigie/quant/`, commande `vigie-quant`) : export
+  ONNX fp32 du modèle d'embedding à révision épinglée, quantization dynamique int8 par
+  onnxruntime, contrôle de parité avec PyTorch, puis mesure de la taille, de la latence
+  p50 et p95 par requête, du rappel@5 et du MRR sur la partie `dev` du jeu de référence,
+  chaque variante journalisée comme un run MLflow.
+- Seuil de décision écrit avant la mesure dans `eval/thresholds.yaml` (section
+  `quantization`) : int8 retenu si le rappel@5 perd au plus 2 points et si le fichier est
+  au moins divisé par 2.
+- Étude LLM Ministral 3B Q4_K_M contre Q8_0 par Ollama, sur CPU seul : premier token,
+  débit, mémoire et validité des citations sur 10 questions `dev` fixes.
+- Documentation `docs/quantization.md` avec tableau et graphique, preuves dans
+  `docs/proofs/J12/`, réglages `VIGIE_DENSE_VARIANT`, `VIGIE_DENSE_MODEL_REVISION` et
+  `VIGIE_QUANT_*` décrits dans `.env.example`.
+
+### Changed
+
+- Le modèle d'embedding déployé est la version int8 (`dense_variant = "int8"`) : taille
+  divisée par 4, rappel@5 sans perte sur la partie `dev`. Ministral 3B reste en Q4_K_M :
+  Q8_0 double l'attente du premier token et ajoute 1,5 Go pour une qualité identique.
+- `pyyaml` passe dans les dépendances d'exécution, l'extra `quant` gagne torch,
+  transformers, onnxscript et matplotlib.
 
 ## [0.14.0] - 2026-10-06
 

@@ -1,0 +1,86 @@
+{
+  "milestone": "J12 quantization",
+  "branch": "feat/quant",
+  "commit": "79a5d4b7fa61b174a41dd08c8e586396941f3525",
+  "date": "2026-10-06",
+  "threshold_commit": {
+    "sha": "e5b8c0cff8e73ff4238635adef79658741e65e26",
+    "pushed_before_first_measurement": true,
+    "rule": "int8 kept iff recall@5 drop <= 0.02 and int8 size / fp32 size <= 0.5, dev split only"
+  },
+  "commands": {
+    "parity.txt": "vigie-quant parity",
+    "embed-run-1-broken-export.txt": "vigie-quant embed (first export, attention mask lost, run discarded)",
+    "embed-run-2.txt": "vigie-quant export, then vigie-quant embed (code of 892e759, measured before it was committed)",
+    "embed-gate-degraded-threshold.txt": "vigie-quant embed --no-mlflow --thresholds <copy of eval/thresholds.yaml with max_size_ratio 0.2> --results <scratch file>",
+    "llm-run-1-timeout.txt": "vigie-quant llm (code of 892e759, 120 s read timeout, no result kept)",
+    "llm-run-2.txt": "vigie-quant llm (code of bc7d730)",
+    "check.txt": "python tasks.py check (after merging main)"
+  },
+  "results": {
+    "embedding": {
+      "split": "dev",
+      "questions": 47,
+      "chunks": 511,
+      "fp32": {"size_bytes": 471191747, "recall_at_5": 0.4681, "mrr": 0.4166, "latency_p50_ms": 27.052, "latency_p95_ms": 80.705},
+      "int8": {"size_bytes": 118710947, "recall_at_5": 0.5106, "mrr": 0.4008, "latency_p50_ms": 9.338, "latency_p95_ms": 21.311},
+      "recall_drop": -0.0426,
+      "size_ratio": 0.2519,
+      "decision": "int8",
+      "parity_max_abs_gap": 7.451e-08,
+      "gate_red": "degraded threshold (max_size_ratio 0.2) keeps fp32 with reason 'int8 file is 0.25 of fp32, above 0.20'"
+    },
+    "llm": {
+      "questions": 10,
+      "device": "CPU only (num_gpu 0)",
+      "ministral-3:3b-instruct-2512-q4_K_M": {"first_token_p50_ms": 60234.046, "first_token_p95_ms": 74777.371, "tokens_per_s": 4.37, "memory_bytes": 2730250730, "raw_citation_validity": 1.0, "answers_with_valid_citation": 3, "expected_coverage": 0.1, "refusals": 2},
+      "ministral-3:3b-instruct-2512-q8_0": {"first_token_p50_ms": 127846.225, "first_token_p95_ms": 159059.989, "tokens_per_s": 3.23, "memory_bytes": 4236247039, "raw_citation_validity": 1.0, "answers_with_valid_citation": 3, "expected_coverage": 0.1, "refusals": 2},
+      "decision": "keep Q4_K_M"
+    },
+    "tests": "848 passed, coverage 98 % on src, 100 % on decision, dense, stats, study, runner, llm_bench, tracking"
+  },
+  "mlflow_runs": {
+    "experiment": "vigie-quantization",
+    "embedding-fp32": "4e973d174eac42958946c064f6926c8d",
+    "embedding-int8": "cb836dfab6e0402e98daa462a5f7bf30",
+    "llm-ministral-3:3b-instruct-2512-q4_K_M": "687b2b38a504431db199dfed5904343f",
+    "llm-ministral-3:3b-instruct-2512-q8_0": "b24d7f5ea2cf412f9d181570b5e36447",
+    "stores": "embedding runs in sqlite:///mlruns/mlflow.db (default before the merge with main), LLM runs in sqlite:///mlflow.db (shared default since); neither is versioned"
+  },
+  "artifacts_not_versioned": {
+    "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+    "files": [
+      {
+        "path": "data/quant/model-fp32.onnx",
+        "sha256": "274a68d53d17f857dd587f91fedb9c95e2a81783da66bb717981eda159a11d6f"
+      },
+      {
+        "path": "data/quant/model-int8.onnx",
+        "sha256": "f383d645849b23e15da784f044533b0239c962e79081dceda124149db0c9d683"
+      },
+      {
+        "path": "data/quant/tokenizer.json",
+        "sha256": "2c3387be76557bd40970cec13153b3bbf80407865484b209e655e5e4729076b8"
+      }
+    ]
+  },
+  "machine": "Windows 11 Pro 10.0.26200, 8 logical CPUs, shared with other jobs during the runs",
+  "tools": {
+    "python": "3.12.13",
+    "uv": "0.11.32",
+    "ollama": "0.35.1",
+    "torch": "2.14.1+cpu",
+    "transformers": "5.18.0",
+    "onnx": "1.23.2",
+    "onnxruntime": "1.30.0",
+    "onnxscript": "0.7.2",
+    "tokenizers": "0.23.2",
+    "mlflow": "3.16.1",
+    "matplotlib": "3.11.2",
+    "numpy": "2.5.3",
+    "pytest": "9.1.1",
+    "ruff": "0.16.10",
+    "mypy": "2.4.0"
+  }
+}

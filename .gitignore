@@ -26,6 +26,9 @@ results/
 data/corpus/
 data/drift/
 data/cache/
+data/quant/
+*.onnx
+*.onnx.data
 .qdrant/
 
 # Terraform
