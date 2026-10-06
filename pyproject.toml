@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "vigie"
-version = "0.10.0"
+version = "0.11.0"
 description = "Compliance copilot for banks: cited answers on DORA, the AI Act, GDPR and AMLR."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -59,6 +59,7 @@ vigie-ingest = "vigie.corpus.cli:main"
 vigie-eval = "vigie.evaluation.cli:main"
 guardbench = "guardbench.cli:main"
 vigie-drift = "vigie.drift.cli:main"
+vigie-index = "vigie.retrieval.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/vigie", "src/guardbench"]

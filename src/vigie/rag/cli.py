@@ -1,6 +1,11 @@
-"""Ask one question over a JSON file of passages, with the configured LLM.
+"""Ask one question with the configured retriever and LLM.
 
+    python -m vigie.rag.cli "question"
     python -m vigie.rag.cli --passages tests/fixtures/dora_art28_passages.json "question"
+
+Without --passages the retriever comes from VIGIE_RETRIEVER: qdrant by default, which
+searches the collection built by vigie-index. --passages replays a JSON file of passages
+instead, to measure the model alone.
 
 The answer streams to stderr as it is generated, and the validated Answer is printed to
 stdout as JSON, so the command doubles as the latency proof of the local model.
@@ -20,22 +25,27 @@ from vigie.config import get_settings
 from vigie.llm.factory import build_llm
 from vigie.rag.pipeline import RagPipeline
 from vigie.rag.prompt import PROMPT_VERSION
-from vigie.rag.static_retriever import StaticRetriever
+from vigie.retrieval.factory import open_retriever
 
 
 def main(
     argv: Sequence[str] | None = None, out: TextIO = sys.stdout, live: TextIO = sys.stderr
 ) -> int:
-    parser = argparse.ArgumentParser(prog="python -m vigie.rag.cli", description=__doc__)
+    parser = argparse.ArgumentParser(
+        prog="python -m vigie.rag.cli",
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     parser.add_argument("question")
-    parser.add_argument("--passages", type=Path, required=True)
+    parser.add_argument("--passages", type=Path, help="JSON file of fixed passages")
     args = parser.parse_args(argv)
 
     settings = get_settings()
-    # The with block closes the HTTP client of the real providers once the answer is in.
-    with build_llm(settings) as llm:
+    # Both blocks close what they opened: the HTTP client of the real LLM providers, and
+    # the Qdrant client, whose local mode keeps its folder locked while it is open.
+    with open_retriever(settings, passages=args.passages) as retriever, build_llm(settings) as llm:
         pipeline = RagPipeline(
-            StaticRetriever.from_json(args.passages),
+            retriever,
             llm,
             top_k=settings.top_k,
             min_score=settings.rag_min_score,
