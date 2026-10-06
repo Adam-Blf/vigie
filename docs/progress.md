@@ -10,6 +10,7 @@ n'est pas `DONE`. Statuts possibles : `DONE`, `PARTIEL`, `BLOQUÉ`.
 | 2026-10-02 | J1 corpus | DONE | `docs/proofs/J1/` (ingestion réelle, verrou vu rouge sur l'empreinte et le nombre d'articles, couverture) | | indexation hybride dans Qdrant |
 | 2026-10-02 | J3 LLM et RAG | DONE | `docs/proofs/J3/` (trois réponses réelles de Ministral 3B, citation inventée retirée, couverture 99 %) | | brancher la recherche Qdrant à la place des passages fixes ; seuil de latence mesuré sur la VM au J7 et au J14 |
 | 2026-10-02 | J8 jeu de référence | DONE | `docs/proofs/J8/` (80 questions vérifiées contre Cellar, partie test scellée, validateur vert puis vu rouge sur brouillons et copie dégradée) | | mesure réelle contre les seuils de `eval/thresholds.yaml` au J11, quand l'API répond de bout en bout |
+| 2026-10-06 | J4 benchmark des garde-fous | DONE | `docs/proofs/J4/bench/` (six garde-fous sur le jeu maison `test` et le contrôle deepset, suivi MLflow) | quota gratuit Lakera épuisé sur deepset, 20 exemples sur 116 mesurés pour cet outil | chaîne de garde-fous de production sur `feat/guard` ; latences à refaire sur la VM |
 
 ## Décisions par défaut appliquées (section 10 du brief)
 
