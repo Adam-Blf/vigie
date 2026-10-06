@@ -1,0 +1,30 @@
+# Kustomize does not know the Rollout kind, so it would leave the generated ConfigMap
+# names (with their hash suffix) unresolved inside it. These references teach it where
+# a Rollout points at ConfigMaps, Secrets, PVCs and its Services.
+nameReference:
+  - kind: ConfigMap
+    version: v1
+    fieldSpecs:
+      - path: spec/template/spec/containers/envFrom/configMapRef/name
+        kind: Rollout
+      - path: spec/template/spec/containers/env/valueFrom/configMapKeyRef/name
+        kind: Rollout
+      - path: spec/template/spec/volumes/configMap/name
+        kind: Rollout
+  - kind: Secret
+    version: v1
+    fieldSpecs:
+      - path: spec/template/spec/containers/env/valueFrom/secretKeyRef/name
+        kind: Rollout
+  - kind: PersistentVolumeClaim
+    version: v1
+    fieldSpecs:
+      - path: spec/template/spec/volumes/persistentVolumeClaim/claimName
+        kind: Rollout
+  - kind: Service
+    version: v1
+    fieldSpecs:
+      - path: spec/strategy/canary/stableService
+        kind: Rollout
+      - path: spec/strategy/canary/canaryService
+        kind: Rollout

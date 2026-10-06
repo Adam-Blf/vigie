@@ -1,0 +1,85 @@
+# Daily full snapshot of Qdrant, pushed to the Always Free Object Storage bucket.
+# The upload target is a pre-authenticated request URL kept in the vigie-backup
+# Secret (key par-url), written by the CD from the Terraform output. Without that
+# Secret the snapshot is still taken and stays in Qdrant's snapshot directory, so a
+# missing bucket never turns into a failed backup of the index itself.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: qdrant-snapshot
+spec:
+  schedule: "17 3 * * *"
+  timeZone: Europe/Paris
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: qdrant-snapshot
+        spec:
+          restartPolicy: OnFailure
+          automountServiceAccountToken: false
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 100
+            runAsGroup: 101
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: snapshot
+              image: docker.io/curlimages/curl:8.16.0@sha256:463eaf6072688fe96ac64fa623fe73e1dbe25d8ad6c34404a669ad3ce1f104b6
+              env:
+                - name: QDRANT_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: vigie-secrets
+                      key: qdrant-api-key
+                - name: PAR_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: vigie-backup
+                      key: par-url
+                      optional: true
+              command: [sh, -ec]
+              args:
+                - |
+                  api=http://qdrant:6333
+                  # Older snapshots were uploaded already or are superseded by this one,
+                  # and Qdrant keeps them on a size-limited volume.
+                  for old in $(curl -fsS -H "api-key: ${QDRANT_API_KEY}" "${api}/snapshots" \
+                    | grep -o '"name":"[^"]*"' | cut -d'"' -f4); do
+                    curl -fsS -X DELETE -H "api-key: ${QDRANT_API_KEY}" "${api}/snapshots/${old}" >/dev/null
+                  done
+                  name=$(curl -fsS -X POST -H "api-key: ${QDRANT_API_KEY}" "${api}/snapshots?wait=true" \
+                    | sed -n 's/.*"name":"\([^"]*\)".*/\1/p')
+                  test -n "${name}"
+                  echo "snapshot ${name} created"
+                  if [ -z "${PAR_URL}" ]; then
+                    echo "no vigie-backup secret, snapshot kept in Qdrant only"
+                    exit 0
+                  fi
+                  curl -fsS -H "api-key: ${QDRANT_API_KEY}" -o "/tmp/${name}" "${api}/snapshots/${name}"
+                  curl -fsS -X PUT --upload-file "/tmp/${name}" "${PAR_URL}qdrant/${name}"
+                  echo "snapshot ${name} uploaded"
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 16Mi
+                limits:
+                  memory: 32Mi
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: [ALL]
+              volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+          volumes:
+            - name: tmp
+              emptyDir:
+                sizeLimit: 2Gi

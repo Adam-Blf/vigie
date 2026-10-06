@@ -1,0 +1,69 @@
+# Builds the corpus and the Qdrant collection before the API rollout. It runs from
+# the API image so the parser and the embedding model are exactly the ones the API
+# will query with. Re-running it is safe: indexing is idempotent per chunk id.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vigie-ingest
+  annotations:
+    # A Job template is immutable, so a new image tag or bundle hash would make the
+    # whole Flux apply fail. This lets Flux recreate the Job instead, which also
+    # re-runs the ingestion for each new build, as it should.
+    kustomize.toolkit.fluxcd.io/force: Enabled
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: vigie-ingest
+    spec:
+      restartPolicy: OnFailure
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: ingest
+          image: ghcr.io/adam-blf/vigie-api
+          command: [vigie-ingest]
+          args: [--out, /work/corpus]
+          envFrom:
+            - configMapRef:
+                name: vigie-api-config
+            - configMapRef:
+                name: vigie-bundle
+          env:
+            - name: VIGIE_CORPUS_DIR
+              value: /work/corpus
+            - name: VIGIE_QDRANT_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: vigie-secrets
+                  key: qdrant-api-key
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              memory: 768Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: work
+              mountPath: /work
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: work
+          emptyDir:
+            sizeLimit: 1Gi
+        - name: tmp
+          emptyDir:
+            sizeLimit: 512Mi

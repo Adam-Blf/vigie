@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Pull-based delivery (brief 11.9). Nothing outside the cluster holds a kubeconfig:
+# Flux reads Git and GHCR from inside k3s, and port 6443 never opens to the Internet.
+#
+# Secret created once by the administrator, never committed:
+#   flux-system/vigie-git  keys identity, identity.pub, known_hosts (deploy key with
+#                          write access, needed by the image automation to push)
+namespace: flux-system
+
+resources:
+  - git-source.yaml
+  - sync.yaml
+  - image-repositories.yaml
+  - image-automation.yaml

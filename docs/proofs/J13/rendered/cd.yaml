@@ -1,0 +1,103 @@
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: vigie-api
+  namespace: flux-system
+spec:
+  filterTags:
+    extract: $ts
+    pattern: ^main-[a-f0-9]{7,40}-(?P<ts>[0-9]+)$
+  imageRepositoryRef:
+    name: vigie-api
+  policy:
+    numerical:
+      order: asc
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: vigie-web
+  namespace: flux-system
+spec:
+  filterTags:
+    extract: $ts
+    pattern: ^main-[a-f0-9]{7,40}-(?P<ts>[0-9]+)$
+  imageRepositoryRef:
+    name: vigie-web
+  policy:
+    numerical:
+      order: asc
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: vigie-api
+  namespace: flux-system
+spec:
+  image: ghcr.io/adam-blf/vigie-api
+  interval: 5m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: vigie-web
+  namespace: flux-system
+spec:
+  image: ghcr.io/adam-blf/vigie-web
+  interval: 5m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageUpdateAutomation
+metadata:
+  name: vigie
+  namespace: flux-system
+spec:
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        email: vigie-flux@users.noreply.github.com
+        name: vigie-flux
+      messageTemplate: 'chore(deploy): update images in the prod overlay'
+    push:
+      branch: flux/image-updates
+  interval: 10m
+  sourceRef:
+    kind: GitRepository
+    name: vigie
+  update:
+    path: ./deploy/k8s/overlays/prod
+    strategy: Setters
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: vigie-prod
+  namespace: flux-system
+spec:
+  interval: 5m
+  path: ./deploy/k8s/overlays/prod
+  prune: true
+  retryInterval: 1m
+  sourceRef:
+    kind: GitRepository
+    name: vigie
+  timeout: 5m
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: vigie
+  namespace: flux-system
+spec:
+  ignore: |
+    /*
+    !/deploy/k8s/
+  interval: 1m
+  ref:
+    branch: main
+  secretRef:
+    name: vigie-git
+  url: ssh://git@github.com/Adam-Blf/vigie
