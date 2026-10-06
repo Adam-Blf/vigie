@@ -133,10 +133,11 @@ jobs:
         with:
           extras: dev,tracking,quant,load
       # pip-audit runs in its own throwaway environment and reads the frozen list, so the
-      # auditor and its dependencies never end up in the set being audited.
+      # auditor and its dependencies never end up in the set being audited. FORCE_COLOR would
+      # otherwise put ANSI codes in the frozen file, which pip-audit cannot parse.
       - name: Audit Python dependencies
         run: |
-          uv pip freeze --exclude-editable > "$RUNNER_TEMP/requirements-audit.txt"
+          uv pip freeze --color never --exclude-editable > "$RUNNER_TEMP/requirements-audit.txt"
           uvx pip-audit==2.10.1 --requirement "$RUNNER_TEMP/requirements-audit.txt" \
             --no-deps --disable-pip --progress-spinner off
 
