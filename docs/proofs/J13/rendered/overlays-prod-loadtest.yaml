@@ -1,0 +1,1542 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest
+    pod-security.kubernetes.io/warn: restricted
+  name: vigie
+---
+apiVersion: v1
+automountServiceAccountToken: false
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: prometheus
+  namespace: vigie
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: prometheus
+  namespace: vigie
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: prometheus
+  namespace: vigie
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: prometheus
+subjects:
+- kind: ServiceAccount
+  name: prometheus
+  namespace: vigie
+---
+apiVersion: v1
+data:
+  prometheus.yml: "global:\r\n  scrape_interval: 10s\r\n  evaluation_interval: 10s\r\nscrape_configs:\r\n
+    \ # Only pods that opt in with prometheus.io/scrape, in this namespace only.\r\n
+    \ - job_name: vigie-pods\r\n    kubernetes_sd_configs:\r\n      - role: pod\r\n
+    \       namespaces:\r\n          names: [vigie]\r\n    relabel_configs:\r\n      -
+    source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]\r\n        action:
+    keep\r\n        regex: \"true\"\r\n      - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]\r\n
+    \       action: replace\r\n        regex: ([^:]+)(?::\\d+)?;(\\d+)\r\n        replacement:
+    $1:$2\r\n        target_label: __address__\r\n      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]\r\n
+    \       action: replace\r\n        regex: (.+)\r\n        target_label: __metrics_path__\r\n
+    \     # The canary analysis tells canary from stable pods by this hash.\r\n      -
+    source_labels: [__meta_kubernetes_pod_label_rollouts_pod_template_hash]\r\n        target_label:
+    rollouts_pod_template_hash\r\n      - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]\r\n
+    \       target_label: app\r\n      - source_labels: [__meta_kubernetes_pod_name]\r\n
+    \       target_label: pod\r\n"
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: prometheus-config-7m8g44t589
+  namespace: vigie
+---
+apiVersion: v1
+data:
+  HF_HOME: /tmp/hf
+  VIGIE_AUDIT_DIR: /data/audit
+  VIGIE_CORS_ORIGINS: '[]'
+  VIGIE_DATA_DIR: /data
+  VIGIE_DB_PATH: /data/vigie.sqlite3
+  VIGIE_HOST: 0.0.0.0
+  VIGIE_METRICS_PORT: "9711"
+  VIGIE_OLLAMA_URL: http://ollama:11434
+  VIGIE_PORT: "8710"
+  VIGIE_QDRANT_URL: http://qdrant:6333
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: vigie-api-config-bcfmfd8khh
+  namespace: vigie
+---
+apiVersion: v1
+data:
+  VIGIE_BUNDLE_VERSION: loadtest
+  VIGIE_FAULT_ERROR_RATE: "0"
+  VIGIE_LLM_PROVIDER: fake
+  VIGIE_OLLAMA_MODEL: ministral-3:3b-instruct-2512-q4_K_M
+  VIGIE_PROMPT_VERSION: v1
+  VIGIE_TOP_K: "6"
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: vigie-bundle-88kth5bh88
+  namespace: vigie
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: mlflow
+  namespace: vigie
+spec:
+  ports:
+  - name: http
+    port: 5000
+    targetPort: http
+  selector:
+    app.kubernetes.io/name: mlflow
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: ollama
+  namespace: vigie
+spec:
+  ports:
+  - name: http
+    port: 11434
+    targetPort: http
+  selector:
+    app.kubernetes.io/name: ollama
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: prometheus
+  namespace: vigie
+spec:
+  ports:
+  - name: http
+    port: 9090
+    targetPort: http
+  selector:
+    app.kubernetes.io/name: prometheus
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: qdrant
+  namespace: vigie
+spec:
+  ports:
+  - name: http
+    port: 6333
+    targetPort: http
+  - name: grpc
+    port: 6334
+    targetPort: grpc
+  selector:
+    app.kubernetes.io/name: qdrant
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: vigie-api-canary
+  namespace: vigie
+spec:
+  ports:
+  - name: http
+    port: 8710
+    targetPort: http
+  selector:
+    app.kubernetes.io/name: vigie-api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: vigie-api-stable
+  namespace: vigie
+spec:
+  ports:
+  - name: http
+    port: 8710
+    targetPort: http
+  selector:
+    app.kubernetes.io/name: vigie-api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: vigie-web
+  namespace: vigie
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http
+  selector:
+    app.kubernetes.io/name: vigie-web
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: mlflow-data
+  namespace: vigie
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: ollama-models
+  namespace: vigie
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: vigie-api-data
+  namespace: vigie
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: mlflow
+  namespace: vigie
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mlflow
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mlflow
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - args:
+        - --backend-store-uri=sqlite:////mlflow/mlflow.db
+        - --artifacts-destination=/mlflow/artifacts
+        - --serve-artifacts
+        - --host=0.0.0.0
+        - --port=5000
+        - --workers=1
+        command:
+        - mlflow
+        - server
+        env:
+        - name: HOME
+          value: /tmp
+        - name: MLFLOW_SERVER_ENABLE_JOB_EXECUTION
+          value: "false"
+        - name: MLFLOW_DISABLE_TELEMETRY
+          value: "true"
+        image: ghcr.io/mlflow/mlflow:v3.16.1@sha256:06058cc872276873e9759c635e773342aca4731e240f6d20d88ea43774083984
+        livenessProbe:
+          httpGet:
+            httpHeaders:
+            - name: Host
+              value: localhost
+            path: /health
+            port: http
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        name: mlflow
+        ports:
+        - containerPort: 5000
+          name: http
+        readinessProbe:
+          httpGet:
+            httpHeaders:
+            - name: Host
+              value: localhost
+            path: /health
+            port: http
+          periodSeconds: 15
+        resources:
+          limits:
+            memory: 640Mi
+          requests:
+            cpu: 50m
+            memory: 384Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /mlflow
+          name: data
+        - mountPath: /tmp
+          name: tmp
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: mlflow-data
+      - emptyDir:
+          sizeLimit: 512Mi
+        name: tmp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: ollama
+  namespace: vigie
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ollama
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ollama
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - env:
+        - name: OLLAMA_HOST
+          value: 0.0.0.0:11434
+        - name: OLLAMA_MODELS
+          value: /models
+        - name: HOME
+          value: /tmp
+        - name: OLLAMA_NUM_PARALLEL
+          value: "1"
+        - name: OLLAMA_MAX_QUEUE
+          value: "4"
+        - name: OLLAMA_MAX_LOADED_MODELS
+          value: "1"
+        - name: OLLAMA_KEEP_ALIVE
+          value: 24h
+        image: docker.io/ollama/ollama:0.35.0@sha256:2a6e883b917fc543389599dae79918f5cac9e1438890506982f44aa4f5625d01
+        livenessProbe:
+          httpGet:
+            path: /api/version
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        name: ollama
+        ports:
+        - containerPort: 11434
+          name: http
+        readinessProbe:
+          httpGet:
+            path: /api/version
+            port: http
+          periodSeconds: 10
+        resources:
+          limits:
+            memory: 3584Mi
+          requests:
+            cpu: 500m
+            memory: 3Gi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /models
+          name: models
+        - mountPath: /tmp
+          name: tmp
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      - name: models
+        persistentVolumeClaim:
+          claimName: ollama-models
+      - emptyDir:
+          sizeLimit: 1Gi
+        name: tmp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: prometheus
+  namespace: vigie
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9090"
+        prometheus.io/scrape: "true"
+      labels:
+        app.kubernetes.io/name: prometheus
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - args:
+        - --config.file=/etc/prometheus/prometheus.yml
+        - --storage.tsdb.path=/prometheus
+        - --storage.tsdb.retention.time=24h
+        - --web.listen-address=:9090
+        image: quay.io/prometheus/prometheus:v3.15.0@sha256:efd719c99d83b060d9daefdcf00360461adf279f45ef5391f8d111892118753e
+        livenessProbe:
+          httpGet:
+            path: /-/healthy
+            port: http
+          initialDelaySeconds: 15
+          periodSeconds: 30
+        name: prometheus
+        ports:
+        - containerPort: 9090
+          name: http
+        readinessProbe:
+          httpGet:
+            path: /-/ready
+            port: http
+          periodSeconds: 10
+        resources:
+          limits:
+            memory: 384Mi
+          requests:
+            cpu: 50m
+            memory: 256Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /etc/prometheus
+          name: config
+        - mountPath: /prometheus
+          name: data
+        - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+          name: token
+          readOnly: true
+      securityContext:
+        fsGroup: 65534
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: prometheus
+      volumes:
+      - configMap:
+          name: prometheus-config-7m8g44t589
+        name: config
+      - emptyDir:
+          sizeLimit: 1Gi
+        name: data
+      - name: token
+        projected:
+          sources:
+          - serviceAccountToken:
+              expirationSeconds: 3600
+              path: token
+          - configMap:
+              items:
+              - key: ca.crt
+                path: ca.crt
+              name: kube-root-ca.crt
+          - downwardAPI:
+              items:
+              - fieldRef:
+                  fieldPath: metadata.namespace
+                path: namespace
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: vigie-web
+  namespace: vigie
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vigie-web
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: vigie-web
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - image: ghcr.io/adam-blf/vigie-web:main-0000000-0
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          periodSeconds: 30
+        name: web
+        ports:
+        - containerPort: 8080
+          name: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          periodSeconds: 10
+        resources:
+          limits:
+            memory: 64Mi
+          requests:
+            cpu: 20m
+            memory: 32Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+        - mountPath: /var/cache/nginx
+          name: cache
+      securityContext:
+        runAsGroup: 101
+        runAsNonRoot: true
+        runAsUser: 101
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      - emptyDir:
+          medium: Memory
+          sizeLimit: 16Mi
+        name: tmp
+      - emptyDir:
+          medium: Memory
+          sizeLimit: 16Mi
+        name: cache
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: qdrant
+  namespace: vigie
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: qdrant
+  serviceName: qdrant
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: qdrant
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - env:
+        - name: QDRANT__SERVICE__API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: qdrant-api-key
+              name: vigie-secrets
+        - name: QDRANT__STORAGE__STORAGE_PATH
+          value: /qdrant/storage
+        - name: QDRANT__STORAGE__SNAPSHOTS_PATH
+          value: /qdrant/snapshots
+        - name: QDRANT__TELEMETRY_DISABLED
+          value: "true"
+        - name: QDRANT_INIT_FILE_PATH
+          value: /qdrant/storage/.qdrant-initialized
+        image: docker.io/qdrant/qdrant:v1.19.1-unprivileged@sha256:801777072776dc81b2a9dd2007b2ed487571f21ecd30efffd15ddb1671f2193d
+        livenessProbe:
+          httpGet:
+            path: /livez
+            port: http
+          initialDelaySeconds: 20
+          periodSeconds: 20
+        name: qdrant
+        ports:
+        - containerPort: 6333
+          name: http
+        - containerPort: 6334
+          name: grpc
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: http
+          periodSeconds: 10
+        resources:
+          limits:
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /qdrant/storage
+          name: storage
+        - mountPath: /qdrant/snapshots
+          name: snapshots
+        - mountPath: /tmp
+          name: tmp
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      - emptyDir:
+          sizeLimit: 2Gi
+        name: snapshots
+      - emptyDir:
+          sizeLimit: 256Mi
+        name: tmp
+  volumeClaimTemplates:
+  - metadata:
+      name: storage
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: qdrant-snapshot
+  namespace: vigie
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: qdrant-snapshot
+        spec:
+          automountServiceAccountToken: false
+          containers:
+          - args:
+            - |
+              api=http://qdrant:6333
+              # Older snapshots were uploaded already or are superseded by this one,
+              # and Qdrant keeps them on a size-limited volume.
+              for old in $(curl -fsS -H "api-key: ${QDRANT_API_KEY}" "${api}/snapshots" \
+                | grep -o '"name":"[^"]*"' | cut -d'"' -f4); do
+                curl -fsS -X DELETE -H "api-key: ${QDRANT_API_KEY}" "${api}/snapshots/${old}" >/dev/null
+              done
+              name=$(curl -fsS -X POST -H "api-key: ${QDRANT_API_KEY}" "${api}/snapshots?wait=true" \
+                | sed -n 's/.*"name":"\([^"]*\)".*/\1/p')
+              test -n "${name}"
+              echo "snapshot ${name} created"
+              if [ -z "${PAR_URL}" ]; then
+                echo "no vigie-backup secret, snapshot kept in Qdrant only"
+                exit 0
+              fi
+              curl -fsS -H "api-key: ${QDRANT_API_KEY}" -o "/tmp/${name}" "${api}/snapshots/${name}"
+              curl -fsS -X PUT --upload-file "/tmp/${name}" "${PAR_URL}qdrant/${name}"
+              echo "snapshot ${name} uploaded"
+            command:
+            - sh
+            - -ec
+            env:
+            - name: QDRANT_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: qdrant-api-key
+                  name: vigie-secrets
+            - name: PAR_URL
+              valueFrom:
+                secretKeyRef:
+                  key: par-url
+                  name: vigie-backup
+                  optional: true
+            image: docker.io/curlimages/curl:8.16.0@sha256:463eaf6072688fe96ac64fa623fe73e1dbe25d8ad6c34404a669ad3ce1f104b6
+            name: snapshot
+            resources:
+              limits:
+                memory: 32Mi
+              requests:
+                cpu: 10m
+                memory: 16Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              readOnlyRootFilesystem: true
+            volumeMounts:
+            - mountPath: /tmp
+              name: tmp
+          restartPolicy: OnFailure
+          securityContext:
+            runAsGroup: 101
+            runAsNonRoot: true
+            runAsUser: 100
+            seccompProfile:
+              type: RuntimeDefault
+          volumes:
+          - emptyDir:
+              sizeLimit: 2Gi
+            name: tmp
+  schedule: 17 3 * * *
+  successfulJobsHistoryLimit: 2
+  timeZone: Europe/Paris
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: vigie-canary
+  namespace: vigie
+spec:
+  args:
+  - name: canary-hash
+  - name: stable-hash
+  - name: prometheus
+    value: http://prometheus.vigie.svc.cluster.local:9090
+  - name: window
+    value: 2m
+  - name: min-requests
+    value: "30"
+  metrics:
+  - count: 4
+    failureCondition: len(result) > 0 && result[0] >= 0.01
+    failureLimit: 1
+    inconclusiveLimit: 2
+    initialDelay: 30s
+    interval: 15s
+    name: error-rate
+    provider:
+      prometheus:
+        address: '{{args.prometheus}}'
+        query: |
+          clamp_min(
+            (sum(rate(vigie_requests_total{route="/v1/ask", status=~"5..", rollouts_pod_template_hash="{{args.canary-hash}}"}[{{args.window}}])) or vector(0))
+            - (sum(rate(vigie_llm_errors_total{rollouts_pod_template_hash="{{args.canary-hash}}"}[{{args.window}}])) or vector(0)),
+            0
+          )
+          / sum(rate(vigie_requests_total{route="/v1/ask", rollouts_pod_template_hash="{{args.canary-hash}}"}[{{args.window}}]))
+          and on() sum(increase(vigie_requests_total{route="/v1/ask", rollouts_pod_template_hash="{{args.canary-hash}}"}[{{args.window}}])) >= {{args.min-requests}}
+    successCondition: len(result) > 0 && result[0] < 0.01
+  - count: 4
+    failureCondition: len(result) > 0 && result[0] >= 1.5
+    failureLimit: 1
+    inconclusiveLimit: 2
+    initialDelay: 30s
+    interval: 15s
+    name: latency-p95-ratio
+    provider:
+      prometheus:
+        address: '{{args.prometheus}}'
+        query: |
+          histogram_quantile(0.95, sum by (le) (rate(vigie_request_latency_seconds_bucket{route="/v1/ask", rollouts_pod_template_hash="{{args.canary-hash}}"}[{{args.window}}])))
+          / histogram_quantile(0.95, sum by (le) (rate(vigie_request_latency_seconds_bucket{route="/v1/ask", rollouts_pod_template_hash="{{args.stable-hash}}"}[{{args.window}}])))
+          and on() sum(increase(vigie_requests_total{route="/v1/ask", rollouts_pod_template_hash="{{args.canary-hash}}"}[{{args.window}}])) >= {{args.min-requests}}
+    successCondition: len(result) > 0 && result[0] < 1.5
+  - count: 4
+    failureCondition: len(result) > 0 && result[0] >= 3
+    failureLimit: 1
+    inconclusiveLimit: 2
+    initialDelay: 30s
+    interval: 15s
+    name: blocked-rate-ratio
+    provider:
+      prometheus:
+        address: '{{args.prometheus}}'
+        query: |
+          (
+            (sum(rate(vigie_blocked_total{rollouts_pod_template_hash="{{args.canary-hash}}"}[{{args.window}}])) or vector(0))
+            / sum(rate(vigie_requests_total{route="/v1/ask", rollouts_pod_template_hash="{{args.canary-hash}}"}[{{args.window}}]))
+          )
+          / clamp_min(
+            (sum(rate(vigie_blocked_total{rollouts_pod_template_hash="{{args.stable-hash}}"}[{{args.window}}])) or vector(0))
+            / sum(rate(vigie_requests_total{route="/v1/ask", rollouts_pod_template_hash="{{args.stable-hash}}"}[{{args.window}}])),
+            0.01
+          )
+          and on() sum(increase(vigie_requests_total{route="/v1/ask", rollouts_pod_template_hash="{{args.canary-hash}}"}[{{args.window}}])) >= {{args.min-requests}}
+    successCondition: len(result) > 0 && result[0] < 3
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: vigie-api
+  namespace: vigie
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vigie-api
+  strategy:
+    canary:
+      abortScaleDownDelaySeconds: 30
+      canaryService: vigie-api-canary
+      stableService: vigie-api-stable
+      steps:
+      - setCanaryScale:
+          replicas: 1
+      - setWeight: 10
+      - pause:
+          duration: 45s
+      - analysis:
+          args:
+          - name: canary-hash
+            valueFrom:
+              podTemplateHashValue: Latest
+          - name: stable-hash
+            valueFrom:
+              podTemplateHashValue: Stable
+          templates:
+          - templateName: vigie-canary
+      - setWeight: 50
+      - pause:
+          duration: 45s
+      - analysis:
+          args:
+          - name: canary-hash
+            valueFrom:
+              podTemplateHashValue: Latest
+          - name: stable-hash
+            valueFrom:
+              podTemplateHashValue: Stable
+          templates:
+          - templateName: vigie-canary
+      - setWeight: 100
+      trafficRouting:
+        traefik:
+          weightedTraefikServiceName: vigie-api-weighted
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "9711"
+        prometheus.io/scrape: "true"
+      labels:
+        app.kubernetes.io/name: vigie-api
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - env:
+        - name: VIGIE_QDRANT_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: qdrant-api-key
+              name: vigie-secrets
+        envFrom:
+        - configMapRef:
+            name: vigie-api-config-bcfmfd8khh
+        - configMapRef:
+            name: vigie-bundle-88kth5bh88
+        image: ghcr.io/adam-blf/vigie-api:main-0000000-0
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          periodSeconds: 20
+        name: api
+        ports:
+        - containerPort: 8710
+          name: http
+        - containerPort: 9711
+          name: metrics
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: http
+          periodSeconds: 10
+        resources:
+          limits:
+            memory: 640Mi
+          requests:
+            cpu: 100m
+            memory: 512Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        startupProbe:
+          failureThreshold: 36
+          httpGet:
+            path: /healthz
+            port: http
+          periodSeconds: 5
+        volumeMounts:
+        - mountPath: /data
+          name: data
+        - mountPath: /tmp
+          name: tmp
+      securityContext:
+        fsGroup: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: vigie-api-data
+      - emptyDir:
+          sizeLimit: 512Mi
+        name: tmp
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: vigie-api
+  namespace: vigie
+spec:
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 60
+  maxReplicas: 3
+  metrics:
+  - resource:
+      name: cpu
+      target:
+        averageUtilization: 70
+        type: Utilization
+    type: Resource
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: argoproj.io/v1alpha1
+    kind: Rollout
+    name: vigie-api
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/force: Enabled
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: ollama-pull
+  namespace: vigie
+spec:
+  backoffLimit: 6
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ollama-pull
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - args:
+        - 'curl --fail --silent --show-error --max-time 3600 http://ollama:11434/api/pull
+          -d "{\"model\": \"${MODEL}\", \"stream\": false}"'
+        command:
+        - sh
+        - -c
+        env:
+        - name: MODEL
+          valueFrom:
+            configMapKeyRef:
+              key: VIGIE_OLLAMA_MODEL
+              name: vigie-bundle-88kth5bh88
+        image: docker.io/curlimages/curl:8.16.0@sha256:463eaf6072688fe96ac64fa623fe73e1dbe25d8ad6c34404a669ad3ce1f104b6
+        name: pull
+        resources:
+          limits:
+            memory: 32Mi
+          requests:
+            cpu: 10m
+            memory: 16Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+      restartPolicy: OnFailure
+      securityContext:
+        runAsGroup: 101
+        runAsNonRoot: true
+        runAsUser: 100
+        seccompProfile:
+          type: RuntimeDefault
+  ttlSecondsAfterFinished: 3600
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    kustomize.toolkit.fluxcd.io/force: Enabled
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: vigie-ingest
+  namespace: vigie
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: vigie-ingest
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - args:
+        - --out
+        - /work/corpus
+        command:
+        - vigie-ingest
+        env:
+        - name: VIGIE_CORPUS_DIR
+          value: /work/corpus
+        - name: VIGIE_QDRANT_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: qdrant-api-key
+              name: vigie-secrets
+        envFrom:
+        - configMapRef:
+            name: vigie-api-config-bcfmfd8khh
+        - configMapRef:
+            name: vigie-bundle-88kth5bh88
+        image: ghcr.io/adam-blf/vigie-api:main-0000000-0
+        name: ingest
+        resources:
+          limits:
+            memory: 768Mi
+          requests:
+            cpu: 200m
+            memory: 512Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /work
+          name: work
+        - mountPath: /tmp
+          name: tmp
+      restartPolicy: OnFailure
+      securityContext:
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      - emptyDir:
+          sizeLimit: 1Gi
+        name: work
+      - emptyDir:
+          sizeLimit: 512Mi
+        name: tmp
+  ttlSecondsAfterFinished: 86400
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    ports:
+      web:
+        http:
+          redirections:
+            entryPoint:
+              to: websecure
+              scheme: https
+              permanent: true
+    certificatesResolvers:
+      letsencrypt:
+        acme:
+          storage: /data/acme.json
+          httpChallenge:
+            entryPoint: web
+    persistence:
+      enabled: true
+      size: 128Mi
+    logs:
+      access:
+        enabled: true
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: allow-dns
+  namespace: vigie
+spec:
+  egress:
+  - ports:
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP
+    to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+  podSelector: {}
+  policyTypes:
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: api
+  namespace: vigie
+spec:
+  egress:
+  - ports:
+    - port: 6333
+    - port: 6334
+    to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: qdrant
+  - ports:
+    - port: 11434
+    to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: ollama
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: traefik
+    ports:
+    - port: 8710
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: prometheus
+    ports:
+    - port: 9711
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: vigie-api
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: default-deny
+  namespace: vigie
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: ingest
+  namespace: vigie
+spec:
+  egress:
+  - ports:
+    - port: 6333
+    - port: 6334
+    to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: qdrant
+  - ports:
+    - port: 443
+    to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except:
+        - 169.254.169.254/32
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: vigie-ingest
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: ollama
+  namespace: vigie
+spec:
+  egress:
+  - ports:
+    - port: 443
+    to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except:
+        - 169.254.169.254/32
+  ingress:
+  - from:
+    - podSelector:
+        matchExpressions:
+        - key: app.kubernetes.io/name
+          operator: In
+          values:
+          - vigie-api
+          - ollama-pull
+    ports:
+    - port: 11434
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: ollama
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: ollama-pull
+  namespace: vigie
+spec:
+  egress:
+  - ports:
+    - port: 11434
+    to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: ollama
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: ollama-pull
+  policyTypes:
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: prometheus
+  namespace: vigie
+spec:
+  egress:
+  - ports:
+    - port: 9711
+    to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: vigie-api
+  - ports:
+    - port: 9090
+    to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: prometheus
+  - ports:
+    - port: 6443
+    - port: 443
+    to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except:
+        - 169.254.169.254/32
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: argo-rollouts
+    ports:
+    - port: 9090
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: prometheus
+    ports:
+    - port: 9090
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: qdrant
+  namespace: vigie
+spec:
+  ingress:
+  - from:
+    - podSelector:
+        matchExpressions:
+        - key: app.kubernetes.io/name
+          operator: In
+          values:
+          - vigie-api
+          - vigie-ingest
+          - qdrant-snapshot
+    ports:
+    - port: 6333
+    - port: 6334
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: qdrant
+  policyTypes:
+  - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: qdrant-snapshot
+  namespace: vigie
+spec:
+  egress:
+  - ports:
+    - port: 6333
+    to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: qdrant
+  - ports:
+    - port: 443
+    to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except:
+        - 169.254.169.254/32
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: qdrant-snapshot
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: web
+  namespace: vigie
+spec:
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: traefik
+    ports:
+    - port: 8080
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: vigie-web
+  policyTypes:
+  - Ingress
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: vigie
+  namespace: vigie
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`vigie.203-0-113-10.sslip.io`) && PathPrefix(`/v1`)
+    middlewares:
+    - name: vigie-rate-limit
+    - name: vigie-body-limit
+    - name: vigie-headers
+    services:
+    - kind: TraefikService
+      name: vigie-api-weighted
+  - kind: Rule
+    match: Host(`vigie.203-0-113-10.sslip.io`) && PathPrefix(`/`)
+    middlewares:
+    - name: vigie-headers
+    services:
+    - name: vigie-web
+      port: 8080
+  tls:
+    certResolver: letsencrypt
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: vigie-body-limit
+  namespace: vigie
+spec:
+  buffering:
+    maxRequestBodyBytes: 16384
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: vigie-headers
+  namespace: vigie
+spec:
+  headers:
+    contentTypeNosniff: true
+    frameDeny: true
+    referrerPolicy: no-referrer
+    stsIncludeSubdomains: true
+    stsSeconds: 31536000
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: vigie-rate-limit
+  namespace: vigie
+spec:
+  rateLimit:
+    average: 5
+    burst: 10
+    period: 1s
+---
+apiVersion: traefik.io/v1alpha1
+kind: TraefikService
+metadata:
+  labels:
+    app.kubernetes.io/part-of: vigie
+  name: vigie-api-weighted
+  namespace: vigie
+spec:
+  weighted:
+    services:
+    - name: vigie-api-stable
+      port: 8710
+    - name: vigie-api-canary
+      port: 8710

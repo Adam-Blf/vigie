@@ -24,3 +24,11 @@ def parse_chunks(text: str) -> list[Chunk]:
 
 def read_chunks(path: Path) -> list[Chunk]:
     return parse_chunks(path.read_text(encoding="utf-8"))
+
+
+def read_corpus_dir(directory: Path) -> list[Chunk]:
+    """Every chunk of every regulation, files taken in name order for a stable result."""
+    chunks: list[Chunk] = []
+    for path in sorted(directory.glob("*.jsonl")):
+        chunks.extend(read_chunks(path))
+    return chunks

@@ -1,0 +1,5 @@
+[2026-10-02T13:41:25Z] attempt 1/1008: no capacity, next try in 600 s
+[2026-10-02T14:17:25Z] attempt 1/1: no capacity, next try in 600 s
+[2026-10-02T14:17:25Z] attempts exhausted, switch to the k3d fallback (decision 6)
+[2026-10-02T14:25:44Z] attempt 1/1008: no capacity
+[2026-10-02T14:25:44Z] next try in 600 s

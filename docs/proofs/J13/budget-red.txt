@@ -1,0 +1,21 @@
+workload                                             pods   req Mi   lim Mi   cpu m
+vigie/Deployment/ollama                                 1     3072     3584     500
+vigie/Rollout/vigie-api                                 4     2048     2816     400
+vigie/Job/vigie-ingest                                  1      512      768     200
+vigie/Deployment/mlflow                                 1      320      512      50
+vigie/Deployment/prometheus                             1      256      512      50
+vigie/StatefulSet/qdrant                                1      256      512     100
+argo-rollouts/Deployment/argo-rollouts                  1       48      128      25
+flux-system/Deployment/image-automation-controller      1       40      160      25
+flux-system/Deployment/image-reflector-controller       1       40      160      25
+flux-system/Deployment/kustomize-controller             1       40      160      25
+flux-system/Deployment/source-controller                1       40      160      25
+vigie/Deployment/vigie-web                              1       32       64      20
+vigie/CronJob/qdrant-snapshot                           1       16       32      10
+vigie/Job/ollama-pull                                   1       16       32      10
+k3s system reserve                                            1229
+total                                                         7965    10829    1465
+budget                                                        8704    10752    1800
+FAIL memory limits: 10829Mi exceeds the budget of 10752Mi
+1 problem(s)
+exit code: 1

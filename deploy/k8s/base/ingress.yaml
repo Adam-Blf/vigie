@@ -1,0 +1,72 @@
+# One origin for everything: `/v1` goes to the API through the weighted service that
+# Argo Rollouts drives, the rest goes to the PWA. Same origin means no CORS at all.
+# The base listens on the plain `web` entry point; the prod overlay moves it to TLS.
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: vigie
+spec:
+  entryPoints: [web]
+  routes:
+    - kind: Rule
+      match: PathPrefix(`/v1`)
+      middlewares:
+        - name: vigie-rate-limit
+        - name: vigie-body-limit
+        - name: vigie-headers
+      services:
+        - kind: TraefikService
+          name: vigie-api-weighted
+    - kind: Rule
+      match: PathPrefix(`/`)
+      middlewares:
+        - name: vigie-headers
+      services:
+        - name: vigie-web
+          port: 8080
+---
+# Weights are left out on purpose: Argo Rollouts writes them at every step, and a value
+# set here would be fought over by whoever applies the manifests next.
+apiVersion: traefik.io/v1alpha1
+kind: TraefikService
+metadata:
+  name: vigie-api-weighted
+spec:
+  weighted:
+    services:
+      - name: vigie-api-stable
+        port: 8710
+      - name: vigie-api-canary
+        port: 8710
+---
+# Per client IP. The API keeps its own per-token quota; this one stops a flood before
+# it costs a Python worker anything.
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: vigie-rate-limit
+spec:
+  rateLimit:
+    average: 5
+    burst: 10
+    period: 1s
+---
+# Questions are capped at 2,000 characters, so 16 KB of body is already generous.
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: vigie-body-limit
+spec:
+  buffering:
+    maxRequestBodyBytes: 16384
+---
+# The full CSP is served by nginx with the PWA; these headers also cover API answers.
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: vigie-headers
+spec:
+  headers:
+    contentTypeNosniff: true
+    frameDeny: true
+    referrerPolicy: no-referrer

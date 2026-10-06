@@ -6,13 +6,178 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
-### Changed
-
-- Bandeau de badges du README réduit à sept badges cohérents et centrés.
+## [0.12.0] - 2026-10-06
 
 ### Added
 
+- Chaîne de garde-fous de production du jalon J4 dans `src/vigie/guard/` : normalisation
+  de l'entrée (NFKC, caractères invisibles et bidirectionnels retirés, base64,
+  encodage pourcentage et entités HTML décodés), regex de référence reprise de
+  `src/guardbench`, puis classifieur DeBERTa ProtectAI v2 en ONNX int8 pour les textes
+  en anglais, sans torch.
+- Chaîne de sortie : seconde vérification des citations contre les passages retrouvés
+  et masquage des e-mails, IBAN, cartes (Luhn) et téléphones.
+- `python -m vigie.guard.prepare` télécharge l'export ONNX à une révision épinglée, le
+  quantifie en int8 par canal (738 Mo vers 244 Mo) et écrit un manifeste d'empreintes ;
+  extra `guard-model` pour cette étape de construction.
+- `python -m vigie.guard.measure` mesure la chaîne sur le jeu maison contre la nouvelle
+  section `guard` de `eval/thresholds.yaml` et sort en erreur si un seuil manque.
+- Réglages `VIGIE_GUARD_*` décrits dans `.env.example` ; `onnxruntime` et `tokenizers`
+  deviennent des dépendances directes.
+- Preuves dans `docs/proofs/J4/guard/` : sur `test`, rappel des injections directes 1,0
+  en français et en anglais, aucun faux positif, p95 de 96 ms.
+
+### Changed
+
+- `scripts/sync_version.py` réécrit aussi `__version__` de `src/vigie/__init__.py`, que
+  l'API renverra dans chaque réponse.
+
+### Removed
+
+- Réglage `guard_enabled`, jamais lu, remplacé par `VIGIE_GUARD_CLASSIFIER`.
+
+## [0.11.0] - 2026-10-06
+
+### Added
+
+- Manifestes Kubernetes du jalon J13 (`deploy/k8s/`) : base kustomize avec déploiement
+  canary Argo Rollouts et analyse Prometheus, pods durcis (Pod Security restricted),
+  politiques réseau, Qdrant avec instantanés, Ollama, MLflow, Prometheus et interface web,
+  surcouches `dev`, `prod` et `prod-loadtest`.
+- Livraison continue en mode tiré avec l'automatisation d'images de Flux (`deploy/k8s/cd/`)
+  et versions épinglées des modules dans `deploy/versions.env`.
+- Contrôle du budget du nœud unique (`python -m vigie.deploy`) : requêtes, limites et CPU
+  des manifestes rendus jugés contre les réglages `VIGIE_K8S_*`, décrits dans
+  `.env.example`.
+- Tâche `python tasks.py k8s-validate` qui rend chaque couche, la valide avec kubeconform
+  puis vérifie le budget.
+- Documentation `deploy/k8s/README.md` et preuves du jalon dans `docs/proofs/J13/`
+  (validation, budget vu rouge, essais côté serveur, grappe k3d de développement).
+
+## [0.10.0] - 2026-10-06
+
+### Added
+
+- Recherche hybride du jalon J2 (`src/vigie/retrieval/`) : embeddings denses fastembed
+  `paraphrase-multilingual-MiniLM-L12-v2` (384 dimensions) et BM25 français, vecteurs
+  nommés `dense` et `bm25` dans Qdrant, requête `query_points` à deux `prefetch` fusionnés
+  par RRF, filtre optionnel par règlement.
+- Construction idempotente de l'index : identifiant `uuid5` stable par chunk, collection
+  nommée `vigie_<id embedding>_<empreinte corpus>`, collection complète jamais recalculée,
+  point d'entrée `screen` qui met en quarantaine les chunks signalés (garde-fou du J4).
+- Commande `vigie-index` et script `python -m scripts.retrieval_demo` qui affiche le top-5
+  de trois questions.
+- Sous-commande `vigie-eval retrieval` : recall@k et MRR sur une partie du jeu de
+  référence, `dev` par défaut, articles distincts.
+- `open_retriever` choisit la recherche Qdrant ou les passages fixes selon
+  `VIGIE_RETRIEVER` ; `python -m vigie.rag.cli` passe par Qdrant sans `--passages`.
+- Réglages `VIGIE_QDRANT_PATH`, `VIGIE_COLLECTION_PREFIX`, `VIGIE_QDRANT_COLLECTION`,
+  `VIGIE_SPARSE_LANGUAGE`, `VIGIE_EMBEDDING_CACHE_DIR`, `VIGIE_RETRIEVAL_PREFETCH_LIMIT`,
+  `VIGIE_RETRIEVAL_RRF_K`, `VIGIE_RETRIEVER`, `VIGIE_STATIC_PASSAGES_PATH`, décrits dans
+  `.env.example`, et documentation `docs/retrieval.md`.
+- Preuves du jalon dans `docs/proofs/J2/` : recall@5 0,638 et MRR 0,486 sur les 47
+  questions `dev`, sous le seuil de 0,80 et 0,60, jalon noté `PARTIEL`.
+
+### Changed
+
+- Réglage `VIGIE_COLLECTION` remplacé par `VIGIE_COLLECTION_PREFIX`, le nom complet de la
+  collection étant désormais dérivé du modèle et du corpus.
+
+## [0.9.0] - 2026-10-06
+
+### Added
+
+- Infrastructure Oracle Always Free du jalon J14 (`infra/terraform/`) : nœud A1 avec
+  cloud-init durci et k3s épinglé, réseau dédié, budget à zéro euro avec alerte au premier
+  centime, bucket de sauvegarde purgé après 30 jours.
+- Tests qui figent les invariants de sécurité et de coût du code Terraform.
+- Masquage des OCID, IP publiques, adresses e-mail, clé SSH, namespace et préfixe du
+  domaine de disponibilité dans les sorties d'infrastructure (`vigie.infra.redact`).
+- Tâche `python tasks.py infra-retry` qui relance la création du nœud A1 en cas de manque
+  de capacité, toutes les 10 minutes pendant sept jours avant le repli k3d.
+- Réglages `VIGIE_INFRA_*`, décrits dans `.env.example`, et preuves masquées du jalon dans
+  `docs/proofs/J14/`.
+
+## [0.8.0] - 2026-10-06
+
+### Added
+
+- Red teaming automatisé du jalon J10 (`redteam/`) : 360 attaques générées par promptfoo
+  0.123.1 avec le Ministral local, 60 par famille, puis triées par `curate.py` en un
+  fichier de rejeu déterministe `redteam/attacks.generated.yaml`.
+- Rejeu `redteam/replay.yaml` contre l'API désignée par `VIGIE_REDTEAM_BASE_URL`, et
+  `redteam/score.py` qui juge le taux d'attaques réussies contre le seuil de 5 % et
+  indique ce qui a arrêté chaque attaque défendue.
+- Tâche `python tasks.py redteam` et réglage `VIGIE_REDTEAM_MAX_ATTACK_SUCCESS_RATE`,
+  décrits dans `.env.example`.
+- Documentation `docs/redteam.md` et preuves du jalon dans `docs/proofs/J10/` (barrière
+  verte sur un bouchon protégé, vue rouge sur un bouchon qui fuit et sur un jeton faux).
+
+### Changed
+
+- `types-PyYAML` ajouté aux dépendances de développement, `redteam` déclaré comme paquet
+  interne pour le tri des imports.
+
+## [0.7.0] - 2026-10-06
+
+### Added
+
+- Préparation du test de charge du jalon J11 : scénario Locust `load/locustfile.py` avec
+  trois profils (usage normal, attaquant, rafale), questions tirées du jeu de référence
+  avec repli intégré, et verdict calculé en fin de run contre le p95, le taux d'erreur et
+  la part d'injections non bloquées.
+- Garde-fou de charge : run refusé sans `VIGIE_LOAD_TOKEN`, refusé au-delà de 8
+  utilisateurs vers un hôte qui n'est pas la machine locale, interface web de Locust
+  refusée.
+- Tâche `python tasks.py load-local` pour le protocole local (20 utilisateurs, 5 minutes,
+  rapport dans `results/load/`).
+- Seuils de charge écrits avant mesure dans la section `load` de `eval/thresholds.yaml`,
+  avec un test qui fait échouer la construction si les valeurs par défaut de `Settings`
+  s'en écartent.
+- Documentation `docs/load-test.md` et preuves du câblage sur un bouchon local dans
+  `docs/proofs/J11/`.
+- Réglages `VIGIE_LOAD_*`, décrits dans `.env.example`.
+
+### Changed
+
+- `pyyaml` déclaré dans les dépendances de développement, dont le test du fichier de seuils
+  a besoin.
+
+## [0.6.0] - 2026-10-06
+
+### Added
+
+- Détection de drift du jalon J9 (`src/vigie/drift/`) : fenêtre glissante bornée qui ne
+  garde que des vecteurs, trois indicateurs (distance entre centroïdes, part de questions
+  hors périmètre, test de Kolmogorov-Smirnov écrit en numpy), jauges Prometheus et journal
+  des transitions d'alerte.
+- Commande `vigie-drift build-reference` et tâche `python tasks.py drift-reference` qui
+  construisent `data/drift/reference.npy` et `anchors.npy` depuis le jeu de référence et
+  le corpus, avec repli sur la fixture de test.
+- Tâche `python tasks.py test-integration` pour les tests marqués `integration`, exclus par
+  défaut, qui chargent le vrai modèle MiniLM.
+- Documentation `docs/drift.md` et preuves du jalon dans `docs/proofs/J9/` (rapport avant
+  et après un lot hors sujet, marge du test KS).
+- Réglages `VIGIE_DRIFT_*`, décrits dans `.env.example`.
+
+## [0.5.0] - 2026-10-06
+
+### Added
+
+- Banc d'essai des garde-fous du jalon J4 (`src/guardbench`, commande `guardbench`) : jeu
+  maison bilingue de 174 exemples en neuf catégories, découpage `dev` et `test` figé par
+  paire, adaptateurs regex de référence, DeBERTa v3 ProtectAI, GLiGuard 300M, Presidio,
+  Llama Guard 3 1B via Ollama et Lakera Guard, mesure chronométrée avec échauffement,
+  rapports CSV, Markdown et graphique qualité contre latence, suivi MLflow en SQLite.
+- Rapport `docs/guardrails-benchmark.md` et preuves du jalon dans `docs/proofs/J4/bench/`
+  (jeu maison `test` et contrôle `deepset/prompt-injections`).
+- Réglages `VIGIE_BENCH_*`, `VIGIE_LAKERA_URL` et `VIGIE_MLFLOW_TRACKING_URI`, décrits dans
+  `.env.example`.
 - Licence propriétaire, tous droits réservés, dépôt public en consultation seule.
+
+### Changed
+
+- Bandeau de badges du README réduit à sept badges cohérents et centrés.
 
 ## [0.4.0] - 2026-10-02
 

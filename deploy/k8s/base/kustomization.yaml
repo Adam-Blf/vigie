@@ -1,0 +1,39 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Everything the application needs in its own namespace. Cluster add-ons (Argo
+# Rollouts, Flux) live in ../system, and the Secrets are created by the CD:
+#   vigie-secrets  key qdrant-api-key  (required)
+#   vigie-backup   key par-url         (optional, Object Storage upload URL)
+namespace: vigie
+
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: vigie
+
+configurations:
+  - kustomizeconfig/rollout.yaml
+
+resources:
+  - namespace.yaml
+  - network-policies.yaml
+  - qdrant.yaml
+  - ollama.yaml
+  - mlflow.yaml
+  - prometheus.yaml
+  - web.yaml
+  - api-rollout.yaml
+  - api-analysis.yaml
+  - ingress.yaml
+  - ingest-job.yaml
+  - qdrant-snapshot.yaml
+
+configMapGenerator:
+  - name: vigie-api-config
+    envs: [config/api.env]
+  # What a model version changes at runtime (brief 11.8). Overlays merge into it, and
+  # the content hash in the generated name is what triggers a canary.
+  - name: vigie-bundle
+    envs: [config/bundle.env]
+  - name: prometheus-config
+    files: [config/prometheus.yml]

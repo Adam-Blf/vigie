@@ -1,0 +1,4 @@
+# Raw generator output and eval runs: regenerated locally, only the curated attacks are kept.
+attacks.raw.yaml
+results.json
+summary.json

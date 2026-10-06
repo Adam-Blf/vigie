@@ -1,0 +1,61 @@
+{
+  "milestone": "J11",
+  "scope": "Load test preparation. Wiring checked against a local stub; the real measurement waits for the API (J5).",
+  "commit": "00eda565770287531b46a18c58b490fc47a0901e",
+  "date": "2026-10-02",
+  "token": "throwaway value vig_stub_wiring_only accepted by the stub only, never sent to a real service",
+  "tools": {
+    "python": "3.12.13",
+    "uv": "0.11.32",
+    "locust": "2.46.6",
+    "gevent": "26.9.0",
+    "ruff": "0.16.10",
+    "mypy": "2.4.0",
+    "pytest": "9.1.1",
+    "os": "Windows 11 Pro 10.0.26200"
+  },
+  "runs": [
+    {
+      "file": "check.txt",
+      "command": "python tasks.py check",
+      "expected": "ruff, mypy strict, pytest green, 100 % coverage on src/vigie/loadtest",
+      "exit_code": 0
+    },
+    {
+      "file": "stub_run_20_users_60s.txt",
+      "command": "python docs/proofs/J11/stub_api.py 8799, then VIGIE_LOAD_TOKEN=<throwaway> python tasks.py load-local --host http://127.0.0.1:8799 -t 60s --only-summary",
+      "expected": "20 users for 60 s, verdict computed, exit 0 on the stub",
+      "exit_code": 0,
+      "stats": "stub_stats.csv"
+    },
+    {
+      "file": "verdict_red_p95_10ms.txt",
+      "command": "VIGIE_LOAD_P95_MS=10 VIGIE_LOAD_TOKEN=<throwaway> python -m locust -f load/locustfile.py --headless -u 5 -r 5 -t 15s --host http://127.0.0.1:8799 --only-summary",
+      "expected": "verdict gate seen red: threshold missed, exit 1",
+      "exit_code": 1
+    },
+    {
+      "file": "refuse_remote_9_users.txt",
+      "command": "VIGIE_LOAD_TOKEN=<throwaway> python -m locust -f load/locustfile.py --headless -u 9 -r 9 -t 5s --host https://vigie.example.org",
+      "expected": "refused before any request, exit 1",
+      "exit_code": 1
+    },
+    {
+      "file": "refuse_missing_token.txt",
+      "command": "python -m locust -f load/locustfile.py --headless -u 1 -t 2s --host http://127.0.0.1:8799",
+      "expected": "refused without VIGIE_LOAD_TOKEN, exit 1",
+      "exit_code": 1
+    },
+    {
+      "file": "refuse_web_ui.txt",
+      "command": "VIGIE_LOAD_TOKEN=<throwaway> python -m locust -f load/locustfile.py --host http://127.0.0.1:8799 --web-host 127.0.0.1 --web-port 8798",
+      "expected": "web UI refused, exit 1",
+      "exit_code": 1
+    }
+  ],
+  "notes": [
+    "Stub latencies say nothing about Vigie: the stub has no retrieval and no LLM.",
+    "Local absolute paths in raw outputs are replaced by <repo>.",
+    "Before the event loop clock fix, a 60 s run stopped after 53 s on Windows; the runs above are after the fix (60.06 s measured)."
+  ]
+}
