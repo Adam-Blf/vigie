@@ -1,0 +1,40 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Argo Rollouts at the version pinned in deploy/versions.env (ARGO_ROLLOUTS_VERSION).
+# The upstream manifest already grants the controller watch, get and update on
+# traefik.io TraefikServices, which is all the canary needs.
+namespace: argo-rollouts
+
+resources:
+  - namespace.yaml
+  - https://github.com/argoproj/argo-rollouts/releases/download/v1.10.0/install.yaml
+
+images:
+  - name: quay.io/argoproj/argo-rollouts
+    digest: sha256:187630ba722846bb8e079630364d3c29c8246a256be95785fd957b088f621c4e
+
+patches:
+  - target:
+      kind: Deployment
+      name: argo-rollouts
+    patch: |-
+      # k3s ships Traefik v3, whose CRDs live in the traefik.io group. That is the
+      # controller default since 1.8, but saying it keeps a k3s upgrade honest.
+      - op: add
+        path: /spec/template/spec/containers/0/args
+        value:
+          - --traefik-api-group=traefik.io
+          - --traefik-api-version=traefik.io/v1alpha1
+      - op: replace
+        path: /spec/template/spec/containers/0/imagePullPolicy
+        value: IfNotPresent
+      - op: replace
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 25m
+            memory: 48Mi
+          limits:
+            memory: 128Mi
+            ephemeral-storage: 1Gi

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "vigie"
-version = "0.9.0"
+version = "0.14.0"
 description = "Compliance copilot for banks: cited answers on DORA, the AI Act, GDPR and AMLR."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -27,6 +27,8 @@ dependencies = [
   "numpy>=1.26",
   "requests>=2.32",
   "pyyaml>=6.0",
+  "onnxruntime>=1.18",
+  "tokenizers>=0.19",
 ]
 
 [project.optional-dependencies]
@@ -40,6 +42,8 @@ bench = [
   "pyarrow>=15",
 ]
 tracking = ["mlflow>=2.16"]
+# Build-time only: fetch the guard classifier and quantize it (python -m vigie.guard.prepare).
+guard-model = ["huggingface-hub>=0.24", "onnx>=1.16"]
 quant = [
   "onnx>=1.16",
   "onnxruntime>=1.18",
@@ -68,6 +72,7 @@ vigie-eval = "vigie.evaluation.cli:main"
 vigie-quant = "vigie.quant.cli:main"
 guardbench = "guardbench.cli:main"
 vigie-drift = "vigie.drift.cli:main"
+vigie-index = "vigie.retrieval.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/vigie", "src/guardbench"]
@@ -96,7 +101,8 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
+# "scripts" lets tests import the standalone CI scripts by module name.
+pythonpath = [".", "scripts"]
 addopts = "-q -m 'not integration'"
 markers = ["integration: loads a real embedding model, slower than unit tests"]
 

@@ -1,0 +1,43 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Flux at the version pinned in deploy/versions.env (FLUX_VERSION), reduced to what a
+# pull-based CD needs: Git and image sources, the kustomize applier and the image
+# automation. Helm, notifications and the source watcher are dropped to save memory.
+resources:
+  - https://github.com/fluxcd/flux2/releases/download/v2.9.6/install.yaml
+
+patches:
+  - target:
+      kind: Deployment
+      name: helm-controller|notification-controller|source-watcher
+    patch: |-
+      $patch: delete
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: unused
+  # Their Services would otherwise point at nothing.
+  - target:
+      kind: Service
+      name: notification-controller|source-watcher|webhook-receiver
+    patch: |-
+      $patch: delete
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: unused
+  # The upstream limit is 1 GiB per controller, which alone would eat the node budget.
+  # GOMEMLIMIT follows the limit, so the Go runtime adapts instead of being killed.
+  - target:
+      kind: Deployment
+      namespace: flux-system
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 25m
+            memory: 40Mi
+          limits:
+            memory: 128Mi

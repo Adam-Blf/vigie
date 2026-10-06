@@ -1,0 +1,21 @@
+{
+  "repo": "protectai/deberta-v3-base-prompt-injection-v2",
+  "revision": "90c9989b1a342275dd0d1a95aad283c04e075671",
+  "source_onnx_sha256": "f0ea7f239f765aedbde7c9e163a7cb38a79c5b8853d3f76db5152172047b228c",
+  "source_onnx_bytes": 738563188,
+  "quantization": "onnxruntime dynamic, weights QInt8 per channel",
+  "files": {
+    "model.int8.onnx": {
+      "sha256": "f016c89e97205cb42b29022d429f9fe831e8a20a7b0320d3e320088850fca5ea",
+      "bytes": 244295917
+    },
+    "tokenizer.json": {
+      "sha256": "752fe5f0d5678ad563e1bd2ecc1ddf7a3ba7e2024d0ac1dba1a72975e26dff2f",
+      "bytes": 8648886
+    },
+    "config.json": {
+      "sha256": "05079f4735092040b780d459027afab413faa6eeb66a548571a58832304b60bb",
+      "bytes": 994
+    }
+  }
+}

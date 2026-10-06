@@ -1,0 +1,187 @@
+# The API is released by Argo Rollouts. Traefik shifts traffic through the weighted
+# TraefikService, Prometheus judges the canary between steps, and a failed analysis
+# aborts the rollout, which sends all traffic back to the stable pods.
+#
+# The bundle ConfigMap is generated with a content hash in its name, so changing the
+# prompt version or top_k alone produces a new pod template and starts a canary, even
+# without a new image (brief 11.8).
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: vigie-api
+spec:
+  # The HPA owns the replica count once it is running; this is only the starting point.
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vigie-api
+  strategy:
+    canary:
+      stableService: vigie-api-stable
+      canaryService: vigie-api-canary
+      abortScaleDownDelaySeconds: 30
+      trafficRouting:
+        traefik:
+          weightedTraefikServiceName: vigie-api-weighted
+      steps:
+        # One canary pod whatever the HPA says: the memory budget counts on it.
+        - setCanaryScale:
+            replicas: 1
+        - setWeight: 10
+        - pause:
+            duration: 45s
+        - analysis:
+            templates:
+              - templateName: vigie-canary
+            args: &analysis-args
+              - name: canary-hash
+                valueFrom:
+                  podTemplateHashValue: Latest
+              - name: stable-hash
+                valueFrom:
+                  podTemplateHashValue: Stable
+        - setWeight: 50
+        - pause:
+            duration: 45s
+        - analysis:
+            templates:
+              - templateName: vigie-canary
+            args: *analysis-args
+        - setWeight: 100
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: vigie-api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9711"
+        prometheus.io/path: /metrics
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: api
+          image: ghcr.io/adam-blf/vigie-api
+          envFrom:
+            - configMapRef:
+                name: vigie-api-config
+            - configMapRef:
+                name: vigie-bundle
+          env:
+            - name: VIGIE_QDRANT_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: vigie-secrets
+                  key: qdrant-api-key
+          ports:
+            - name: http
+              containerPort: 8710
+            - name: metrics
+              containerPort: 9711
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 5
+            failureThreshold: 36
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 20
+          resources:
+            # A small CPU request on purpose: the HPA reads usage against it, so
+            # 70 % is reached under real load instead of never.
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 640Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        # Usage counters and tokens live in one SQLite file in WAL mode. The volume is
+        # ReadWriteOnce, which still lets every pod of the single node mount it.
+        - name: data
+          persistentVolumeClaim:
+            claimName: vigie-api-data
+        - name: tmp
+          emptyDir:
+            sizeLimit: 512Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vigie-api-data
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vigie-api-stable
+spec:
+  selector:
+    app.kubernetes.io/name: vigie-api
+  ports:
+    - name: http
+      port: 8710
+      targetPort: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vigie-api-canary
+spec:
+  selector:
+    app.kubernetes.io/name: vigie-api
+  ports:
+    - name: http
+      port: 8710
+      targetPort: http
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: vigie-api
+spec:
+  scaleTargetRef:
+    apiVersion: argoproj.io/v1alpha1
+    kind: Rollout
+    name: vigie-api
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+  behavior:
+    # A short scale-down window so the return from 2 to 1 replica fits in the demo.
+    scaleDown:
+      stabilizationWindowSeconds: 60

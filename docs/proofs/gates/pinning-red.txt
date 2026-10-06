@@ -1,0 +1,22 @@
+$ python -m pytest -q -p no:cacheprovider tests/test_workflow_policy.py
+..F.....                                                                 [100%]
+================================== FAILURES ===================================
+___ test_every_action_is_pinned_by_full_sha_with_its_tag[workflows/ci.yml] ____
+
+path = WindowsPath('<repo>/.github/workflows/ci.yml')
+
+    @pytest.mark.parametrize("path", WORKFLOWS + ACTIONS, ids=lambda p: p.parent.name + "/" + p.name)
+    def test_every_action_is_pinned_by_full_sha_with_its_tag(path: Path) -> None:
+        for ref, rest in _uses(path):
+            if ref.startswith("./"):
+                continue
+>           assert PINNED_RE.match(ref), f"{path.name}: {ref} is not pinned by a full commit SHA"
+E           AssertionError: ci.yml: actions/checkout@v7.0.1 is not pinned by a full commit SHA
+E           assert None
+E            +  where None = <built-in method match of re.Pattern object at 0x000001E54BB60580>('actions/checkout@v7.0.1')
+E            +    where <built-in method match of re.Pattern object at 0x000001E54BB60580> = re.compile('^[\\w.-]+/[\\w./-]+@[0-9a-f]{40}$').match
+
+tests\test_workflow_policy.py:43: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_workflow_policy.py::test_every_action_is_pinned_by_full_sha_with_its_tag[workflows/ci.yml]
+exit code: 1

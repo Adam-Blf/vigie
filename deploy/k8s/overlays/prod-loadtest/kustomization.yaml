@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Production with the fake LLM, for the load test on the real node (brief 11.9).
+# Applied by hand while the Flux Kustomization vigie-prod is suspended, then removed
+# by resuming it, which brings the champion bundle back. The LLM provider can only be
+# changed here, never by an HTTP header.
+resources:
+  - ../prod
+
+configMapGenerator:
+  - name: vigie-bundle
+    behavior: merge
+    literals:
+      - VIGIE_BUNDLE_VERSION=loadtest
+      - VIGIE_LLM_PROVIDER=fake

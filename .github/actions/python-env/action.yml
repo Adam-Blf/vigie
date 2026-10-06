@@ -1,0 +1,36 @@
+name: python-env
+description: Install uv and Python 3.12, then the project with the requested extras.
+
+inputs:
+  extras:
+    description: Comma separated optional dependency groups of pyproject.toml.
+    required: false
+    default: dev
+
+runs:
+  using: composite
+  steps:
+    - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      with:
+        version: "0.11.32"
+        python-version: "3.12"
+        enable-cache: true
+        cache-dependency-glob: |
+          pyproject.toml
+          uv.lock
+    - name: Install the project
+      shell: bash
+      env:
+        EXTRAS: ${{ inputs.extras }}
+      # A versioned uv.lock is installed as is, so the CI tests exactly what was reviewed.
+      # Before the lock exists, the ranges of pyproject.toml are resolved instead.
+      run: |
+        if [ -f uv.lock ]; then
+          args=()
+          IFS=',' read -ra groups <<< "$EXTRAS"
+          for group in "${groups[@]}"; do args+=(--extra "$group"); done
+          uv sync --frozen "${args[@]}"
+        else
+          uv venv
+          uv pip install -e ".[${EXTRAS}]"
+        fi

@@ -1,0 +1,1287 @@
+{
+  "split": "dev",
+  "k": 5,
+  "depth": 20,
+  "questions": 47,
+  "recall_at_k": 0.574468085106383,
+  "mrr": 0.4349805041294403,
+  "rows": [
+    {
+      "id": "dora-03",
+      "expected": [
+        "DORA:64"
+      ],
+      "retrieved": [
+        "DORA:2",
+        "DORA:31",
+        "DORA:23",
+        "DORA:35",
+        "DORA:28",
+        "AMLR:77",
+        "AMLR:62",
+        "DORA:30",
+        "AMLR:27",
+        "DORA:4",
+        "DORA:42",
+        "DORA:12",
+        "DORA:39",
+        "DORA:5",
+        "AMLR:67",
+        "AMLR:63"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "id": "dora-04",
+      "expected": [
+        "DORA:4"
+      ],
+      "retrieved": [
+        "DORA:2",
+        "DORA:31",
+        "DORA:28",
+        "DORA:26",
+        "AMLR:21",
+        "DORA:5",
+        "AMLR:2",
+        "DORA:35",
+        "AMLR:80",
+        "DORA:3",
+        "DORA:4",
+        "DORA:14",
+        "AMLR:38",
+        "AMLR:4"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.09090909090909091
+    },
+    {
+      "id": "dora-05",
+      "expected": [
+        "DORA:12"
+      ],
+      "retrieved": [
+        "DORA:12",
+        "DORA:56",
+        "RGPD:25",
+        "RGPD:9",
+        "RGPD:38",
+        "AMLR:75",
+        "DORA:14",
+        "DORA:11",
+        "DORA:30",
+        "DORA:1",
+        "DORA:15",
+        "DORA:28",
+        "DORA:9",
+        "DORA:3",
+        "DORA:37",
+        "DORA:5",
+        "DORA:41",
+        "DORA:7",
+        "AMLR:11",
+        "RGPD:1"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "id": "dora-06",
+      "expected": [
+        "DORA:13"
+      ],
+      "retrieved": [
+        "DORA:28",
+        "DORA:6",
+        "DORA:17",
+        "RGPD:72",
+        "DORA:13",
+        "RGPD:73",
+        "DORA:19",
+        "AMLR:53",
+        "DORA:29",
+        "DORA:10",
+        "DORA:23",
+        "DORA:14",
+        "DORA:21",
+        "DORA:5",
+        "DORA:18",
+        "RGPD:65",
+        "DORA:26"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 0.2
+    },
+    {
+      "id": "dora-08",
+      "expected": [
+        "DORA:18"
+      ],
+      "retrieved": [
+        "DORA:17",
+        "DORA:23",
+        "DORA:19",
+        "DORA:18",
+        "AIACT:51",
+        "DORA:26",
+        "DORA:13",
+        "AMLR:68",
+        "DORA:10",
+        "AMLR:80",
+        "DORA:24",
+        "AIACT:2",
+        "DORA:8",
+        "DORA:14",
+        "DORA:35",
+        "DORA:29",
+        "AIACT:74",
+        "AMLR:10",
+        "AIACT:52"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 0.25
+    },
+    {
+      "id": "dora-09",
+      "expected": [
+        "DORA:19"
+      ],
+      "retrieved": [
+        "DORA:19",
+        "DORA:14",
+        "DORA:23",
+        "AMLR:39",
+        "DORA:13",
+        "AMLR:80",
+        "DORA:18",
+        "DORA:10",
+        "DORA:17",
+        "DORA:28",
+        "DORA:22",
+        "DORA:26",
+        "DORA:6",
+        "AMLR:38",
+        "DORA:21",
+        "DORA:2",
+        "AMLR:71",
+        "DORA:20",
+        "AIACT:IV"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "id": "dora-11",
+      "expected": [
+        "DORA:28"
+      ],
+      "retrieved": [
+        "DORA:2",
+        "AMLR:24",
+        "AMLR:80",
+        "AMLR:39",
+        "DORA:28",
+        "AMLR:38",
+        "DORA:58",
+        "AMLR:18",
+        "DORA:23",
+        "AIACT:74",
+        "AMLR:19",
+        "DORA:43",
+        "DORA:45",
+        "DORA:32",
+        "AMLR:66",
+        "DORA:41",
+        "DORA:30"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 0.2
+    },
+    {
+      "id": "dora-12",
+      "expected": [
+        "DORA:28"
+      ],
+      "retrieved": [
+        "AMLR:39",
+        "DORA:6",
+        "DORA:5",
+        "DORA:19",
+        "DORA:2",
+        "DORA:37",
+        "DORA:28",
+        "DORA:35",
+        "DORA:26",
+        "AMLR:80",
+        "DORA:3",
+        "AIACT:74",
+        "DORA:31",
+        "AIACT:IV",
+        "DORA:13"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.14285714285714285
+    },
+    {
+      "id": "dora-14",
+      "expected": [
+        "DORA:31"
+      ],
+      "retrieved": [
+        "DORA:28",
+        "DORA:35",
+        "DORA:32",
+        "DORA:5",
+        "DORA:26",
+        "DORA:42",
+        "DORA:19",
+        "DORA:13",
+        "DORA:31",
+        "DORA:33",
+        "AMLR:39",
+        "DORA:29",
+        "DORA:36"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.1111111111111111
+    },
+    {
+      "id": "dora-15",
+      "expected": [
+        "DORA:45"
+      ],
+      "retrieved": [
+        "DORA:45",
+        "AIACT:108",
+        "AMLR:40",
+        "AIACT:110",
+        "DORA:13",
+        "AIACT:109",
+        "AMLR:39",
+        "AIACT:107",
+        "DORA:28",
+        "AIACT:103",
+        "AIACT:104",
+        "DORA:5",
+        "AIACT:102",
+        "DORA:14",
+        "AIACT:106",
+        "DORA:26",
+        "AIACT:105",
+        "AIACT:84"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "id": "aiact-03",
+      "expected": [
+        "AIACT:4"
+      ],
+      "retrieved": [
+        "AIACT:4",
+        "DORA:7",
+        "AIACT:60",
+        "RGPD:47",
+        "AIACT:25",
+        "AIACT:91",
+        "AIACT:2",
+        "AIACT:17",
+        "AIACT:22",
+        "AIACT:XI",
+        "AIACT:16",
+        "RGPD:5",
+        "AIACT:54",
+        "DORA:38",
+        "AIACT:20",
+        "AIACT:75",
+        "DORA:8",
+        "AIACT:26",
+        "AIACT:28"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "id": "aiact-04",
+      "expected": [
+        "AIACT:9"
+      ],
+      "retrieved": [
+        "AIACT:60",
+        "AIACT:49",
+        "AIACT:80",
+        "AIACT:9",
+        "AIACT:17",
+        "AIACT:16",
+        "AIACT:11",
+        "AIACT:26",
+        "AIACT:79",
+        "AIACT:18",
+        "AIACT:20",
+        "AIACT:55",
+        "AIACT:111",
+        "AIACT:47",
+        "AIACT:14",
+        "AIACT:23",
+        "AIACT:2"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 0.25
+    },
+    {
+      "id": "aiact-05",
+      "expected": [
+        "AIACT:10"
+      ],
+      "retrieved": [
+        "AIACT:10",
+        "AIACT:12",
+        "AIACT:XIII",
+        "AIACT:V",
+        "AIACT:11",
+        "AIACT:111",
+        "AIACT:51",
+        "AIACT:73",
+        "AIACT:55",
+        "AIACT:XII",
+        "AIACT:80",
+        "AIACT:52",
+        "AIACT:XI",
+        "AIACT:53",
+        "DORA:31",
+        "AIACT:16",
+        "AIACT:61",
+        "AIACT:26",
+        "DORA:12",
+        "AIACT:8"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "id": "aiact-06",
+      "expected": [
+        "AIACT:12"
+      ],
+      "retrieved": [
+        "AIACT:19",
+        "AIACT:12",
+        "AIACT:26",
+        "AIACT:13",
+        "AIACT:20",
+        "AIACT:16",
+        "AIACT:49",
+        "AIACT:21",
+        "AIACT:11",
+        "AIACT:22",
+        "AIACT:15",
+        "AIACT:VIII",
+        "AIACT:42",
+        "AIACT:25",
+        "AIACT:9",
+        "AIACT:72",
+        "AIACT:78"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 0.5
+    },
+    {
+      "id": "aiact-07",
+      "expected": [
+        "AIACT:13"
+      ],
+      "retrieved": [
+        "AIACT:49",
+        "AIACT:23",
+        "AIACT:22",
+        "AIACT:26",
+        "AIACT:48",
+        "AIACT:20",
+        "AIACT:16",
+        "AIACT:21",
+        "AIACT:80",
+        "AIACT:24",
+        "AIACT:VIII",
+        "AIACT:73",
+        "AIACT:25",
+        "AIACT:2",
+        "AIACT:11",
+        "AIACT:17",
+        "AIACT:60",
+        "AIACT:54"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "id": "aiact-08",
+      "expected": [
+        "AIACT:14"
+      ],
+      "retrieved": [
+        "AIACT:60",
+        "AIACT:25",
+        "AIACT:80",
+        "AIACT:12",
+        "AIACT:26",
+        "AIACT:23",
+        "AIACT:75",
+        "AIACT:7",
+        "AIACT:52",
+        "AIACT:49",
+        "AIACT:20",
+        "AIACT:43",
+        "AIACT:4",
+        "AIACT:16",
+        "AIACT:5",
+        "AIACT:24"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "id": "aiact-10",
+      "expected": [
+        "AIACT:26"
+      ],
+      "retrieved": [
+        "AIACT:26",
+        "AIACT:14",
+        "AIACT:13",
+        "AIACT:20",
+        "AIACT:27",
+        "AIACT:22",
+        "AIACT:9",
+        "AIACT:50",
+        "AIACT:25",
+        "AIACT:60",
+        "AIACT:IV"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "id": "aiact-12",
+      "expected": [
+        "AIACT:50"
+      ],
+      "retrieved": [
+        "AIACT:4",
+        "AIACT:5",
+        "AIACT:50",
+        "DORA:39",
+        "AIACT:21",
+        "DORA:38",
+        "AIACT:26",
+        "AIACT:9",
+        "AIACT:75",
+        "RGPD:52",
+        "AIACT:VIII",
+        "AMLR:75",
+        "AIACT:91",
+        "AIACT:15",
+        "AIACT:25",
+        "AIACT:92",
+        "AIACT:IV",
+        "AIACT:53",
+        "AMLR:81"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 0.3333333333333333
+    },
+    {
+      "id": "aiact-14",
+      "expected": [
+        "AIACT:99"
+      ],
+      "retrieved": [
+        "AIACT:101",
+        "DORA:35",
+        "AIACT:5",
+        "AIACT:26",
+        "AMLR:52",
+        "AIACT:60",
+        "AIACT:67",
+        "AIACT:94",
+        "DORA:12",
+        "AIACT:80",
+        "RGPD:36",
+        "DORA:22",
+        "AIACT:82",
+        "AIACT:99",
+        "RGPD:21",
+        "AMLR:25"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.07142857142857142
+    },
+    {
+      "id": "aiact-15",
+      "expected": [
+        "AIACT:73"
+      ],
+      "retrieved": [
+        "AIACT:73",
+        "AIACT:60",
+        "AIACT:80",
+        "AIACT:26",
+        "AIACT:20",
+        "AIACT:36",
+        "AIACT:49",
+        "AIACT:17",
+        "AIACT:52",
+        "AMLR:24",
+        "AIACT:2",
+        "AIACT:25",
+        "AIACT:16",
+        "AIACT:7",
+        "AIACT:55",
+        "AIACT:44"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "id": "rgpd-01",
+      "expected": [
+        "RGPD:6"
+      ],
+      "retrieved": [
+        "AMLR:76",
+        "RGPD:83",
+        "AMLR:22",
+        "RGPD:6",
+        "DORA:28",
+        "DORA:58",
+        "RGPD:15",
+        "RGPD:5",
+        "RGPD:85",
+        "RGPD:10",
+        "RGPD:37",
+        "RGPD:17",
+        "DORA:56",
+        "AIACT:59",
+        "AIACT:71",
+        "AMLR:23",
+        "RGPD:14",
+        "DORA:23",
+        "RGPD:4"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 0.25
+    },
+    {
+      "id": "rgpd-02",
+      "expected": [
+        "RGPD:33"
+      ],
+      "retrieved": [
+        "RGPD:33",
+        "AIACT:73",
+        "DORA:35",
+        "RGPD:58",
+        "DORA:22",
+        "RGPD:52",
+        "RGPD:68",
+        "AIACT:81",
+        "RGPD:54",
+        "AIACT:57",
+        "RGPD:75",
+        "DORA:31",
+        "AIACT:88",
+        "AIACT:52",
+        "AMLR:78",
+        "RGPD:79",
+        "AIACT:5",
+        "DORA:6",
+        "DORA:42"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "id": "rgpd-03",
+      "expected": [
+        "RGPD:17"
+      ],
+      "retrieved": [
+        "AMLR:39",
+        "DORA:31",
+        "AMLR:79",
+        "DORA:35",
+        "AMLR:22",
+        "RGPD:33",
+        "AIACT:33",
+        "RGPD:34",
+        "AMLR:77",
+        "AMLR:19",
+        "AMLR:27",
+        "AIACT:12",
+        "AMLR:67",
+        "AMLR:23",
+        "RGPD:96",
+        "AMLR:62"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "id": "rgpd-04",
+      "expected": [
+        "RGPD:7"
+      ],
+      "retrieved": [
+        "RGPD:7",
+        "RGPD:49",
+        "AIACT:61",
+        "AIACT:60",
+        "RGPD:8",
+        "RGPD:46",
+        "RGPD:9",
+        "RGPD:17",
+        "RGPD:22",
+        "RGPD:28",
+        "AIACT:48",
+        "RGPD:18",
+        "RGPD:33",
+        "RGPD:21",
+        "RGPD:13",
+        "RGPD:16",
+        "RGPD:14",
+        "RGPD:15",
+        "RGPD:37",
+        "RGPD:48"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "id": "rgpd-05",
+      "expected": [
+        "RGPD:9"
+      ],
+      "retrieved": [
+        "AMLR:22",
+        "RGPD:9",
+        "DORA:28",
+        "RGPD:88",
+        "RGPD:14",
+        "RGPD:4",
+        "RGPD:13",
+        "RGPD:36",
+        "AIACT:74",
+        "AMLR:80",
+        "DORA:26",
+        "AIACT:7",
+        "RGPD:35",
+        "AMLR:III",
+        "AMLR:38",
+        "AIACT:59",
+        "AMLR:76",
+        "AMLR:19",
+        "RGPD:17"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 0.5
+    },
+    {
+      "id": "rgpd-07",
+      "expected": [
+        "RGPD:15"
+      ],
+      "retrieved": [
+        "RGPD:15",
+        "RGPD:18",
+        "AIACT:78",
+        "RGPD:22",
+        "RGPD:80",
+        "RGPD:1",
+        "AMLR:42",
+        "DORA:55",
+        "RGPD:34",
+        "AMLR:62",
+        "RGPD:20",
+        "RGPD:49",
+        "RGPD:86",
+        "RGPD:21",
+        "RGPD:13",
+        "RGPD:46",
+        "AMLR:45",
+        "AIACT:77",
+        "RGPD:32",
+        "AMLR:2"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "id": "rgpd-09",
+      "expected": [
+        "RGPD:22"
+      ],
+      "retrieved": [
+        "AMLR:23",
+        "AIACT:61",
+        "AIACT:52",
+        "AMLR:75",
+        "DORA:26",
+        "AMLR:4",
+        "RGPD:56",
+        "AIACT:74",
+        "AMLR:22",
+        "RGPD:60",
+        "AMLR:39",
+        "DORA:19",
+        "AIACT:26",
+        "AMLR:84",
+        "RGPD:22",
+        "AMLR:82",
+        "AMLR:38",
+        "DORA:28",
+        "AMLR:35",
+        "AIACT:60"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.06666666666666667
+    },
+    {
+      "id": "rgpd-11",
+      "expected": [
+        "RGPD:28"
+      ],
+      "retrieved": [
+        "RGPD:28",
+        "AMLR:18",
+        "RGPD:2",
+        "RGPD:36",
+        "RGPD:29",
+        "RGPD:44",
+        "RGPD:18",
+        "DORA:35",
+        "RGPD:37",
+        "RGPD:27",
+        "RGPD:22",
+        "RGPD:4",
+        "RGPD:79",
+        "RGPD:26",
+        "RGPD:39",
+        "RGPD:60",
+        "RGPD:19",
+        "RGPD:42",
+        "RGPD:48"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "id": "rgpd-14",
+      "expected": [
+        "RGPD:83"
+      ],
+      "retrieved": [
+        "DORA:35",
+        "DORA:7",
+        "AMLR:80",
+        "AIACT:93",
+        "DORA:4",
+        "AMLR:29",
+        "AIACT:101",
+        "AMLR:30",
+        "AMLR:31",
+        "DORA:16",
+        "RGPD:35",
+        "AMLR:19",
+        "RGPD:21",
+        "AMLR:25",
+        "AMLR:2",
+        "AMLR:6",
+        "DORA:2",
+        "AIACT:5"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "id": "rgpd-15",
+      "expected": [
+        "RGPD:37"
+      ],
+      "retrieved": [
+        "AIACT:63",
+        "AMLR:3",
+        "DORA:31",
+        "RGPD:47",
+        "AIACT:67",
+        "AMLR:18",
+        "RGPD:54",
+        "DORA:28",
+        "DORA:30",
+        "DORA:35",
+        "DORA:42",
+        "RGPD:53",
+        "RGPD:88",
+        "AMLR:17",
+        "AIACT:99",
+        "DORA:55",
+        "RGPD:4"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "id": "amlr-01",
+      "expected": [
+        "AMLR:3"
+      ],
+      "retrieved": [
+        "DORA:2",
+        "AMLR:39",
+        "AMLR:38",
+        "AMLR:2",
+        "AMLR:19",
+        "AMLR:34",
+        "AMLR:35",
+        "DORA:23",
+        "DORA:28",
+        "AMLR:10",
+        "DORA:26",
+        "AMLR:21",
+        "AMLR:36",
+        "AMLR:23",
+        "AMLR:4",
+        "AMLR:79",
+        "AMLR:31"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "id": "amlr-02",
+      "expected": [
+        "AMLR:20"
+      ],
+      "retrieved": [
+        "AMLR:23",
+        "AMLR:41",
+        "AMLR:22",
+        "AMLR:3",
+        "AMLR:19",
+        "AMLR:75",
+        "AMLR:74",
+        "AMLR:26",
+        "AMLR:13",
+        "AMLR:III",
+        "AMLR:25",
+        "AMLR:62",
+        "AMLR:2",
+        "AMLR:78",
+        "AMLR:20",
+        "DORA:62",
+        "AMLR:64",
+        "RGPD:88",
+        "AMLR:12"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.06666666666666667
+    },
+    {
+      "id": "amlr-03",
+      "expected": [
+        "AMLR:80"
+      ],
+      "retrieved": [
+        "AMLR:80",
+        "AMLR:V",
+        "AMLR:74",
+        "AMLR:19",
+        "AMLR:39",
+        "AMLR:2",
+        "AMLR:4",
+        "AMLR:38",
+        "AMLR:40",
+        "AMLR:IV",
+        "AMLR:64",
+        "AMLR:I",
+        "AMLR:62",
+        "AMLR:37"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "id": "amlr-04",
+      "expected": [
+        "AMLR:90"
+      ],
+      "retrieved": [
+        "AMLR:80",
+        "DORA:2",
+        "AIACT:74",
+        "AMLR:19",
+        "AMLR:38",
+        "AMLR:2",
+        "AMLR:4",
+        "AMLR:39",
+        "AMLR:21",
+        "AMLR:70",
+        "AMLR:52",
+        "DORA:28",
+        "AMLR:73",
+        "DORA:26",
+        "AMLR:86",
+        "AMLR:5",
+        "AMLR:71",
+        "AMLR:20"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "id": "amlr-07",
+      "expected": [
+        "AMLR:42"
+      ],
+      "retrieved": [
+        "AMLR:42",
+        "RGPD:18",
+        "AMLR:19",
+        "RGPD:22",
+        "RGPD:34",
+        "AMLR:45",
+        "AMLR:80",
+        "RGPD:80",
+        "RGPD:49",
+        "RGPD:21",
+        "RGPD:13",
+        "AMLR:38",
+        "RGPD:15",
+        "AMLR:27",
+        "AMLR:2"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "id": "amlr-08",
+      "expected": [
+        "AMLR:45"
+      ],
+      "retrieved": [
+        "DORA:35",
+        "AIACT:3",
+        "AMLR:45",
+        "AMLR:2",
+        "DORA:31",
+        "AMLR:42",
+        "AMLR:8",
+        "DORA:28",
+        "RGPD:4",
+        "DORA:22",
+        "AMLR:43",
+        "DORA:17",
+        "RGPD:33",
+        "AMLR:11",
+        "DORA:39",
+        "DORA:19"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 0.3333333333333333
+    },
+    {
+      "id": "amlr-09",
+      "expected": [
+        "AMLR:52"
+      ],
+      "retrieved": [
+        "AMLR:51",
+        "AMLR:52",
+        "AMLR:62",
+        "AMLR:53",
+        "AMLR:44",
+        "AMLR:61",
+        "AMLR:I",
+        "AMLR:63",
+        "DORA:35",
+        "AMLR:54",
+        "AMLR:34",
+        "AMLR:III",
+        "RGPD:4",
+        "AMLR:55",
+        "AMLR:60",
+        "RGPD:10",
+        "AMLR:64",
+        "AIACT:26",
+        "AMLR:22",
+        "AMLR:II"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 0.5
+    },
+    {
+      "id": "amlr-10",
+      "expected": [
+        "AMLR:69"
+      ],
+      "retrieved": [
+        "AMLR:78",
+        "RGPD:8",
+        "DORA:42",
+        "AMLR:77",
+        "AIACT:57",
+        "AIACT:91",
+        "AMLR:26",
+        "DORA:35",
+        "DORA:8",
+        "AIACT:33",
+        "AIACT:52",
+        "AIACT:112",
+        "DORA:57",
+        "AMLR:50",
+        "RGPD:97",
+        "DORA:31",
+        "AIACT:67",
+        "AMLR:18"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "id": "amlr-12",
+      "expected": [
+        "AMLR:73"
+      ],
+      "retrieved": [
+        "AMLR:69",
+        "AMLR:22",
+        "AMLR:33",
+        "AMLR:23",
+        "AMLR:70",
+        "AMLR:87",
+        "AMLR:19",
+        "AMLR:75",
+        "AMLR:21",
+        "AMLR:20",
+        "AMLR:24",
+        "AMLR:35",
+        "DORA:19",
+        "AIACT:90"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "id": "amlr-14",
+      "expected": [
+        "AMLR:33"
+      ],
+      "retrieved": [
+        "AMLR:19",
+        "AMLR:80",
+        "AMLR:II",
+        "AMLR:23",
+        "DORA:26",
+        "AMLR:10",
+        "AIACT:74",
+        "AMLR:I",
+        "AMLR:33",
+        "AIACT:99",
+        "AMLR:4",
+        "AMLR:5",
+        "RGPD:35",
+        "AIACT:7",
+        "AIACT:2",
+        "DORA:28"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.1111111111111111
+    },
+    {
+      "id": "trap-01",
+      "expected": [
+        "DORA:19"
+      ],
+      "retrieved": [
+        "DORA:19",
+        "DORA:20",
+        "DORA:21",
+        "DORA:22",
+        "DORA:23",
+        "DORA:17",
+        "DORA:35",
+        "DORA:18",
+        "DORA:1",
+        "AMLR:70",
+        "DORA:5",
+        "DORA:54",
+        "DORA:13",
+        "DORA:26",
+        "RGPD:59",
+        "DORA:3",
+        "DORA:10",
+        "AMLR:80",
+        "DORA:50",
+        "DORA:14"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "id": "trap-02",
+      "expected": [
+        "DORA:26"
+      ],
+      "retrieved": [
+        "DORA:26",
+        "DORA:27",
+        "DORA:3",
+        "AIACT:12",
+        "DORA:25",
+        "DORA:24",
+        "DORA:59",
+        "AIACT:76",
+        "AIACT:60",
+        "AMLR:16"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "id": "trap-04",
+      "expected": [
+        "AIACT:5"
+      ],
+      "retrieved": [
+        "AIACT:5",
+        "AMLR:3",
+        "AIACT:89",
+        "AIACT:50",
+        "AIACT:10",
+        "AMLR:6",
+        "AIACT:4",
+        "AIACT:68",
+        "AIACT:III",
+        "AMLR:79",
+        "AIACT:59",
+        "AIACT:69",
+        "AIACT:26",
+        "AMLR:69",
+        "AIACT:3",
+        "AIACT:15",
+        "AIACT:21",
+        "AIACT:92"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "id": "trap-05",
+      "expected": [
+        "AIACT:50"
+      ],
+      "retrieved": [
+        "AIACT:60",
+        "AIACT:83",
+        "AIACT:50",
+        "AIACT:76",
+        "AIACT:36",
+        "AIACT:20",
+        "AIACT:XIII",
+        "AIACT:26",
+        "AIACT:45",
+        "AIACT:10",
+        "AIACT:101",
+        "AIACT:16",
+        "RGPD:18",
+        "AMLR:2",
+        "RGPD:65",
+        "AIACT:14",
+        "RGPD:17"
+      ],
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 0.3333333333333333
+    },
+    {
+      "id": "trap-07",
+      "expected": [
+        "RGPD:32"
+      ],
+      "retrieved": [
+        "AMLR:19",
+        "RGPD:35",
+        "AIACT:91",
+        "AMLR:40",
+        "DORA:19",
+        "RGPD:37",
+        "RGPD:38",
+        "AMLR:69",
+        "AIACT:100",
+        "RGPD:88",
+        "AMLR:39",
+        "AMLR:80",
+        "AMLR:37",
+        "RGPD:9",
+        "RGPD:32",
+        "RGPD:79"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.06666666666666667
+    },
+    {
+      "id": "trap-08",
+      "expected": [
+        "RGPD:34"
+      ],
+      "retrieved": [
+        "AMLR:19",
+        "AIACT:12",
+        "AIACT:61",
+        "DORA:39",
+        "AIACT:14",
+        "AMLR:39",
+        "RGPD:96",
+        "AIACT:73",
+        "RGPD:33",
+        "AIACT:60",
+        "AMLR:23",
+        "DORA:31",
+        "DORA:10",
+        "DORA:35",
+        "DORA:28",
+        "DORA:42"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "id": "trap-09",
+      "expected": [
+        "AMLR:73"
+      ],
+      "retrieved": [
+        "DORA:55",
+        "AIACT:50",
+        "AMLR:19",
+        "AMLR:76",
+        "AMLR:22",
+        "DORA:62",
+        "AMLR:20",
+        "AMLR:82",
+        "AIACT:78",
+        "AMLR:34",
+        "AMLR:23",
+        "DORA:50",
+        "RGPD:33",
+        "DORA:60",
+        "AMLR:73",
+        "AIACT:XIII",
+        "RGPD:15",
+        "DORA:61",
+        "DORA:22"
+      ],
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.06666666666666667
+    }
+  ]
+}

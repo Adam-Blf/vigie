@@ -110,6 +110,48 @@ torch dans l'image, et les questions des utilisateurs ne doivent pas quitter
 l'infrastructure. La mesure de cette chaîne contre les seuils du brief est publiée dans la
 section suivante, ajoutée avec le code de production.
 
+## Chaîne de production et mesure contre les seuils
+
+Le code vit dans `src/vigie/guard/`. Une question passe dans cet ordre :
+
+1. **Normalisation** (`normalize.py`) : NFKC, retrait des caractères invisibles et
+   bidirectionnels (dont le bloc des étiquettes Unicode), décodage du base64, de
+   l'encodage pourcentage et des entités HTML. Les charges décodées sont lues par les
+   garde-fous au même titre que le texte visible.
+2. **Regex de référence**, reprise telle quelle de `src/guardbench` : la production
+   exécute exactement le détecteur mesuré plus haut.
+3. **DeBERTa ProtectAI v2 en ONNX int8**, seulement pour les textes que l'aiguillage de
+   langue (`lang.py`, mots-outils français et anglais) juge anglais. Le fichier vient de
+   l'export ONNX publié par ProtectAI, à une révision épinglée, quantifié par
+   `python -m vigie.guard.prepare` : 738 Mo en fp32, 244 Mo en int8, ni torch ni
+   transformers dans l'image de l'API.
+
+La sortie repasse par une seconde vérification des citations et par le masquage des
+données personnelles (`output.py`, `pii.py`).
+
+Mesure sur le découpage `test` (68 exemples), par `python -m vigie.guard.measure`,
+contre la section `guard` de `eval/thresholds.yaml` écrite avant la mesure :
+
+| Mesure | Seuil | Résultat |
+|---|---|---|
+| Rappel injections directes, français | au moins 0,90 | 1,00 |
+| Rappel injections directes, anglais | au moins 0,90 | 1,00 |
+| Faux positifs `benign` | au plus 2 % | 0 % |
+| Faux positifs `benign_tricky` | au plus 10 % | 0 % |
+| p95 de la chaîne, normalisation comprise | sous 200 ms | 96 ms |
+
+Deux itérations ont été nécessaires. La première, quantifiée par tenseur (le réglage
+par défaut d'ONNX Runtime), plafonnait à 0,75 de rappel en anglais : le modèle quantifié
+rendait des scores proches de zéro sur toutes les attaques, alors que l'export fp32
+donnait 1,0 sur les mêmes textes. La quantification par canal rétablit les décisions du
+modèle d'origine. Les deux sorties sont dans `docs/proofs/J4/guard/`.
+
+Ce que la chaîne laisse passer sur `test` : une injection indirecte en anglais, le
+jeu de rôle de la grand-mère (français et anglais), deux demandes de prompt système en
+français et les quatre contenus nuisibles, qu'aucun des deux détecteurs ne couvre. Sur
+`dev`, la qualité est la même mais le p95 est monté à 252 ms pendant que la machine
+était chargée par d'autres travaux ; la latence est à refaire sur la VM.
+
 ## Reproduire
 
 ```sh

@@ -77,6 +77,11 @@ retenue.** Elle est appliquée dans `src/vigie/config.py` (`dense_variant = "int
 variable `VIGIE_DENSE_VARIANT`), et un test vérifie que ce réglage reste égal à la décision
 enregistrée dans `docs/proofs/J12/embedding-results.json`.
 
+Reste à faire, noté dans `docs/progress.md` : la recherche hybride du J2
+(`vigie.retrieval`) charge aujourd'hui le modèle dense par fastembed. Elle doit lire
+`dense_variant` et charger le fichier int8 exporté ici, puis réindexer, puisque les
+vecteurs changent.
+
 Barrière vue rouge : la même mesure avec une copie du seuil dégradée (`max_size_ratio`
 ramené à 0,2) retient fp32 et donne le motif « int8 file is 0.25 of fp32, above 0.20 »
 (`docs/proofs/J12/embed-gate-degraded-threshold.txt`).

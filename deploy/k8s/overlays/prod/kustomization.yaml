@@ -1,0 +1,48 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# The Oracle Always Free node, synchronised by Flux (deploy/k8s/cd). TLS comes from
+# Let's Encrypt through Traefik's ACME resolver, HTTP-01 challenge on port 80, and
+# every other request on port 80 is redirected to HTTPS with a 308.
+resources:
+  - ../../base
+  - traefik-config.yaml
+  - public-host.yaml
+
+# Flux rewrites the two tags below through the $imagepolicy markers. The initial value
+# matches the policy pattern but no real build, so nothing runs before the first push.
+images:
+  - name: ghcr.io/adam-blf/vigie-api
+    newTag: main-0000000-0 # {"$imagepolicy": "flux-system:vigie-api:tag"}
+  - name: ghcr.io/adam-blf/vigie-web
+    newTag: main-0000000-0 # {"$imagepolicy": "flux-system:vigie-web:tag"}
+
+patches:
+  - path: ingress-tls.yaml
+  - target:
+      kind: Middleware
+      name: vigie-headers
+    patch: |-
+      - op: add
+        path: /spec/headers/stsSeconds
+        value: 31536000
+      - op: add
+        path: /spec/headers/stsIncludeSubdomains
+        value: true
+
+# The public host name is written once, in public-host.yaml, and copied into every
+# route rule. It sits between the first pair of backquotes of each match expression.
+replacements:
+  - source:
+      kind: ConfigMap
+      name: vigie-public-host
+      fieldPath: data.host
+    targets:
+      - select:
+          kind: IngressRoute
+          name: vigie
+        fieldPaths:
+          - spec.routes.*.match
+        options:
+          delimiter: "`"
+          index: 1

@@ -1,0 +1,20 @@
+$ <tmp>/actionlint.exe -version
+1.7.12
+installed by downloading from release page
+built with go1.26.1 compiler for windows/amd64
+exit code: 0
+$ <tmp>/actionlint.exe -verbose -no-color -shellcheck <tmp>/sc/Scripts/shellcheck.exe
+verbose: Linting all workflow files in repository: <repo>
+verbose: Detected project: <repo>
+verbose: Collected 2 YAML files
+verbose: Linting 2 files
+verbose: Linting .github\workflows\ci.yml
+verbose: Using project at <repo>
+verbose: Found 0 parse errors in 1 ms for .github\workflows\ci.yml
+verbose: Linting .github\workflows\build.yml
+verbose: Using project at <repo>
+verbose: Found 0 parse errors in 1 ms for .github\workflows\build.yml
+verbose: Found total 0 errors in 933 ms for .github\workflows\build.yml
+verbose: Found total 0 errors in 1892 ms for .github\workflows\ci.yml
+verbose: Found 0 errors in 2 files
+exit code: 0

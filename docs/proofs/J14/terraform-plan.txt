@@ -1,0 +1,437 @@
+Acquiring state lock. This may take a few moments...
+data.oci_core_images.ubuntu_arm: Reading...
+data.oci_objectstorage_namespace.this: Reading...
+data.oci_identity_availability_domains.all: Reading...
+data.oci_objectstorage_namespace.this: Read complete after 1s [id=ObjectStorageNamespaceDataSource-218824140]
+data.oci_core_images.ubuntu_arm: Read complete after 1s [id=CoreImagesDataSource-3732021747]
+data.oci_identity_availability_domains.all: Read complete after 1s [id=IdentityAvailabilityDomainsDataSource-218824140]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # oci_budget_alert_rule.first_cent will be created
+  + resource "oci_budget_alert_rule" "first_cent" {
+      + budget_id      = (known after apply)
+      + defined_tags   = (known after apply)
+      + description    = (known after apply)
+      + display_name   = "vigie-first-cent"
+      + freeform_tags  = {
+          + "Course"  = "MLOps"
+          + "Project" = "vigie"
+        }
+      + id             = (known after apply)
+      + message        = "Vigie : une dépense réelle a été constatée sur Oracle Cloud. Vérifier immédiatement."
+      + recipients     = "<email>"
+      + state          = (known after apply)
+      + threshold      = 1
+      + threshold_type = "PERCENTAGE"
+      + time_created   = (known after apply)
+      + time_updated   = (known after apply)
+      + type           = "ACTUAL"
+      + version        = (known after apply)
+    }
+
+  # oci_budget_budget.vigie will be created
+  + resource "oci_budget_budget" "vigie" {
+      + actual_spend                          = (known after apply)
+      + alert_rule_count                      = (known after apply)
+      + amount                                = 1
+      + budget_processing_period_start_offset = (known after apply)
+      + compartment_id                        = "<ocid>"
+      + defined_tags                          = (known after apply)
+      + description                           = "Garde-fou : toute dépense sur le compartiment Vigie déclenche une alerte."
+      + display_name                          = "vigie-zero-cost"
+      + end_date                              = (known after apply)
+      + forecasted_spend                      = (known after apply)
+      + freeform_tags                         = {
+          + "Course"  = "MLOps"
+          + "Project" = "vigie"
+        }
+      + id                                    = (known after apply)
+      + processing_period_type                = (known after apply)
+      + reset_period                          = "MONTHLY"
+      + start_date                            = (known after apply)
+      + state                                 = (known after apply)
+      + system_tags                           = (known after apply)
+      + target_compartment_id                 = (known after apply)
+      + target_type                           = "COMPARTMENT"
+      + targets                               = [
+          + "<ocid>",
+        ]
+      + time_created                          = (known after apply)
+      + time_spend_computed                   = (known after apply)
+      + time_updated                          = (known after apply)
+      + version                               = (known after apply)
+    }
+
+  # oci_core_instance.vigie will be created
+  + resource "oci_core_instance" "vigie" {
+      + availability_domain                 = "<prefix>:EU-PARIS-1-AD-1"
+      + boot_volume_id                      = (known after apply)
+      + capacity_reservation_id             = (known after apply)
+      + compartment_id                      = "<ocid>"
+      + compute_cluster_id                  = (known after apply)
+      + dedicated_vm_host_id                = (known after apply)
+      + defined_tags                        = (known after apply)
+      + display_name                        = "vigie-node"
+      + extended_metadata                   = (known after apply)
+      + fault_domain                        = (known after apply)
+      + freeform_tags                       = {
+          + "Course"  = "MLOps"
+          + "Project" = "vigie"
+        }
+      + hostname_label                      = (known after apply)
+      + id                                  = (known after apply)
+      + image                               = (known after apply)
+      + instance_configuration_id           = (known after apply)
+      + ipxe_script                         = (known after apply)
+      + is_ai_enterprise_enabled            = (known after apply)
+      + is_cross_numa_node                  = (known after apply)
+      + is_pv_encryption_in_transit_enabled = (known after apply)
+      + launch_mode                         = (known after apply)
+      + metadata                            = {
+          + "ssh_authorized_keys" = "ssh-ed25519 <public-key>"
+          + "user_data"           = "IyEvYmluL2Jhc2gKIyBGaXJzdC1ib290IGJvb3RzdHJhcCBvZiB0aGUgVmlnaWUgbm9kZSwgcmVuZGVyZWQgYnkgVGVycmFmb3JtIHRlbXBsYXRlZmlsZSgpLgojIE5vdGhpbmcgc2VjcmV0IGJlbG9uZ3MgaGVyZTogdXNlcl9kYXRhIHN0YXlzIHJlYWRhYmxlIHRocm91Z2ggdGhlIG1ldGFkYXRhIHNlcnZpY2UuCnNldCAtZXVvIHBpcGVmYWlsCmV4ZWMgPiA+KHRlZSAtYSAvdmFyL2xvZy92aWdpZS1ib290c3RyYXAubG9nKSAyPiYxCgpLM1NfVkVSU0lPTj0idjEuMzYuNStrM3MxIgpleHBvcnQgREVCSUFOX0ZST05URU5EPW5vbmludGVyYWN0aXZlCgplY2hvICJ2aWdpZSBib290c3RyYXAgc3RhcnQgJChkYXRlIC11ICslRlQlVFopIgoKIyAtLS0gSG9zdCBmaXJld2FsbCAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQojIE9yYWNsZSdzIFVidW50dSBpbWFnZSBzaGlwcyBhbiBpcHRhYmxlcyBwb2xpY3kgdGhhdCByZWplY3RzIGV2ZXJ5dGhpbmcgZXhjZXB0IFNTSCwgb24KIyB0b3Agb2YgdGhlIGNsb3VkIHNlY3VyaXR5IGxpc3QuIEJvdGggbGF5ZXJzIG11c3QgYWdyZWUsIHNvIDgwIGFuZCA0NDMgb3BlbiBoZXJlIHRvby4KIyBUaGUgazNzIHBvZCAoMTAuNDIvMTYpIGFuZCBzZXJ2aWNlICgxMC40My8xNikgcmFuZ2VzIGFyZSBhY2NlcHRlZCBhcyB3ZWxsLCBvdGhlcndpc2UKIyB0aGUgaW1hZ2UncyBmaW5hbCBSRUpFQ1QgcnVsZXMgYnJlYWsgQ29yZUROUyBhbmQgbWV0cmljcy1zZXJ2ZXIgdGFsa2luZyB0byB0aGUgbm9kZS4KaXB0YWJsZXMgLUkgSU5QVVQgMSAtcCB0Y3AgLW0gc3RhdGUgLS1zdGF0ZSBORVcgLW0gbXVsdGlwb3J0IC0tZHBvcnRzIDgwLDQ0MyAtaiBBQ0NFUFQKaXB0YWJsZXMgLUkgSU5QVVQgMiAtcyAxMC40Mi4wLjAvMTYgLWogQUNDRVBUCmlwdGFibGVzIC1JIElOUFVUIDMgLXMgMTAuNDMuMC4wLzE2IC1qIEFDQ0VQVAppcHRhYmxlcyAtSSBGT1JXQVJEIDEgLXMgMTAuNDIuMC4wLzE2IC1qIEFDQ0VQVAppcHRhYmxlcyAtSSBGT1JXQVJEIDIgLWQgMTAuNDIuMC4wLzE2IC1qIEFDQ0VQVAojIFNhdmVkIGJlZm9yZSBrM3Mgc3RhcnRzLCBzbyBpdHMgZHluYW1pYyBjaGFpbnMgYXJlIG5ldmVyIGZyb3plbiBpbnRvIHRoZSBib290IHJ1bGVzLgpuZXRmaWx0ZXItcGVyc2lzdGVudCBzYXZlCgojIC0tLSBTU0ggaGFyZGVuaW5nIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQojIHNzaGQga2VlcHMgdGhlIGZpcnN0IHZhbHVlIGl0IHJlYWRzLCBhbmQgZHJvcC1pbnMgbG9hZCBpbiBsZXhpY2FsIG9yZGVyLCBzbyB0aGUgMDAKIyBwcmVmaXggd2lucyBvdmVyIHRoZSBjbG91ZCBpbWFnZSBkZWZhdWx0cy4KY2F0ID4gL2V0Yy9zc2gvc3NoZF9jb25maWcuZC8wMC12aWdpZS1oYXJkZW5pbmcuY29uZiA8PCdFT0YnClBhc3N3b3JkQXV0aGVudGljYXRpb24gbm8KS2JkSW50ZXJhY3RpdmVBdXRoZW50aWNhdGlvbiBubwpQZXJtaXRSb290TG9naW4gbm8KUHVia2V5QXV0aGVudGljYXRpb24geWVzCk1heEF1dGhUcmllcyAzClgxMUZvcndhcmRpbmcgbm8KRU9GCnNzaGQgLXQKc3lzdGVtY3RsIHJlbG9hZCBzc2gKCiMgLS0tIFBhdGNoaW5nIGFuZCBicnV0ZS1mb3JjZSBwcm90ZWN0aW9uIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KYXB0LWdldCB1cGRhdGUgLXEKYXB0LWdldCBpbnN0YWxsIC15IC1xIHVuYXR0ZW5kZWQtdXBncmFkZXMgZmFpbDJiYW4KCmNhdCA+IC9ldGMvYXB0L2FwdC5jb25mLmQvMjBhdXRvLXVwZ3JhZGVzIDw8J0VPRicKQVBUOjpQZXJpb2RpYzo6VXBkYXRlLVBhY2thZ2UtTGlzdHMgIjEiOwpBUFQ6OlBlcmlvZGljOjpVbmF0dGVuZGVkLVVwZ3JhZGUgIjEiOwpFT0YKCiMgVWJ1bnR1IDI0LjA0IGxvZ3MgU1NIIHRvIHRoZSBqb3VybmFsIG9ubHksIGhlbmNlIHRoZSBzeXN0ZW1kIGJhY2tlbmQuCmNhdCA+IC9ldGMvZmFpbDJiYW4vamFpbC5kL3ZpZ2llLmxvY2FsIDw8J0VPRicKW3NzaGRdCmVuYWJsZWQgPSB0cnVlCmJhY2tlbmQgPSBzeXN0ZW1kCm1heHJldHJ5ID0gNQpmaW5kdGltZSA9IDEwbQpiYW50aW1lID0gMWgKRU9GCnN5c3RlbWN0bCBlbmFibGUgLS1ub3cgdW5hdHRlbmRlZC11cGdyYWRlcyBmYWlsMmJhbgpzeXN0ZW1jdGwgcmVzdGFydCBmYWlsMmJhbgoKIyAtLS0gSWRsZSByZWNsYW1hdGlvbiBndWFyZCAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIyBPcmFjbGUgcmVjbGFpbXMgYW4gQWx3YXlzIEZyZWUgaW5zdGFuY2Ugd2hvc2UgOTV0aCBwZXJjZW50aWxlIENQVSBzdGF5cyB1bmRlciAyMCAlIGZvcgojIGEgd2Vlay4gRWlnaHQgbWludXRlcyBvZiBvbmUgYnVzeSBjb3JlIGV2ZXJ5IGhvdXIga2VlcHMgdGhhdCBwZXJjZW50aWxlIGFib3ZlIHRoZSBiYXIsCiMgYXQgdGhlIGxvd2VzdCBwcmlvcml0eSBzbyB0aGUgcmVhbCB3b3JrbG9hZCBhbHdheXMgd2lucy4KY2F0ID4gL2V0Yy9zeXN0ZW1kL3N5c3RlbS92aWdpZS1rZWVwYWxpdmUuc2VydmljZSA8PCdFT0YnCltVbml0XQpEZXNjcmlwdGlvbj1WaWdpZSBsaWdodCBiYWNrZ3JvdW5kIGxvYWQgYWdhaW5zdCBBbHdheXMgRnJlZSBpZGxlIHJlY2xhbWF0aW9uCgpbU2VydmljZV0KVHlwZT1vbmVzaG90Ck5pY2U9MTkKQ1BVV2VpZ2h0PTEKSU9TY2hlZHVsaW5nQ2xhc3M9aWRsZQpFeGVjU3RhcnQ9L3Vzci9iaW4vdGltZW91dCA0ODAgL3Vzci9iaW4vc2hhMjU2c3VtIC9kZXYvemVybwpTdWNjZXNzRXhpdFN0YXR1cz0xMjQKRU9GCgpjYXQgPiAvZXRjL3N5c3RlbWQvc3lzdGVtL3ZpZ2llLWtlZXBhbGl2ZS50aW1lciA8PCdFT0YnCltVbml0XQpEZXNjcmlwdGlvbj1Ib3VybHkgVmlnaWUga2VlcGFsaXZlIGxvYWQKCltUaW1lcl0KT25Cb290U2VjPTE1bWluCk9uVW5pdEFjdGl2ZVNlYz0xaApSYW5kb21pemVkRGVsYXlTZWM9NW1pbgoKW0luc3RhbGxdCldhbnRlZEJ5PXRpbWVycy50YXJnZXQKRU9GCnN5c3RlbWN0bCBkYWVtb24tcmVsb2FkCnN5c3RlbWN0bCBlbmFibGUgLS1ub3cgdmlnaWUta2VlcGFsaXZlLnRpbWVyCgojIC0tLSBrM3MgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQojIFRoZSBpbnN0YWxsZXIgaXMgZmV0Y2hlZCBmcm9tIHRoZSBzYW1lIHBpbm5lZCB0YWcgYXMgdGhlIGJpbmFyeSwgd2hpY2ggaXQgdGhlbiBjaGVja3MKIyBhZ2FpbnN0IHRoZSByZWxlYXNlIGNoZWNrc3Vtcy4gS3ViZWNvbmZpZyBzdGF5cyByb290LW9ubHkgYW5kIFNlY3JldHMgYXJlIGVuY3J5cHRlZCBhdAojIHJlc3QgaW4gdGhlIGRhdGFzdG9yZS4KSzNTX1RBRz0kKHByaW50ZiAnJXMnICIkSzNTX1ZFUlNJT04iIHwgc2VkICdzLysvJTJCLycpCmN1cmwgLXNmTCAiaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2szcy1pby9rM3MvJEszU19UQUcvaW5zdGFsbC5zaCIgLW8gL3RtcC9rM3MtaW5zdGFsbC5zaApJTlNUQUxMX0szU19WRVJTSU9OPSIkSzNTX1ZFUlNJT04iIHNoIC90bXAvazNzLWluc3RhbGwuc2ggc2VydmVyIFwKICAtLXdyaXRlLWt1YmVjb25maWctbW9kZSA2MDAgXAogIC0tc2VjcmV0cy1lbmNyeXB0aW9uCnJtIC1mIC90bXAvazNzLWluc3RhbGwuc2gKCm1rZGlyIC1wIC92YXIvbGliL3ZpZ2llCmRhdGUgLXUgKyVGVCVUWiA+IC92YXIvbGliL3ZpZ2llL2Jvb3RzdHJhcC5kb25lCmVjaG8gInZpZ2llIGJvb3RzdHJhcCBkb25lICQoZGF0ZSAtdSArJUZUJVRaKSIK"
+        }
+      + preserve_boot_volume                = false
+      + private_ip                          = (known after apply)
+      + public_ip                           = (known after apply)
+      + region                              = (known after apply)
+      + security_attributes                 = (known after apply)
+      + security_attributes_state           = (known after apply)
+      + shape                               = "VM.Standard.A1.Flex"
+      + state                               = (known after apply)
+      + subnet_id                           = (known after apply)
+      + system_tags                         = (known after apply)
+      + time_created                        = (known after apply)
+      + time_maintenance_reboot_due         = (known after apply)
+
+      + agent_config (known after apply)
+
+      + availability_config (known after apply)
+
+      + create_vnic_details {
+          + assign_ipv6ip          = (known after apply)
+          + assign_public_ip       = "true"
+          + defined_tags           = (known after apply)
+          + display_name           = "vigie-node-vnic"
+          + freeform_tags          = {
+              + "Course"  = "MLOps"
+              + "Project" = "vigie"
+            }
+          + hostname_label         = "vigie-node"
+          + nsg_ids                = (known after apply)
+          + private_ip             = (known after apply)
+          + security_attributes    = (known after apply)
+          + skip_source_dest_check = (known after apply)
+          + subnet_cidr            = (known after apply)
+          + subnet_id              = (known after apply)
+          + vlan_id                = (known after apply)
+
+          + ipv6address_ipv6subnet_cidr_pair_details (known after apply)
+        }
+
+      + instance_options {
+          + are_legacy_imds_endpoints_disabled = true
+        }
+
+      + launch_options (known after apply)
+
+      + launch_volume_attachments (known after apply)
+
+      + licensing_configs (known after apply)
+
+      + placement_constraint_details (known after apply)
+
+      + platform_config (known after apply)
+
+      + preemptible_instance_config (known after apply)
+
+      + shape_config {
+          + baseline_ocpu_utilization     = (known after apply)
+          + gpu_description               = (known after apply)
+          + gpus                          = (known after apply)
+          + local_disk_description        = (known after apply)
+          + local_disks                   = (known after apply)
+          + local_disks_total_size_in_gbs = (known after apply)
+          + max_vnic_attachments          = (known after apply)
+          + memory_in_gbs                 = 12
+          + networking_bandwidth_in_gbps  = (known after apply)
+          + nvmes                         = (known after apply)
+          + ocpus                         = 2
+          + processor_description         = (known after apply)
+          + resource_management           = (known after apply)
+          + vcpus                         = (known after apply)
+        }
+
+      + source_details {
+          + boot_volume_size_in_gbs = "50"
+          + boot_volume_vpus_per_gb = (known after apply)
+          + source_id               = "<ocid>"
+          + source_type             = "image"
+
+          + instance_source_image_filter_details (known after apply)
+        }
+    }
+
+  # oci_core_internet_gateway.vigie will be created
+  + resource "oci_core_internet_gateway" "vigie" {
+      + compartment_id = "<ocid>"
+      + defined_tags   = (known after apply)
+      + display_name   = "vigie-igw"
+      + enabled        = true
+      + freeform_tags  = {
+          + "Course"  = "MLOps"
+          + "Project" = "vigie"
+        }
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + state          = (known after apply)
+      + time_created   = (known after apply)
+      + vcn_id         = (known after apply)
+    }
+
+  # oci_core_route_table.public will be created
+  + resource "oci_core_route_table" "public" {
+      + compartment_id = "<ocid>"
+      + defined_tags   = (known after apply)
+      + display_name   = "vigie-public-rt"
+      + freeform_tags  = {
+          + "Course"  = "MLOps"
+          + "Project" = "vigie"
+        }
+      + id             = (known after apply)
+      + state          = (known after apply)
+      + time_created   = (known after apply)
+      + vcn_id         = (known after apply)
+
+      + route_rules {
+          + cidr_block        = (known after apply)
+          + description       = (known after apply)
+          + destination       = "0.0.0.0/0"
+          + destination_type  = "CIDR_BLOCK"
+          + network_entity_id = (known after apply)
+          + route_type        = (known after apply)
+        }
+    }
+
+  # oci_core_security_list.public will be created
+  + resource "oci_core_security_list" "public" {
+      + compartment_id = "<ocid>"
+      + defined_tags   = (known after apply)
+      + display_name   = "vigie-public-sl"
+      + freeform_tags  = {
+          + "Course"  = "MLOps"
+          + "Project" = "vigie"
+        }
+      + id             = (known after apply)
+      + state          = (known after apply)
+      + time_created   = (known after apply)
+      + vcn_id         = (known after apply)
+
+      + egress_security_rules {
+          + description      = (known after apply)
+          + destination      = "0.0.0.0/0"
+          + destination_type = (known after apply)
+          + protocol         = "all"
+          + stateless        = (known after apply)
+        }
+
+      + ingress_security_rules {
+          + description = (known after apply)
+          + protocol    = "1"
+          + source      = "0.0.0.0/0"
+          + source_type = (known after apply)
+          + stateless   = false
+
+          + icmp_options {
+              + code = 4
+              + type = 3
+            }
+        }
+      + ingress_security_rules {
+          + description = (known after apply)
+          + protocol    = "6"
+          + source      = "0.0.0.0/0"
+          + source_type = (known after apply)
+          + stateless   = false
+
+          + tcp_options {
+              + max = 443
+              + min = 443
+            }
+        }
+      + ingress_security_rules {
+          + description = (known after apply)
+          + protocol    = "6"
+          + source      = "0.0.0.0/0"
+          + source_type = (known after apply)
+          + stateless   = false
+
+          + tcp_options {
+              + max = 80
+              + min = 80
+            }
+        }
+      + ingress_security_rules {
+          + description = (known after apply)
+          + protocol    = "6"
+          + source      = "<ip>"
+          + source_type = (known after apply)
+          + stateless   = false
+
+          + tcp_options {
+              + max = 22
+              + min = 22
+            }
+        }
+    }
+
+  # oci_core_subnet.public will be created
+  + resource "oci_core_subnet" "public" {
+      + availability_domain        = (known after apply)
+      + cidr_block                 = "10.10.1.0/24"
+      + compartment_id             = "<ocid>"
+      + defined_tags               = (known after apply)
+      + dhcp_options_id            = (known after apply)
+      + display_name               = "vigie-public"
+      + dns_label                  = "public"
+      + freeform_tags              = {
+          + "Course"  = "MLOps"
+          + "Project" = "vigie"
+        }
+      + id                         = (known after apply)
+      + ipv4cidr_blocks            = (known after apply)
+      + ipv6cidr_block             = (known after apply)
+      + ipv6cidr_blocks            = (known after apply)
+      + ipv6virtual_router_ip      = (known after apply)
+      + prohibit_internet_ingress  = (known after apply)
+      + prohibit_public_ip_on_vnic = false
+      + route_table_id             = (known after apply)
+      + security_list_ids          = (known after apply)
+      + state                      = (known after apply)
+      + subnet_domain_name         = (known after apply)
+      + time_created               = (known after apply)
+      + vcn_id                     = (known after apply)
+      + virtual_router_ip          = (known after apply)
+      + virtual_router_mac         = (known after apply)
+    }
+
+  # oci_core_vcn.vigie will be created
+  + resource "oci_core_vcn" "vigie" {
+      + byoipv6cidr_blocks               = (known after apply)
+      + cidr_block                       = (known after apply)
+      + cidr_blocks                      = [
+          + "10.10.0.0/16",
+        ]
+      + compartment_id                   = "<ocid>"
+      + default_dhcp_options_id          = (known after apply)
+      + default_route_table_id           = (known after apply)
+      + default_security_list_id         = (known after apply)
+      + defined_tags                     = (known after apply)
+      + display_name                     = "vigie-vcn"
+      + dns_label                        = "vigie"
+      + freeform_tags                    = {
+          + "Course"  = "MLOps"
+          + "Project" = "vigie"
+        }
+      + id                               = (known after apply)
+      + ipv6cidr_blocks                  = (known after apply)
+      + ipv6private_cidr_blocks          = (known after apply)
+      + is_ipv6enabled                   = (known after apply)
+      + is_oracle_gua_allocation_enabled = (known after apply)
+      + security_attributes              = (known after apply)
+      + state                            = (known after apply)
+      + time_created                     = (known after apply)
+      + vcn_domain_name                  = (known after apply)
+
+      + byoipv6cidr_details (known after apply)
+    }
+
+  # oci_identity_policy.objectstorage_lifecycle will be created
+  + resource "oci_identity_policy" "objectstorage_lifecycle" {
+      + ETag           = (known after apply)
+      + compartment_id = "<ocid>"
+      + defined_tags   = (known after apply)
+      + description    = "Autorise Object Storage à purger les sauvegardes Vigie arrivées à échéance."
+      + freeform_tags  = {
+          + "Course"  = "MLOps"
+          + "Project" = "vigie"
+        }
+      + id             = (known after apply)
+      + inactive_state = (known after apply)
+      + lastUpdateETag = (known after apply)
+      + name           = "vigie-objectstorage-lifecycle"
+      + policyHash     = (known after apply)
+      + state          = (known after apply)
+      + statements     = [
+          + "Allow service objectstorage-eu-paris-1 to manage object-family in tenancy",
+        ]
+      + time_created   = (known after apply)
+      + version_date   = (known after apply)
+    }
+
+  # oci_objectstorage_bucket.backups will be created
+  + resource "oci_objectstorage_bucket" "backups" {
+      + access_type                  = "NoPublicAccess"
+      + approximate_count            = (known after apply)
+      + approximate_size             = (known after apply)
+      + auto_tiering                 = (known after apply)
+      + bucket_id                    = (known after apply)
+      + compartment_id               = "<ocid>"
+      + created_by                   = (known after apply)
+      + defined_tags                 = (known after apply)
+      + etag                         = (known after apply)
+      + freeform_tags                = {
+          + "Course"  = "MLOps"
+          + "Project" = "vigie"
+        }
+      + id                           = (known after apply)
+      + is_read_only                 = (known after apply)
+      + kms_key_id                   = (known after apply)
+      + name                         = "vigie-backups"
+      + namespace                    = "<namespace>"
+      + object_events_enabled        = (known after apply)
+      + object_lifecycle_policy_etag = (known after apply)
+      + replication_enabled          = (known after apply)
+      + storage_tier                 = "Standard"
+      + time_created                 = (known after apply)
+      + versioning                   = "Disabled"
+    }
+
+  # oci_objectstorage_object_lifecycle_policy.backups will be created
+  + resource "oci_objectstorage_object_lifecycle_policy" "backups" {
+      + bucket       = "vigie-backups"
+      + id           = (known after apply)
+      + namespace    = "<namespace>"
+      + time_created = (known after apply)
+
+      + rules {
+          + action      = "DELETE"
+          + is_enabled  = true
+          + name        = "purge-after-retention"
+          + target      = "objects"
+          + time_amount = "30"
+          + time_unit   = "DAYS"
+
+          + object_name_filter (known after apply)
+        }
+    }
+
+Plan: 11 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + backup_bucket       = "vigie-backups"
+  + kube_tunnel_command = (known after apply)
+  + public_ip           = (known after apply)
+  + ssh_command         = (known after apply)
+
+─────────────────────────────────────────────────────────────────────────────
+
+Saved the plan to: C:/Users/adamb/.vigie/terraform/vigie.tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "C:/Users/adamb/.vigie/terraform/vigie.tfplan"

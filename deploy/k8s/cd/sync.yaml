@@ -1,0 +1,13 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: vigie-prod
+spec:
+  interval: 5m
+  retryInterval: 1m
+  timeout: 5m
+  path: ./deploy/k8s/overlays/prod
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: vigie

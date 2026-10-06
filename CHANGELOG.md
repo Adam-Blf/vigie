@@ -6,7 +6,7 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
-## [0.9.0] - 2026-10-06
+## [0.14.0] - 2026-10-06
 
 ### Added
 
@@ -31,6 +31,121 @@ les notes reprennent la section correspondante.
   Q8_0 double l'attente du premier token et ajoute 1,5 Go pour une qualité identique.
 - `pyyaml` passe dans les dépendances d'exécution, l'extra `quant` gagne torch,
   transformers, onnxscript et matplotlib.
+
+## [0.13.0] - 2026-10-06
+
+### Added
+
+- Chaîne CI/CD du jalon J15 : actions tierces épinglées par SHA complet, contrôle des
+  workflows par actionlint vérifié par somme de contrôle, crédit du binôme sur chaque commit
+  d'une pull request (`scripts/check_coauthors.py`), recherche de secrets par gitleaks,
+  audit des dépendances Python et npm, tests de l'interface, porte d'évaluation et porte de
+  red teaming qui démarrent dès que leurs prérequis existent.
+- Planchers de couverture par module critique (`scripts/coverage_gate.py`, tâche
+  `python tasks.py coverage-gate`, appelée par `check`) : 80 % au total, 95 % sur les
+  garde-fous, les citations, l'authentification, l'usage et le drift.
+- Publication d'images multi-architecture signées sans clé par cosign, avec SBOM et scan
+  Trivy (`.github/workflows/build.yml`), et Dependabot pour pip, npm, les actions et Docker.
+- Documentation `docs/cicd.md`, preuves du jalon dans `docs/proofs/J15/` et barrières vues
+  rouges dans `docs/proofs/gates/`.
+
+### Changed
+
+- Le job `quality` vérifie aussi la version du README.
+- Les images ne sont plus publiées par `release.yml` : `build.yml` s'en charge aussi sur
+  les tags de version, signées et scannées.
+
+## [0.12.0] - 2026-10-06
+
+### Added
+
+- Chaîne de garde-fous de production du jalon J4 dans `src/vigie/guard/` : normalisation
+  de l'entrée (NFKC, caractères invisibles et bidirectionnels retirés, base64,
+  encodage pourcentage et entités HTML décodés), regex de référence reprise de
+  `src/guardbench`, puis classifieur DeBERTa ProtectAI v2 en ONNX int8 pour les textes
+  en anglais, sans torch.
+- Chaîne de sortie : seconde vérification des citations contre les passages retrouvés
+  et masquage des e-mails, IBAN, cartes (Luhn) et téléphones.
+- `python -m vigie.guard.prepare` télécharge l'export ONNX à une révision épinglée, le
+  quantifie en int8 par canal (738 Mo vers 244 Mo) et écrit un manifeste d'empreintes ;
+  extra `guard-model` pour cette étape de construction.
+- `python -m vigie.guard.measure` mesure la chaîne sur le jeu maison contre la nouvelle
+  section `guard` de `eval/thresholds.yaml` et sort en erreur si un seuil manque.
+- Réglages `VIGIE_GUARD_*` décrits dans `.env.example` ; `onnxruntime` et `tokenizers`
+  deviennent des dépendances directes.
+- Preuves dans `docs/proofs/J4/guard/` : sur `test`, rappel des injections directes 1,0
+  en français et en anglais, aucun faux positif, p95 de 96 ms.
+
+### Changed
+
+- `scripts/sync_version.py` réécrit aussi `__version__` de `src/vigie/__init__.py`, que
+  l'API renverra dans chaque réponse.
+
+### Removed
+
+- Réglage `guard_enabled`, jamais lu, remplacé par `VIGIE_GUARD_CLASSIFIER`.
+
+## [0.11.0] - 2026-10-06
+
+### Added
+
+- Manifestes Kubernetes du jalon J13 (`deploy/k8s/`) : base kustomize avec déploiement
+  canary Argo Rollouts et analyse Prometheus, pods durcis (Pod Security restricted),
+  politiques réseau, Qdrant avec instantanés, Ollama, MLflow, Prometheus et interface web,
+  surcouches `dev`, `prod` et `prod-loadtest`.
+- Livraison continue en mode tiré avec l'automatisation d'images de Flux (`deploy/k8s/cd/`)
+  et versions épinglées des modules dans `deploy/versions.env`.
+- Contrôle du budget du nœud unique (`python -m vigie.deploy`) : requêtes, limites et CPU
+  des manifestes rendus jugés contre les réglages `VIGIE_K8S_*`, décrits dans
+  `.env.example`.
+- Tâche `python tasks.py k8s-validate` qui rend chaque couche, la valide avec kubeconform
+  puis vérifie le budget.
+- Documentation `deploy/k8s/README.md` et preuves du jalon dans `docs/proofs/J13/`
+  (validation, budget vu rouge, essais côté serveur, grappe k3d de développement).
+
+## [0.10.0] - 2026-10-06
+
+### Added
+
+- Recherche hybride du jalon J2 (`src/vigie/retrieval/`) : embeddings denses fastembed
+  `paraphrase-multilingual-MiniLM-L12-v2` (384 dimensions) et BM25 français, vecteurs
+  nommés `dense` et `bm25` dans Qdrant, requête `query_points` à deux `prefetch` fusionnés
+  par RRF, filtre optionnel par règlement.
+- Construction idempotente de l'index : identifiant `uuid5` stable par chunk, collection
+  nommée `vigie_<id embedding>_<empreinte corpus>`, collection complète jamais recalculée,
+  point d'entrée `screen` qui met en quarantaine les chunks signalés (garde-fou du J4).
+- Commande `vigie-index` et script `python -m scripts.retrieval_demo` qui affiche le top-5
+  de trois questions.
+- Sous-commande `vigie-eval retrieval` : recall@k et MRR sur une partie du jeu de
+  référence, `dev` par défaut, articles distincts.
+- `open_retriever` choisit la recherche Qdrant ou les passages fixes selon
+  `VIGIE_RETRIEVER` ; `python -m vigie.rag.cli` passe par Qdrant sans `--passages`.
+- Réglages `VIGIE_QDRANT_PATH`, `VIGIE_COLLECTION_PREFIX`, `VIGIE_QDRANT_COLLECTION`,
+  `VIGIE_SPARSE_LANGUAGE`, `VIGIE_EMBEDDING_CACHE_DIR`, `VIGIE_RETRIEVAL_PREFETCH_LIMIT`,
+  `VIGIE_RETRIEVAL_RRF_K`, `VIGIE_RETRIEVER`, `VIGIE_STATIC_PASSAGES_PATH`, décrits dans
+  `.env.example`, et documentation `docs/retrieval.md`.
+- Preuves du jalon dans `docs/proofs/J2/` : recall@5 0,638 et MRR 0,486 sur les 47
+  questions `dev`, sous le seuil de 0,80 et 0,60, jalon noté `PARTIEL`.
+
+### Changed
+
+- Réglage `VIGIE_COLLECTION` remplacé par `VIGIE_COLLECTION_PREFIX`, le nom complet de la
+  collection étant désormais dérivé du modèle et du corpus.
+
+## [0.9.0] - 2026-10-06
+
+### Added
+
+- Infrastructure Oracle Always Free du jalon J14 (`infra/terraform/`) : nœud A1 avec
+  cloud-init durci et k3s épinglé, réseau dédié, budget à zéro euro avec alerte au premier
+  centime, bucket de sauvegarde purgé après 30 jours.
+- Tests qui figent les invariants de sécurité et de coût du code Terraform.
+- Masquage des OCID, IP publiques, adresses e-mail, clé SSH, namespace et préfixe du
+  domaine de disponibilité dans les sorties d'infrastructure (`vigie.infra.redact`).
+- Tâche `python tasks.py infra-retry` qui relance la création du nœud A1 en cas de manque
+  de capacité, toutes les 10 minutes pendant sept jours avant le repli k3d.
+- Réglages `VIGIE_INFRA_*`, décrits dans `.env.example`, et preuves masquées du jalon dans
+  `docs/proofs/J14/`.
 
 ## [0.8.0] - 2026-10-06
 
