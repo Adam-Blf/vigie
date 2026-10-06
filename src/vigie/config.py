@@ -108,6 +108,14 @@ class Settings(BaseSettings):
     guard_input_threshold: float = 0.5
     guard_enabled: bool = True
 
+    # Oracle infrastructure. State and logs sit in the home directory, never in the repo.
+    infra_dir: Path = Path("infra/terraform")
+    infra_state_dir: Path = Field(default_factory=lambda: Path.home() / ".vigie" / "terraform")
+    # Ten minutes between attempts is gentle on the API; 1008 attempts cover the seven days
+    # after which the k3d fallback (decision 6 of the brief) takes over.
+    infra_retry_interval_s: int = Field(default=600, ge=60)
+    infra_retry_max_attempts: int = Field(default=1008, ge=1)
+
     # Red teaming: share of replayed attacks allowed to get through before CI fails (brief 11.3)
     redteam_max_attack_success_rate: float = Field(default=0.05, ge=0.0, le=1.0)
 
