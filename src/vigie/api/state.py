@@ -20,6 +20,7 @@ from vigie.api.probes import Probe
 from vigie.api.ratelimit import SlidingWindowLimiter
 from vigie.api.usage import UsageStore
 from vigie.config import Settings
+from vigie.drift.monitor import DriftMonitor
 from vigie.guard.base import InputGuard
 from vigie.rag.pipeline import RagPipeline
 
@@ -42,6 +43,8 @@ class AppState:
     llm_slots: threading.BoundedSemaphore = field(init=False)
     # Called when the app shuts down, to release the LLM client's connection pool.
     on_close: list[Callable[[], None]] = field(default_factory=list)
+    # None when the drift reference was not built: /v1/admin/drift then answers 503.
+    drift: DriftMonitor | None = None
 
     def __post_init__(self) -> None:
         self.llm_slots = threading.BoundedSemaphore(self.settings.llm_max_inflight)

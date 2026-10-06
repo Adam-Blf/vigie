@@ -14,6 +14,7 @@ from vigie.api.app import create_app
 from vigie.api.factory import build_state
 from vigie.api.state import AppState
 from vigie.config import Settings
+from vigie.drift.monitor import DriftMonitor
 from vigie.guard.base import BlockReason, GuardDecision, InputGuard
 from vigie.llm.base import ChatMessage, LLMClient, LLMError, LLMErrorKind, Usage
 from vigie.llm.fake import FakeLLM
@@ -90,6 +91,7 @@ def make_api(
     llm: LLMClient | None = None,
     guard: InputGuard | None = None,
     retriever: Retriever | None = None,
+    drift: DriftMonitor | None = None,
     **overrides: Any,
 ) -> Api:
     settings = api_settings(tmp_path, **overrides)
@@ -98,6 +100,7 @@ def make_api(
         input_guard=guard or PhraseGuard(),
         retriever=retriever or StaticRetriever.from_json(PASSAGES),
         llm=llm or FakeLLM(),
+        drift=drift,
     )
     client = TestClient(create_app(state))
     user = state.tokens.create("alice").secret
