@@ -187,8 +187,15 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "22"
-      - name: Audit web dependencies
+      # Blocking on what ships: the nginx image only carries the Vite build of the runtime
+      # dependencies. Lighthouse CI pulls extract-zip and sprintf-js, which have no fixed
+      # release at all, so the full tree is audited for the record without failing the job.
+      - name: Audit shipped web dependencies
         if: needs.detect.outputs.web == 'true'
+        run: npm audit --prefix web --omit=dev --audit-level=high
+      - name: Report web tooling advisories
+        if: needs.detect.outputs.web == 'true'
+        continue-on-error: true
         run: npm audit --prefix web --audit-level=high
       - name: Audit red teaming harness
         if: hashFiles('redteam/package-lock.json') != ''
