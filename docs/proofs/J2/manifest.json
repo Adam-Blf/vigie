@@ -1,0 +1,117 @@
+{
+  "milestone": "J2",
+  "title": "Hybrid retrieval in Qdrant (dense MiniLM, French BM25, RRF fusion)",
+  "commit": "c057425331ae85aa8816c6ef102ad56994f119ce",
+  "branch": "feat/retrieval",
+  "date_utc": "2026-10-06T09:13:24Z",
+  "platform": "Windows 11, Python 3.12 environment managed by uv, Qdrant local mode (folder .qdrant)",
+  "tools": {
+    "python": "3.12.13",
+    "uv": "0.11.32",
+    "qdrant-client": "1.19.1",
+    "fastembed": "0.8.1",
+    "onnxruntime": "1.30.0",
+    "huggingface-hub": "1.33.0",
+    "numpy": "2.5.3",
+    "pydantic": "2.13.5",
+    "pydantic-settings": "2.15.0",
+    "ruff": "0.16.10",
+    "mypy": "2.4.0",
+    "pytest": "9.1.1",
+    "pytest-cov": "7.1.0"
+  },
+  "models": {
+    "dense": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 (fastembed source qdrant/paraphrase-multilingual-MiniLM-L12-v2-onnx-Q, 384 dimensions, 512 input tokens)",
+    "sparse": "Qdrant/bm25, language french",
+    "embedding_id": "paraphrase-multilingual-minilm-l12-v2-f692d1"
+  },
+  "environment": "VIGIE_QDRANT_PATH=.qdrant VIGIE_EMBEDDING_CACHE_DIR=data/cache/models PYTHONIOENCODING=utf-8 PYTHONPATH=src; vigie-ingest, vigie-index and vigie-eval run through their main() functions because the console scripts of the shared virtual environment point at another checkout",
+  "runs": [
+    {
+      "file": "ingest.txt",
+      "command": "vigie-ingest",
+      "note": "The fresh worktree had no Cellar cache, so a first run at 08:03 UTC downloaded the four texts from Cellar over HTTPS, one request per second at most (cache files written 2 s apart), and checked them against data/corpus.lock. This file is the rerun just before indexing, read from that cache, same sha256 and article counts.",
+      "exit_code": 0
+    },
+    {
+      "file": "index-first.txt",
+      "command": "rm -rf .qdrant && vigie-index",
+      "note": "First build: 511 chunks embedded, 511 points, models downloaded once into data/cache/models.",
+      "exit_code": 0
+    },
+    {
+      "file": "index-second.txt",
+      "command": "vigie-index",
+      "note": "Idempotence: same collection name, nothing embedded, still 511 points.",
+      "exit_code": 0
+    },
+    {
+      "file": "demo-top5.txt",
+      "command": "python -m scripts.retrieval_demo",
+      "note": "Top-5 for three questions with RRF k = 60. Q1 brings DORA art. 28 at ranks 2 and 4, under DORA art. 31 (designation of critical ICT third-party providers); Q2 brings AIACT art. 5 first; Q3 brings RGPD art. 33 first. Excerpts are cut at 90 characters; the trailing spaces this leaves were trimmed by the trailing-whitespace pre-commit hook, nothing else changed.",
+      "exit_code": 0
+    },
+    {
+      "file": "eval-retrieval-dev.txt",
+      "command": "vigie-eval retrieval --split dev --out docs/proofs/J2/eval-retrieval-dev.json",
+      "note": "47 dev questions that expect an article, top 20 passages per question, metrics on distinct articles. The sealed test split was not read.",
+      "exit_code": 0
+    },
+    {
+      "file": "iteration0-eval-dev-fusion-k2.txt",
+      "command": "vigie-eval retrieval --split dev --out docs/proofs/J2/iteration0-eval-dev-fusion-k2.json",
+      "note": "Same measure at commit e845691dc7b8e011bd0a3d8618084d91157820e9, before the RRF constant setting: plain FusionQuery(fusion=RRF), constant fixed at 2.",
+      "exit_code": 0
+    },
+    {
+      "file": "iterations-dev.txt",
+      "command": "python docs/proofs/J2/iterations_dev.py",
+      "note": "Dev-split diagnostics: each branch alone, prefetch depth sweep, RRF constant and weight variants.",
+      "exit_code": 0
+    }
+  ],
+  "iterations": [
+    {
+      "n": 1,
+      "change": "prefetch depth 10, 20, 50, 100 per branch",
+      "dev_recall_at_5": [0.5745, 0.5745, 0.5745, 0.5745],
+      "decision": "no effect on recall, default kept at 20"
+    },
+    {
+      "n": 2,
+      "change": "RRF constant 60 instead of the fixed constant 2 of FusionQuery",
+      "dev_recall_at_5": 0.6383,
+      "dev_mrr": 0.4863,
+      "decision": "kept, VIGIE_RETRIEVAL_RRF_K=60 by default (commit c057425)"
+    },
+    {
+      "n": 3,
+      "change": "finer chunks, VIGIE_CORPUS_SPLIT_WORDS=200 (1688 chunks instead of 511), separate corpus and collection under data/cache",
+      "raw_output": "dense only recall@5=0.5319 mrr=0.4016; bm25 only recall@5=0.3191 mrr=0.2468; hybrid rrf prefetch=20 recall@5=0.4894 mrr=0.4280",
+      "decision": "rejected, recall drops"
+    }
+  ],
+  "results": {
+    "collection": "vigie_paraphrase-multilingual-minilm-l12-v2-f692d1_5abe72f5",
+    "chunks": 511,
+    "points": 511,
+    "first_build_seconds": 147.1,
+    "second_build_seconds": 5.7,
+    "dev_questions": 47,
+    "dev_recall_at_5": 0.6383,
+    "dev_mrr": 0.4863,
+    "thresholds": {"recall_at_5_min": 0.8, "mrr_min": 0.6, "split": "test"},
+    "status": "PARTIEL",
+    "demo_top1": {
+      "Q1 article 28 DORA": "[DORA art. 31 §10]",
+      "Q2 pratiques d'IA interdites": "[AIACT art. 5 §8]",
+      "Q3 délai de notification d'une violation": "[RGPD art. 33]"
+    },
+    "check": "python tasks.py check green after merging main: 520 passed, coverage 99 % on src, 100 % on src/vigie/retrieval"
+  },
+  "observations": [
+    "Qdrant fuses RRF with 1/(k + position), positions from 0; the plain FusionQuery uses k = 2, so a passage first in both lists scores 1.0 and a single list can dominate.",
+    "BM25 alone is weak (recall@5 0.36): 30 % of the golden questions are in English while the BM25 branch stems French.",
+    "Chunks of up to 1200 words exceed the 512 tokens the dense model reads, so the dense vector only sees the start of long articles."
+  ]
+}

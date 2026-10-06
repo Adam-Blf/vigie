@@ -6,6 +6,35 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-10-06
+
+### Added
+
+- Recherche hybride du jalon J2 (`src/vigie/retrieval/`) : embeddings denses fastembed
+  `paraphrase-multilingual-MiniLM-L12-v2` (384 dimensions) et BM25 français, vecteurs
+  nommés `dense` et `bm25` dans Qdrant, requête `query_points` à deux `prefetch` fusionnés
+  par RRF, filtre optionnel par règlement.
+- Construction idempotente de l'index : identifiant `uuid5` stable par chunk, collection
+  nommée `vigie_<id embedding>_<empreinte corpus>`, collection complète jamais recalculée,
+  point d'entrée `screen` qui met en quarantaine les chunks signalés (garde-fou du J4).
+- Commande `vigie-index` et script `python -m scripts.retrieval_demo` qui affiche le top-5
+  de trois questions.
+- Sous-commande `vigie-eval retrieval` : recall@k et MRR sur une partie du jeu de
+  référence, `dev` par défaut, articles distincts.
+- `open_retriever` choisit la recherche Qdrant ou les passages fixes selon
+  `VIGIE_RETRIEVER` ; `python -m vigie.rag.cli` passe par Qdrant sans `--passages`.
+- Réglages `VIGIE_QDRANT_PATH`, `VIGIE_COLLECTION_PREFIX`, `VIGIE_QDRANT_COLLECTION`,
+  `VIGIE_SPARSE_LANGUAGE`, `VIGIE_EMBEDDING_CACHE_DIR`, `VIGIE_RETRIEVAL_PREFETCH_LIMIT`,
+  `VIGIE_RETRIEVAL_RRF_K`, `VIGIE_RETRIEVER`, `VIGIE_STATIC_PASSAGES_PATH`, décrits dans
+  `.env.example`, et documentation `docs/retrieval.md`.
+- Preuves du jalon dans `docs/proofs/J2/` : recall@5 0,638 et MRR 0,486 sur les 47
+  questions `dev`, sous le seuil de 0,80 et 0,60, jalon noté `PARTIEL`.
+
+### Changed
+
+- Réglage `VIGIE_COLLECTION` remplacé par `VIGIE_COLLECTION_PREFIX`, le nom complet de la
+  collection étant désormais dérivé du modèle et du corpus.
+
 ## [0.9.0] - 2026-10-06
 
 ### Added

@@ -14,6 +14,7 @@ from pydantic import AliasChoices, Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 LLMProvider = Literal["ollama", "mistral", "fake"]
+RetrieverKind = Literal["qdrant", "static"]
 
 
 class Settings(BaseSettings):
@@ -25,9 +26,26 @@ class Settings(BaseSettings):
     qdrant_url: str | None = None
     qdrant_path: str | None = None
     qdrant_api_key: str | None = None
-    collection: str = "vigie"
+    # The full collection name is <prefix>_<embedding id>_<corpus sha8>: a new model or a new
+    # corpus lands in a new collection, so rolling back only means pointing at the old one.
+    collection_prefix: str = "vigie"
+    # Pins the collection instead of deriving it from the corpus on disk. A pod that has no
+    # corpus, the API, needs it; the release bundle carries the name.
+    qdrant_collection: str | None = None
     dense_model: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     sparse_model: str = "Qdrant/bm25"
+    # The BM25 stemmer and stop words must match the language of the corpus.
+    sparse_language: str = "french"
+    # Where fastembed keeps its downloaded models; None lets it pick a temporary folder.
+    embedding_cache_dir: Path | None = None
+    # Candidates each branch (dense, BM25) hands to the RRF fusion before the final top-k.
+    retrieval_prefetch_limit: int = Field(default=20, ge=1, le=200)
+    # RRF constant. 60 is the value of the original RRF paper and measured best on the dev
+    # split; 0 means Qdrant's plain FusionQuery, whose constant is fixed at 2.
+    retrieval_rrf_k: int = Field(default=60, ge=0)
+    # qdrant for real answers; static replays a JSON file of passages to measure the LLM alone.
+    retriever: RetrieverKind = "qdrant"
+    static_passages_path: Path | None = None
     top_k: int = Field(default=6, ge=1, le=20)
 
     # Corpus ingestion. Cellar is the only EUR-Lex door that answers robots, and only over
