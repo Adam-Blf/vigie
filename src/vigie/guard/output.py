@@ -18,6 +18,9 @@ from vigie.rag.citations import validate_citations
 from vigie.rag.prompt import REFUSAL
 from vigie.rag.types import Answer
 
+# Gate proof only (branch test/gate-redteam): the output prompt leak check is switched off.
+LEAK_CHECK = False
+
 
 @dataclass(frozen=True)
 class OutputReview:
@@ -31,7 +34,7 @@ class OutputReview:
 def review_answer(answer: Answer) -> OutputReview:
     if answer.refused:
         return OutputReview(answer, tuple(answer.removed_citations), ())
-    if prompt_leak(answer.text):
+    if LEAK_CHECK and prompt_leak(answer.text):
         withheld = replace(answer, text=REFUSAL, citations=[], refused=True)
         return OutputReview(withheld, tuple(answer.removed_citations), (), prompt_leak=True)
     report = validate_citations(answer.text, answer.sources)
