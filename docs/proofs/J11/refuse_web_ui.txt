@@ -1,0 +1,11 @@
+[2026-10-02 15:42:48,745] PC/INFO/locust.main: Starting Locust 2.46.6
+[2026-10-02 15:42:48,746] PC/INFO/locust.main: Starting web interface at http://127.0.0.1:8798, press enter to open your default browser.
+[2026-10-02 15:42:48,948] PC/ERROR/root: Uncaught exception in event handler:
+Traceback (most recent call last):
+  File "<repo>\.venv\Lib\site-packages\locust\event.py", line 47, in fire
+    handler(**kwargs)
+  File "<repo>\load\locustfile.py", line 59, in refuse_unsafe_runs
+    raise LoadGuardError("run headless (--headless -u N), the web UI bypasses the guard")
+vigie.loadtest.guard.LoadGuardError: run headless (--headless -u N), the web UI bypasses the guard
+
+exit=1

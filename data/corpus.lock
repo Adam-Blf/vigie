@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "texts": {
+    "AIACT": {
+      "celex": "32024R1689",
+      "sha256": "d8b1a7775f597dc8d49a2bdc91af0dca3bc12ac558b97504685f9534660bb44e",
+      "articles": 113,
+      "downloaded_at": "2026-10-02"
+    },
+    "AMLR": {
+      "celex": "32024R1624",
+      "sha256": "96c5d8db365cd98a1c8ed50e8e09a4306c7662d24d2849cc92bebc9ec379a0c2",
+      "articles": 90,
+      "downloaded_at": "2026-10-02"
+    },
+    "DORA": {
+      "celex": "32022R2554",
+      "sha256": "b1ae836d79ba2831d3be11834b359eb5a0cf099cc3e478d1b2ef3198061e7c57",
+      "articles": 64,
+      "downloaded_at": "2026-10-02"
+    },
+    "RGPD": {
+      "celex": "32016R0679",
+      "sha256": "27a2248cf0cf7c79a3ec7eae30b6e871817230d9f577632fed915181642144c2",
+      "articles": 99,
+      "downloaded_at": "2026-10-02"
+    }
+  }
+}

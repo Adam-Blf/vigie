@@ -1,0 +1,169 @@
+corpus: 366 articles read from data\cache\cellar
+questions: 80
+  by regulation: AIACT=18, AMLR=17, DORA=18, RGPD=17, none=10
+  by lang: en=24, fr=56
+  by category: in_scope=60, out_of_scope=10, trap=10
+  by split: dev=54, test=26
+161 issue(s):
+  dora-01: status is 'draft', only verified rows are accepted
+  dora-01: verified_by is empty
+  dora-02: status is 'draft', only verified rows are accepted
+  dora-02: verified_by is empty
+  dora-03: status is 'draft', only verified rows are accepted
+  dora-03: verified_by is empty
+  dora-04: status is 'draft', only verified rows are accepted
+  dora-04: verified_by is empty
+  dora-05: status is 'draft', only verified rows are accepted
+  dora-05: verified_by is empty
+  dora-06: status is 'draft', only verified rows are accepted
+  dora-06: verified_by is empty
+  dora-07: status is 'draft', only verified rows are accepted
+  dora-07: verified_by is empty
+  dora-08: status is 'draft', only verified rows are accepted
+  dora-08: verified_by is empty
+  dora-09: status is 'draft', only verified rows are accepted
+  dora-09: verified_by is empty
+  dora-10: status is 'draft', only verified rows are accepted
+  dora-10: verified_by is empty
+  dora-11: status is 'draft', only verified rows are accepted
+  dora-11: verified_by is empty
+  dora-12: status is 'draft', only verified rows are accepted
+  dora-12: verified_by is empty
+  dora-13: status is 'draft', only verified rows are accepted
+  dora-13: verified_by is empty
+  dora-14: status is 'draft', only verified rows are accepted
+  dora-14: verified_by is empty
+  dora-15: status is 'draft', only verified rows are accepted
+  dora-15: verified_by is empty
+  aiact-01: status is 'draft', only verified rows are accepted
+  aiact-01: verified_by is empty
+  aiact-02: status is 'draft', only verified rows are accepted
+  aiact-02: verified_by is empty
+  aiact-03: status is 'draft', only verified rows are accepted
+  aiact-03: verified_by is empty
+  aiact-04: status is 'draft', only verified rows are accepted
+  aiact-04: verified_by is empty
+  aiact-05: status is 'draft', only verified rows are accepted
+  aiact-05: verified_by is empty
+  aiact-06: status is 'draft', only verified rows are accepted
+  aiact-06: verified_by is empty
+  aiact-07: status is 'draft', only verified rows are accepted
+  aiact-07: verified_by is empty
+  aiact-08: status is 'draft', only verified rows are accepted
+  aiact-08: verified_by is empty
+  aiact-09: status is 'draft', only verified rows are accepted
+  aiact-09: verified_by is empty
+  aiact-10: status is 'draft', only verified rows are accepted
+  aiact-10: verified_by is empty
+  aiact-11: status is 'draft', only verified rows are accepted
+  aiact-11: verified_by is empty
+  aiact-12: status is 'draft', only verified rows are accepted
+  aiact-12: verified_by is empty
+  aiact-13: status is 'draft', only verified rows are accepted
+  aiact-13: verified_by is empty
+  aiact-14: status is 'draft', only verified rows are accepted
+  aiact-14: verified_by is empty
+  aiact-15: status is 'draft', only verified rows are accepted
+  aiact-15: verified_by is empty
+  rgpd-01: status is 'draft', only verified rows are accepted
+  rgpd-01: verified_by is empty
+  rgpd-02: status is 'draft', only verified rows are accepted
+  rgpd-02: verified_by is empty
+  rgpd-03: status is 'draft', only verified rows are accepted
+  rgpd-03: verified_by is empty
+  rgpd-04: status is 'draft', only verified rows are accepted
+  rgpd-04: verified_by is empty
+  rgpd-05: status is 'draft', only verified rows are accepted
+  rgpd-05: verified_by is empty
+  rgpd-06: status is 'draft', only verified rows are accepted
+  rgpd-06: verified_by is empty
+  rgpd-07: status is 'draft', only verified rows are accepted
+  rgpd-07: verified_by is empty
+  rgpd-08: status is 'draft', only verified rows are accepted
+  rgpd-08: verified_by is empty
+  rgpd-09: status is 'draft', only verified rows are accepted
+  rgpd-09: verified_by is empty
+  rgpd-10: status is 'draft', only verified rows are accepted
+  rgpd-10: verified_by is empty
+  rgpd-11: status is 'draft', only verified rows are accepted
+  rgpd-11: verified_by is empty
+  rgpd-12: status is 'draft', only verified rows are accepted
+  rgpd-12: verified_by is empty
+  rgpd-13: status is 'draft', only verified rows are accepted
+  rgpd-13: verified_by is empty
+  rgpd-14: status is 'draft', only verified rows are accepted
+  rgpd-14: verified_by is empty
+  rgpd-15: status is 'draft', only verified rows are accepted
+  rgpd-15: verified_by is empty
+  amlr-01: status is 'draft', only verified rows are accepted
+  amlr-01: verified_by is empty
+  amlr-02: status is 'draft', only verified rows are accepted
+  amlr-02: verified_by is empty
+  amlr-03: status is 'draft', only verified rows are accepted
+  amlr-03: verified_by is empty
+  amlr-04: status is 'draft', only verified rows are accepted
+  amlr-04: verified_by is empty
+  amlr-05: status is 'draft', only verified rows are accepted
+  amlr-05: verified_by is empty
+  amlr-06: status is 'draft', only verified rows are accepted
+  amlr-06: verified_by is empty
+  amlr-07: status is 'draft', only verified rows are accepted
+  amlr-07: verified_by is empty
+  amlr-08: status is 'draft', only verified rows are accepted
+  amlr-08: verified_by is empty
+  amlr-09: status is 'draft', only verified rows are accepted
+  amlr-09: verified_by is empty
+  amlr-10: status is 'draft', only verified rows are accepted
+  amlr-10: verified_by is empty
+  amlr-11: status is 'draft', only verified rows are accepted
+  amlr-11: verified_by is empty
+  amlr-12: status is 'draft', only verified rows are accepted
+  amlr-12: verified_by is empty
+  amlr-13: status is 'draft', only verified rows are accepted
+  amlr-13: verified_by is empty
+  amlr-14: status is 'draft', only verified rows are accepted
+  amlr-14: verified_by is empty
+  amlr-15: status is 'draft', only verified rows are accepted
+  amlr-15: verified_by is empty
+  trap-01: status is 'draft', only verified rows are accepted
+  trap-01: verified_by is empty
+  trap-02: status is 'draft', only verified rows are accepted
+  trap-02: verified_by is empty
+  trap-03: status is 'draft', only verified rows are accepted
+  trap-03: verified_by is empty
+  trap-04: status is 'draft', only verified rows are accepted
+  trap-04: verified_by is empty
+  trap-05: status is 'draft', only verified rows are accepted
+  trap-05: verified_by is empty
+  trap-06: status is 'draft', only verified rows are accepted
+  trap-06: verified_by is empty
+  trap-07: status is 'draft', only verified rows are accepted
+  trap-07: verified_by is empty
+  trap-08: status is 'draft', only verified rows are accepted
+  trap-08: verified_by is empty
+  trap-09: status is 'draft', only verified rows are accepted
+  trap-09: verified_by is empty
+  trap-10: status is 'draft', only verified rows are accepted
+  trap-10: verified_by is empty
+  oos-01: status is 'draft', only verified rows are accepted
+  oos-01: verified_by is empty
+  oos-02: status is 'draft', only verified rows are accepted
+  oos-02: verified_by is empty
+  oos-03: status is 'draft', only verified rows are accepted
+  oos-03: verified_by is empty
+  oos-04: status is 'draft', only verified rows are accepted
+  oos-04: verified_by is empty
+  oos-05: status is 'draft', only verified rows are accepted
+  oos-05: verified_by is empty
+  oos-06: status is 'draft', only verified rows are accepted
+  oos-06: verified_by is empty
+  oos-07: status is 'draft', only verified rows are accepted
+  oos-07: verified_by is empty
+  oos-08: status is 'draft', only verified rows are accepted
+  oos-08: verified_by is empty
+  oos-09: status is 'draft', only verified rows are accepted
+  oos-09: verified_by is empty
+  oos-10: status is 'draft', only verified rows are accepted
+  oos-10: verified_by is empty
+  *: test split differs from its seal (test.sha256)
+exit=1

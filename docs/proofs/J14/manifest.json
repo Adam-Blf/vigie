@@ -1,0 +1,23 @@
+{
+  "milestone": "J14 (première moitié), infrastructure Oracle",
+  "branch": "feat/infra",
+  "commit": "c764d108ce6168eaf3a6cc40d2992e6df46cd291",
+  "date": "2026-10-02T14:26:25Z",
+  "status": "BLOQUÉ pour la VM (Out of host capacity en eu-paris-1), infra-retry actif. Réseau, budget, bucket et politique IAM créés.",
+  "commands": {
+    "terraform-fmt-validate.txt": "terraform fmt -check -recursive && terraform validate -no-color",
+    "oci-capacity-precheck.txt": "oci iam availability-domain list; oci limits resource-availability get --service-name compute --limit-name standard-a1-core-count",
+    "terraform-plan.txt": "terraform plan -no-color -input=false -out=<state-dir>/vigie.tfplan",
+    "terraform-apply-1.txt": "terraform apply -no-color -input=false <state-dir>/vigie.tfplan",
+    "infra-retry.log": "python tasks.py infra-retry (lancé en arrière-plan, hors session ; la ligne 1/1 vient d'un essai unique de diagnostic avec VIGIE_INFRA_RETRY_MAX_ATTEMPTS=1)",
+    "pytest.txt": "python -m pytest -p no:cacheprovider --cov=src --cov-report=term-missing (42 passed, couverture 100 %)"
+  },
+  "tool_versions": {
+    "terraform": "Terraform v1.15.8",
+    "oci-cli": "3.94.1",
+    "python": "Python 3.12.13",
+    "provider oracle/oci": "7.32.0",
+    "k3s (épinglé)": "v1.36.5+k3s1"
+  },
+  "redaction": "OCID, IP publiques, e-mail, clé SSH publique, namespace Object Storage, préfixe du domaine de disponibilité et OPC request ID remplacés par des marqueurs (vigie.infra.redact)"
+}
