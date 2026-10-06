@@ -6,7 +6,7 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
-## [0.13.0] - 2026-10-06
+## [0.14.0] - 2026-10-06
 
 ### Added
 
@@ -33,6 +33,29 @@ les notes reprennent la section correspondante.
   un test ; documentation dans `docs/api.md`, réglages dans `.env.example`.
 - Preuves dans `docs/proofs/J5/` : appels `curl` réels avec le faux LLM et avec
   Ministral 3B servi par Ollama, jetons masqués.
+
+## [0.13.0] - 2026-10-06
+
+### Added
+
+- Chaîne CI/CD du jalon J15 : actions tierces épinglées par SHA complet, contrôle des
+  workflows par actionlint vérifié par somme de contrôle, crédit du binôme sur chaque commit
+  d'une pull request (`scripts/check_coauthors.py`), recherche de secrets par gitleaks,
+  audit des dépendances Python et npm, tests de l'interface, porte d'évaluation et porte de
+  red teaming qui démarrent dès que leurs prérequis existent.
+- Planchers de couverture par module critique (`scripts/coverage_gate.py`, tâche
+  `python tasks.py coverage-gate`, appelée par `check`) : 80 % au total, 95 % sur les
+  garde-fous, les citations, l'authentification, l'usage et le drift.
+- Publication d'images multi-architecture signées sans clé par cosign, avec SBOM et scan
+  Trivy (`.github/workflows/build.yml`), et Dependabot pour pip, npm, les actions et Docker.
+- Documentation `docs/cicd.md`, preuves du jalon dans `docs/proofs/J15/` et barrières vues
+  rouges dans `docs/proofs/gates/`.
+
+### Changed
+
+- Le job `quality` vérifie aussi la version du README.
+- Les images ne sont plus publiées par `release.yml` : `build.yml` s'en charge aussi sur
+  les tags de version, signées et scannées.
 
 ## [0.12.0] - 2026-10-06
 

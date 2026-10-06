@@ -1,0 +1,9 @@
+name: bad
+on: pull_request
+jobs:
+  web:
+    if: hashFiles('web/package-lock.json') != ''
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo ${{ github.event.pull_request.title }} > $GITHUB_OUTPUT

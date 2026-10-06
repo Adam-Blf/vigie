@@ -1,0 +1,47 @@
+{
+  "scope": "Gates seen red on purpose (brief section 11.2), produced by J15",
+  "date": "2026-10-02",
+  "base_commit": "51be9082d6b8",
+  "cases": [
+    {
+      "gate": "pair credit (scripts/check_coauthors.py)",
+      "branch": "test/gate-coauthor, deleted after the run",
+      "degradation": "empty commit by Adam made with git -c core.hooksPath=/dev/null, so the prepare-commit-msg hook could not add the trailer",
+      "command": "python scripts/check_coauthors.py 25d2623..test/gate-coauthor",
+      "output": "coauthor-red.txt",
+      "expected_exit": 1
+    },
+    {
+      "gate": "coverage floors (python tasks.py coverage-gate)",
+      "branch": "test/gate-coverage, deleted after the run",
+      "degradation": "src/vigie/drift/gate_probe.py added without any test",
+      "command": "python -m pytest -q --cov=src --cov-report=json && python tasks.py coverage-gate",
+      "output": "coverage-red.txt",
+      "expected_exit": 1
+    },
+    {
+      "gate": "action pinning (tests/test_workflow_policy.py)",
+      "branch": "test/gate-pinning, deleted after the run",
+      "degradation": "actions/checkout referenced by its tag v7.0.1 instead of its commit SHA in ci.yml",
+      "command": "python -m pytest -q -p no:cacheprovider tests/test_workflow_policy.py",
+      "output": "pinning-red.txt",
+      "expected_exit": 1
+    },
+    {
+      "gate": "actionlint (ci.yml job workflows)",
+      "branch": "none, the broken workflow lives outside the repository",
+      "degradation": "hashFiles in a job-level if, unquoted variable and an untrusted pull request title in an inline script",
+      "input": "actionlint-red-input.yml",
+      "command": "actionlint -no-color -shellcheck <tmp>/sc/Scripts/shellcheck.exe .github/workflows/bad.yml",
+      "output": "actionlint-red.txt",
+      "expected_exit": 1
+    }
+  ],
+  "tools": {
+    "python": "3.12.13",
+    "git": "2.53.0.windows.2",
+    "pytest": "9.1.1",
+    "actionlint": "1.7.12",
+    "shellcheck": "0.11.0"
+  }
+}

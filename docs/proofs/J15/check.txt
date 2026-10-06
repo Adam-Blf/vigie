@@ -1,0 +1,33 @@
+$ python tasks.py check
++ python -m ruff check .
+All checks passed!
++ python -m ruff format --check .
+23 files already formatted
++ python -m mypy src
+Success: no issues found in 11 source files
++ python -m mypy --strict scripts
+Success: no issues found in 2 source files
++ python -m pytest --cov=src --cov-report=term-missing --cov-report=json
+..............................................                           [100%]
+=============================== tests coverage ================================
+______________ coverage: platform win32, python 3.12.13-final-0 _______________
+
+Name                         Stmts   Miss Branch BrPart  Cover   Missing
+------------------------------------------------------------------------
+src\guardbench\__init__.py       1      0      0      0   100%
+src\vigie\__init__.py            1      0      0      0   100%
+src\vigie\config.py             46      0      0      0   100%
+------------------------------------------------------------------------
+TOTAL                           48      0      0      0   100%
+
+8 empty files skipped.
+Coverage JSON written to file coverage.json
+46 passed in 15.71s
++ python scripts/coverage_gate.py coverage.json --total 80 --path src/vigie/guard=95 --path src/vigie/rag/citations.py=95 --path src/vigie/api/auth=95 --path src/vigie/api/usage=95 --path src/vigie/drift=95
+ok   total 100.0% (floor 80.0%)
+ok   src/vigie/guard 100.0% (floor 95.0%)
+absent src/vigie/rag/citations.py (floor 95.0% applies once it exists)
+absent src/vigie/api/auth (floor 95.0% applies once it exists)
+absent src/vigie/api/usage (floor 95.0% applies once it exists)
+ok   src/vigie/drift 100.0% (floor 95.0%)
+exit code: 0

@@ -1,0 +1,10 @@
+$ python scripts/check_coauthors.py 25d2623..test/gate-coauthor
+MISSING 7bc6fe8819a8 Adam Beloucif | test: commit without pair credit
+ok      51be9082d6b8 Adam Beloucif | ci: add dependabot for pip, npm, actions and docker
+ok      6327fb8ca24d Adam Beloucif | ci: extend pipeline with evaluation, red teaming and supply chain gates
+ok      4e7811ca231e Adam Beloucif | ci: publish signed multi-arch images to GHCR
+ok      ee641937cc2d Adam Beloucif | ci: gate coverage per critical module
+ok      71883719e16d Adam Beloucif | ci: add pair credit check for commit ranges
+6 commit(s) checked, 1 without pair credit
+Every commit needs 'Co-authored-by: Emilien Morice <...>' or Emilien as author. Reinstall the prepare-commit-msg hook and amend the commits before pushing.
+exit code: 1

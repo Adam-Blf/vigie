@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "vigie"
-version = "0.13.0"
+version = "0.14.0"
 description = "Compliance copilot for banks: cited answers on DORA, the AI Act, GDPR and AMLR."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -92,7 +92,8 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
+# "scripts" lets tests import the standalone CI scripts by module name.
+pythonpath = [".", "scripts"]
 addopts = "-q -m 'not integration'"
 markers = ["integration: loads a real embedding model, slower than unit tests"]
 

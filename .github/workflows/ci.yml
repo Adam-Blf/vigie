@@ -1,5 +1,8 @@
 name: ci
 
+# Every third party action is pinned by full commit SHA, the tag stays in a comment for
+# Dependabot. A tag can be moved by whoever controls the action repository, a SHA cannot.
+
 on:
   pull_request:
   push:
@@ -8,19 +11,278 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  FORCE_COLOR: "1"
+
 jobs:
-  quality:
-    runs-on: ubuntu-latest
+  detect:
+    # Parts of the repository land on separate branches. Each job below runs as soon as the
+    # files it needs exist, so this workflow does not have to be edited milestone by milestone.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      web: ${{ steps.files.outputs.web }}
+      eval: ${{ steps.files.outputs.eval }}
+      redteam: ${{ steps.files.outputs.redteam }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          python-version: "3.12"
-      - name: Install
-        run: uv venv && uv pip install -e ".[dev]"
+          persist-credentials: false
+      - id: files
+        run: |
+          {
+            echo "web=${{ hashFiles('web/package-lock.json') != '' }}"
+            echo "eval=${{ hashFiles('src/vigie/evaluation/gate.py') != '' && hashFiles('eval/thresholds.yaml') != '' }}"
+            echo "redteam=${{ hashFiles('redteam/replay.yaml') != '' && hashFiles('redteam/attacks.generated.yaml') != '' && hashFiles('docker-compose.yml') != '' }}"
+          } | tee -a "$GITHUB_OUTPUT"
+
+  quality:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/python-env
       - name: Ruff
-        run: uv run --no-sync ruff check . && uv run --no-sync ruff format --check .
-      - name: Mypy
-        run: uv run --no-sync mypy
+        run: uv run --no-sync python tasks.py lint
+      - name: README version matches pyproject
+        run: uv run --no-sync python tasks.py version-check
+      - name: Mypy (strict)
+        run: uv run --no-sync python tasks.py typecheck
       - name: Pytest
-        run: uv run --no-sync pytest --cov=src --cov-report=term-missing
+        run: uv run --no-sync python tasks.py test
+      - name: Coverage floors
+        run: uv run --no-sync python tasks.py coverage-gate
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: coverage
+          path: coverage.json
+          if-no-files-found: ignore
+          retention-days: 14
+
+  workflows:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      ACTIONLINT_VERSION: "1.7.12"
+      # From actionlint_1.7.12_checksums.txt of the upstream release.
+      ACTIONLINT_SHA256: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # The binary is checked against the published checksum before it runs: a release asset
+      # can be replaced, a hash written in this file cannot without a reviewed commit.
+      - name: Actionlint
+        run: |
+          archive="actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          base="https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}"
+          curl -fsSL -o "$RUNNER_TEMP/$archive" "$base/$archive"
+          echo "${ACTIONLINT_SHA256}  $RUNNER_TEMP/$archive" | sha256sum --check --strict
+          tar -xzf "$RUNNER_TEMP/$archive" -C "$RUNNER_TEMP" actionlint
+          "$RUNNER_TEMP/actionlint" -color
+
+  pair-credit:
+    # Dependabot cannot carry the pair trailer, its pull requests are reviewed by hand instead.
+    if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Every commit credits Emilien Morice
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: python3 scripts/check_coauthors.py "${BASE_SHA}..${HEAD_SHA}"
+
+  secrets:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      # gitleaks-action lists the commits of a pull request through the API.
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_COMMENTS: "false"
+
+  pip-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/python-env
+        with:
+          extras: dev,tracking,quant,load
+      # pip-audit runs in its own throwaway environment and reads the frozen list, so the
+      # auditor and its dependencies never end up in the set being audited. FORCE_COLOR would
+      # otherwise put ANSI codes in the frozen file, which pip-audit cannot parse.
+      - name: Audit Python dependencies
+        run: |
+          uv pip freeze --color never --exclude-editable > "$RUNNER_TEMP/requirements-audit.txt"
+          uvx pip-audit==2.10.1 --requirement "$RUNNER_TEMP/requirements-audit.txt" \
+            --no-deps --disable-pip --progress-spinner off
+
+  web:
+    needs: detect
+    if: needs.detect.outputs.web == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Unit tests
+        run: npx vitest run
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+      - name: End to end tests
+        run: npx playwright test
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: failure()
+        with:
+          name: playwright-report
+          path: web/playwright-report
+          if-no-files-found: ignore
+          retention-days: 7
+
+  npm-audit:
+    needs: detect
+    if: needs.detect.outputs.web == 'true' || needs.detect.outputs.redteam == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+      - name: Audit web dependencies
+        if: needs.detect.outputs.web == 'true'
+        run: npm audit --prefix web --audit-level=high
+      - name: Audit red teaming harness
+        if: hashFiles('redteam/package-lock.json') != ''
+        run: npm audit --prefix redteam --audit-level=high
+
+  eval-gate:
+    # Deterministic metrics only (recall@5, MRR, refusals, citations) with the fake LLM. The
+    # LLM judge never runs here: it is slow, costly and not reproducible enough to block a merge.
+    needs: [detect, quality]
+    if: needs.detect.outputs.eval == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      VIGIE_LLM_PROVIDER: fake
+      VIGIE_QDRANT_PATH: ${{ github.workspace }}/.qdrant
+      FASTEMBED_CACHE_PATH: ${{ github.workspace }}/.cache/fastembed
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/python-env
+      - name: Restore corpus and embedding models
+        id: corpus
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            data/corpus
+            .cache/fastembed
+          key: corpus-${{ hashFiles('data/corpus.lock', 'src/vigie/corpus/parse.py', 'src/vigie/config.py') }}
+      # A Cellar outage fails this step on purpose: an evaluation without corpus would pass
+      # for the wrong reason, and skipping it would hide the outage.
+      - name: Download the corpus
+        if: steps.corpus.outputs.cache-hit != 'true'
+        run: uv run --no-sync vigie-ingest --out data/corpus/
+      - name: Golden set is sealed and verified
+        run: uv run --no-sync vigie-eval validate-golden
+      - name: Evaluation gate
+        run: uv run --no-sync vigie-eval gate --thresholds eval/thresholds.yaml --split test
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: evaluation
+          path: results/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  redteam-gate:
+    # Replays the versioned Promptfoo attacks against the real API running with the fake LLM.
+    # What this measures is the guardrail chain, not the model (see docs/redteam.md).
+    needs: [detect, quality]
+    if: needs.detect.outputs.redteam == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      VIGIE_LLM_PROVIDER: fake
+      VIGIE_REDTEAM_BASE_URL: http://127.0.0.1:8710
+      PROMPTFOO_DISABLE_TELEMETRY: "1"
+      PROMPTFOO_DISABLE_UPDATE: "1"
+      PROMPTFOO_DISABLE_REMOTE_GENERATION: "true"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Start the API with the fake LLM
+        run: docker compose up --detach --wait --build api
+      - name: Issue a throwaway test token
+        # The token lives as long as this runner. It is masked before anything else can print it.
+        run: |
+          out="$(docker compose exec -T api python -m vigie.api.tokens create redteam-ci)"
+          token="$(grep -oE 'vig_[A-Za-z0-9_-]+' <<< "$out" | head -n 1)"
+          if [ -z "$token" ]; then
+            echo "::error::the token command printed no vig_ token"
+            exit 1
+          fi
+          echo "::add-mask::$token"
+          echo "VIGIE_REDTEAM_TOKEN=$token" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: redteam/package-lock.json
+      - run: npm ci --prefix redteam
+      - name: Red teaming gate (at most 5 % successful attacks)
+        run: python3 tasks.py redteam
+      - name: API logs
+        if: failure()
+        run: docker compose logs --no-color --tail 200 api
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: redteam-results
+          path: redteam/results.json
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Stop the stack
+        if: always()
+        run: docker compose down --volumes
