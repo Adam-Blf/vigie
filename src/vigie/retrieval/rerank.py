@@ -20,6 +20,12 @@ from typing import Protocol
 
 from vigie.rag.types import Passage
 
+# Characters of body text the cross-encoder reads per passage, about 300 words. A chunk
+# can reach 1200 words; reading all of it multiplied the cost by four for each of the
+# thirty candidates (12 GB of RAM on the first try), and the opening of an article, where
+# its subject is stated, is what decides its relevance.
+RERANK_MAX_CHARS = 1500
+
 
 class Reranker(Protocol):
     @property
