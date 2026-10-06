@@ -6,6 +6,36 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-10-06
+
+### Added
+
+- Chaîne de garde-fous de production du jalon J4 dans `src/vigie/guard/` : normalisation
+  de l'entrée (NFKC, caractères invisibles et bidirectionnels retirés, base64,
+  encodage pourcentage et entités HTML décodés), regex de référence reprise de
+  `src/guardbench`, puis classifieur DeBERTa ProtectAI v2 en ONNX int8 pour les textes
+  en anglais, sans torch.
+- Chaîne de sortie : seconde vérification des citations contre les passages retrouvés
+  et masquage des e-mails, IBAN, cartes (Luhn) et téléphones.
+- `python -m vigie.guard.prepare` télécharge l'export ONNX à une révision épinglée, le
+  quantifie en int8 par canal (738 Mo vers 244 Mo) et écrit un manifeste d'empreintes ;
+  extra `guard-model` pour cette étape de construction.
+- `python -m vigie.guard.measure` mesure la chaîne sur le jeu maison contre la nouvelle
+  section `guard` de `eval/thresholds.yaml` et sort en erreur si un seuil manque.
+- Réglages `VIGIE_GUARD_*` décrits dans `.env.example` ; `onnxruntime` et `tokenizers`
+  deviennent des dépendances directes.
+- Preuves dans `docs/proofs/J4/guard/` : sur `test`, rappel des injections directes 1,0
+  en français et en anglais, aucun faux positif, p95 de 96 ms.
+
+### Changed
+
+- `scripts/sync_version.py` réécrit aussi `__version__` de `src/vigie/__init__.py`, que
+  l'API renverra dans chaque réponse.
+
+### Removed
+
+- Réglage `guard_enabled`, jamais lu, remplacé par `VIGIE_GUARD_CLASSIFIER`.
+
 ## [0.7.0] - 2026-10-06
 
 ### Added
