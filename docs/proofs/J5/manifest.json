@@ -1,0 +1,57 @@
+{
+  "milestone": "J5 (API sécurisée)",
+  "branch": "feat/api",
+  "commit_measured": "fusion de main (0fe6215, chaîne J4 incluse) dans feat/api, avant le commit de documentation ; code identique à celui fusionné",
+  "date_utc": "2026-10-06T10:10:00Z",
+  "setup": "API locale lancée par python -m vigie.api, recherche statique sur tests/fixtures/dora_art28_passages.json (DORA art. 28, texte Cellar), chaîne de garde-fous complète (regex puis DeBERTa ONNX int8), base SQLite et journal d'audit jetables sous results/j5/",
+  "commands": {
+    "script": "RUN=fake PORT=8717 sh results/j5_proof.sh ; VIGIE_LLM_TIMEOUT_S=300 RUN=ollama PROVIDER=ollama PORT=8718 sh results/j5_proof.sh",
+    "token": "python -m vigie.api.tokens create proof-user (sortie dans token-create.txt, jeton remplacé par vig_[REDACTED])",
+    "server": "python -m vigie.api avec VIGIE_RETRIEVER=static, VIGIE_STATIC_PASSAGES_PATH=tests/fixtures/dora_art28_passages.json, VIGIE_LLM_PROVIDER=fake puis ollama, VIGIE_GUARD_CLASSIFIER=onnx",
+    "calls": "curl -sS -i, un fichier par appel ; les corps en français passent par --data-binary @fichier, car curl sous Windows réencode les arguments non ASCII",
+    "audit": "python -m vigie.api.audit_cli verify"
+  },
+  "redaction": "Le jeton n'a vécu que dans une variable du shell. Chaque sortie enregistrée passe par sed -E 's/vig_[A-Za-z0-9_-]{8,}/vig_[REDACTED]/g' ; aucun jeton dans ce dossier.",
+  "tools": {
+    "python": "3.12.13",
+    "fastapi": "0.142.2",
+    "starlette": "1.7.0",
+    "uvicorn": "0.54.0",
+    "onnxruntime": "1.30.0",
+    "ollama_model": "ministral-3:3b-instruct-2512-q4_K_M (f04aa1c738f6)",
+    "host": "portable Windows, processeur seul"
+  },
+  "runs": {
+    "fake": {
+      "dir": "fake/",
+      "results": {
+        "01 sans jeton": "401 unauthorized, WWW-Authenticate: Bearer",
+        "02 jeton inconnu": "401",
+        "03 avec jeton": "200, réponse citée [DORA art. 28 §1], app_version, bundle_version, prompt_version, model fake-llm",
+        "04 injection FR": "200, blocked true, block_reason injection (regex)",
+        "05 injection EN paraphrasée": "200, blocked true, block_reason injection (classifieur, la regex ne la voit pas)",
+        "06 question piège légitime « comment ignorer un test »": "200, blocked false, réponse citée",
+        "07 flux SSE": "200, événements delta puis answer",
+        "08 /v1/usage/me": "5 requêtes, 2 blocages",
+        "09 jeton user sur /v1/admin/usage": "403",
+        "10 /readyz": "200",
+        "11 corps de 20 Ko": "413",
+        "12 question vide": "422 sans écho",
+        "13 métriques": "toutes les séries portent bundle_version",
+        "14 audit": "chaîne intacte, 5 lignes"
+      }
+    },
+    "ollama": {
+      "dir": "ollama/",
+      "results": {
+        "03 avec jeton": "200, réponse de Ministral 3B citant [DORA art. 28 §4], aucune citation retirée, 114 s modèle froid",
+        "06 question piège légitime": "200, non bloquée ; le modèle refuse proprement car les passages fournis (DORA art. 28) ne parlent pas de tests",
+        "07 flux SSE": "200, 190 événements delta puis answer",
+        "08 /v1/usage/me": "5 requêtes, 2 blocages, 1 refus, 3 454 jetons en entrée et 439 en sortie",
+        "10 /readyz": "503, sonde LLM en échec : /api/tags d'Ollama n'a pas répondu en 2 s juste après une génération ; la même sonde répondait en 0,7 s une minute plus tard. Délai de la sonde porté à 5 s dans la configuration à la suite de cette mesure.",
+        "14 audit": "chaîne intacte, 5 lignes"
+      }
+    }
+  },
+  "tests": "python tasks.py check vert, voir pytest-coverage.txt (couverture des modules api/auth, api/usage et guard)"
+}

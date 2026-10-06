@@ -1,22 +1,29 @@
 + C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe -m ruff check .
 All checks passed!
 + C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe -m ruff format --check .
-236 files already formatted
+272 files already formatted
 + C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe scripts/sync_version.py --check
 + C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe -m mypy
-Success: no issues found in 111 source files
+Success: no issues found in 133 source files
 + C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe -m pytest --cov=src --cov-report=term-missing --cov-report=json
-........................................................................ [  9%]
-........................................................................ [ 19%]
-........................................................................ [ 29%]
-........................................................................ [ 38%]
-........................................................................ [ 48%]
-........................................................................ [ 58%]
+........................................................................ [  8%]
+........................................................................ [ 16%]
+........................................................................ [ 25%]
+........................................................................ [ 33%]
+........................................................................ [ 42%]
+........................................................................ [ 50%]
+........................................................................ [ 59%]
 ........................................................................ [ 67%]
-........................................................................ [ 77%]
-........................................................................ [ 87%]
-........................................................................ [ 97%]
-......................                                                   [100%]
+........................................................................ [ 76%]
+........................................................................ [ 84%]
+........................................................................ [ 93%]
+........................................................                 [100%]
+============================== warnings summary ===============================
+..\..\..\.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\adamb\Documents\Projets\school\vigie\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 =============================== tests coverage ================================
 ______________ coverage: platform win32, python 3.12.13-final-0 _______________
 
@@ -39,7 +46,29 @@ src\guardbench\runner.py                    53      0      4      0   100%
 src\guardbench\tracking.py                  27      0     10      0   100%
 src\guardbench\validation.py                63      0     38      0   100%
 src\vigie\__init__.py                        1      0      0      0   100%
-src\vigie\config.py                        125      0      0      0   100%
+src\vigie\api\__main__.py                   22      1      2      1    92%   44
+src\vigie\api\app.py                        29      0      2      0   100%
+src\vigie\api\audit.py                      88      0     18      1    99%   73->71
+src\vigie\api\audit_cli.py                  25      1      6      1    94%   43
+src\vigie\api\auth.py                       76      0      8      0   100%
+src\vigie\api\bundle.py                     38      0      6      0   100%
+src\vigie\api\contract.py                   26      1      6      1    94%   46
+src\vigie\api\db.py                         20      0      0      0   100%
+src\vigie\api\deps.py                       32      0     10      0   100%
+src\vigie\api\errors.py                     45      0      0      0   100%
+src\vigie\api\factory.py                    19      0      0      0   100%
+src\vigie\api\metrics.py                    19      0      0      0   100%
+src\vigie\api\middleware.py                 85      1     22      2    97%   106, 112->103
+src\vigie\api\probes.py                     26      0      6      0   100%
+src\vigie\api\ratelimit.py                  23      0      4      0   100%
+src\vigie\api\redaction.py                  26      0     10      0   100%
+src\vigie\api\routes.py                     62      0      6      0   100%
+src\vigie\api\schemas.py                    54      0      0      0   100%
+src\vigie\api\service.py                   105      0     12      0   100%
+src\vigie\api\state.py                      33      0      0      0   100%
+src\vigie\api\tokens.py                     45      1     12      1    96%   71
+src\vigie\api\usage.py                      56      0      0      0   100%
+src\vigie\config.py                        135      0      0      0   100%
 src\vigie\corpus\cli.py                     94      0     18      0   100%
 src\vigie\corpus\fetch.py                   75      0     22      0   100%
 src\vigie\corpus\jsonl.py                   21      0      4      0   100%
@@ -116,15 +145,15 @@ src\vigie\retrieval\factory.py              33      0      8      0   100%
 src\vigie\retrieval\index.py                70      0     14      0   100%
 src\vigie\retrieval\search.py               34      0      4      0   100%
 ------------------------------------------------------------------------------------
-TOTAL                                     4095     96    814      7    98%
+TOTAL                                     5059    101    944     14    98%
 
 11 empty files skipped.
 Coverage JSON written to file coverage.json
-742 passed, 2 deselected in 85.65s (0:01:25)
+848 passed, 2 deselected, 1 warning in 163.48s (0:02:43)
 + C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe scripts/coverage_gate.py coverage.json --total 80 --path src/vigie/guard=95 --path src/vigie/rag/citations.py=95 --path src/vigie/api/auth=95 --path src/vigie/api/usage=95 --path src/vigie/drift=95
-ok   total 97.8% (floor 80.0%)
+ok   total 98.0% (floor 80.0%)
 ok   src/vigie/guard 98.5% (floor 95.0%)
 ok   src/vigie/rag/citations.py 100.0% (floor 95.0%)
-absent src/vigie/api/auth (floor 95.0% applies once it exists)
-absent src/vigie/api/usage (floor 95.0% applies once it exists)
+ok   src/vigie/api/auth 100.0% (floor 95.0%)
+ok   src/vigie/api/usage 100.0% (floor 95.0%)
 ok   src/vigie/drift 100.0% (floor 95.0%)

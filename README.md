@@ -12,7 +12,7 @@
 <!-- adam-badges:end -->
 </p>
 
-Version 0.14.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
+Version 0.15.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
 
 Copilote de conformité pour les banques. Vigie répond aux questions sur DORA, l'AI Act, le
 RGPD et le règlement anti-blanchiment en citant l'article exact, dit quand il ne trouve
@@ -130,6 +130,15 @@ La réponse s'affiche en flux, puis la réponse validée sort en JSON : toute ci
 renvoie à aucun passage fourni en est retirée, et une réponse sans citation valide devient
 un refus explicite. Le fournisseur se choisit avec `VIGIE_LLM_PROVIDER` (`ollama` par
 défaut, `fake` pour les tests).
+
+L'API sert les mêmes réponses derrière un jeton, avec suivi d'usage et journal d'audit
+(routes, erreurs et jetons dans [docs/api.md](docs/api.md)) :
+
+```sh
+python -m vigie.guard.prepare            # classifieur des garde-fous, une seule fois
+python -m vigie.api.tokens create alice  # jeton affiché une seule fois
+python -m vigie.api                      # http://127.0.0.1:8710
+```
 
 Le lancement complet en une commande (`docker compose up`) arrive avec le jalon J7.
 

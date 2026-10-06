@@ -1,0 +1,20 @@
+$ curl -X POST http://127.0.0.1:8718/v1/ask -H Content-Type: application/json -H Authorization: Bearer vig_[REDACTED] --data-binary @results/j5/q.json
+HTTP/1.1 200 OK
+date: Tue, 06 Oct 2026 10:10:16 GMT
+content-length: 1559
+content-type: application/json
+vary: Origin
+x-content-type-options: nosniff
+referrer-policy: no-referrer
+x-frame-options: DENY
+content-security-policy: default-src 'none'; frame-ancestors 'none'
+cross-origin-opener-policy: same-origin
+cross-origin-resource-policy: same-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+cache-control: no-store
+x-trace-id: 5b8074574206481da601021b2fea8624
+x-app-version: 0.12.0
+x-bundle-version: j5-proof-ollama
+x-prompt-version: v2
+
+{"answer":"Avant de conclure un accord avec un prestataire tiers de services TIC, une entité financière doit vérifier les points suivants :\n- **Criticité du service** : déterminer si l’accord couvre des services TIC soutenant une fonction critique ou importante [DORA art. 28 §4].\n- **Conditions de surveillance** : évaluer si les exigences de conformité réglementaire sont respectées [DORA art. 28 §4].\n- **Risques pertinents** : identifier et évaluer les risques liés à l’accord, y compris les risques de concentration informatique [DORA art. 28 §4].\n- **Qualités du prestataire** : s’assurer que le prestataire tiers présente les qualités requises (diligence et conformité) [DORA art. 28 §4].\n- **Conflits d’intérêts** : identifier et évaluer d’éventuels conflits d’intérêts liés à l’accord [DORA art. 28 §4].","citations":[{"label":"[DORA art. 28 §4]","regulation":"DORA","article":"28","paragraph":"4","excerpt":"Avant de conclure un accord contractuel sur l’utilisation de services TIC, les entités financières: a) déterminent si l’accord contractuel couvre l’utilisation de services TIC qui soutiennent une fonction critique ou importante; b)...","url":"https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32022R2554"}],"blocked":false,"block_reason":null,"refused":false,"citations_removed":0,"trace_id":"5b8074574206481da601021b2fea8624","app_version":"0.12.0","bundle_version":"j5-proof-ollama","prompt_version":"v2","model":"ministral-3:3b-instruct-2512-q4_K_M","latency_ms":114037.9}
