@@ -6,6 +6,24 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-10-06
+
+### Added
+
+- Manifestes Kubernetes du jalon J13 (`deploy/k8s/`) : base kustomize avec déploiement
+  canary Argo Rollouts et analyse Prometheus, pods durcis (Pod Security restricted),
+  politiques réseau, Qdrant avec instantanés, Ollama, MLflow, Prometheus et interface web,
+  surcouches `dev`, `prod` et `prod-loadtest`.
+- Livraison continue en mode tiré avec l'automatisation d'images de Flux (`deploy/k8s/cd/`)
+  et versions épinglées des modules dans `deploy/versions.env`.
+- Contrôle du budget du nœud unique (`python -m vigie.deploy`) : requêtes, limites et CPU
+  des manifestes rendus jugés contre les réglages `VIGIE_K8S_*`, décrits dans
+  `.env.example`.
+- Tâche `python tasks.py k8s-validate` qui rend chaque couche, la valide avec kubeconform
+  puis vérifie le budget.
+- Documentation `deploy/k8s/README.md` et preuves du jalon dans `docs/proofs/J13/`
+  (validation, budget vu rouge, essais côté serveur, grappe k3d de développement).
+
 ## [0.9.0] - 2026-10-06
 
 ### Added
