@@ -6,6 +6,31 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-06
+
+### Added
+
+- Préparation du test de charge du jalon J11 : scénario Locust `load/locustfile.py` avec
+  trois profils (usage normal, attaquant, rafale), questions tirées du jeu de référence
+  avec repli intégré, et verdict calculé en fin de run contre le p95, le taux d'erreur et
+  la part d'injections non bloquées.
+- Garde-fou de charge : run refusé sans `VIGIE_LOAD_TOKEN`, refusé au-delà de 8
+  utilisateurs vers un hôte qui n'est pas la machine locale, interface web de Locust
+  refusée.
+- Tâche `python tasks.py load-local` pour le protocole local (20 utilisateurs, 5 minutes,
+  rapport dans `results/load/`).
+- Seuils de charge écrits avant mesure dans la section `load` de `eval/thresholds.yaml`,
+  avec un test qui fait échouer la construction si les valeurs par défaut de `Settings`
+  s'en écartent.
+- Documentation `docs/load-test.md` et preuves du câblage sur un bouchon local dans
+  `docs/proofs/J11/`.
+- Réglages `VIGIE_LOAD_*`, décrits dans `.env.example`.
+
+### Changed
+
+- `pyyaml` déclaré dans les dépendances de développement, dont le test du fichier de seuils
+  a besoin.
+
 ## [0.6.0] - 2026-10-06
 
 ### Added
