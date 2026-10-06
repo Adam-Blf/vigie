@@ -1,0 +1,16 @@
+{
+  "milestone": "J0",
+  "scope": "tooling scaffold and pair co-author hook",
+  "date": "2026-10-02",
+  "base_commit": "351e0dd0ccaacc6a02375ca7d52eb3a7b2505b34",
+  "commands": [
+    "python tasks.py check",
+    "git log --format='%h %an | %s | %(trailers:key=Co-authored-by,valueonly,separator=;)' main"
+  ],
+  "outputs": ["check.txt", "coauthors.txt"],
+  "tools": {
+    "python": "3.12",
+    "uv": "0.11.32",
+    "git": "2.53.0"
+  }
+}

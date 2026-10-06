@@ -10,7 +10,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, SecretStr
+from pydantic import AliasChoices, Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 LLMProvider = Literal["ollama", "mistral", "fake"]
@@ -30,6 +30,22 @@ class Settings(BaseSettings):
     sparse_model: str = "Qdrant/bm25"
     top_k: int = Field(default=6, ge=1, le=20)
 
+    # Corpus ingestion. Cellar is the only EUR-Lex door that answers robots, and only over
+    # HTTPS here: its redirects point to plain HTTP, the fetcher upgrades them.
+    cellar_base_url: str = "https://publications.europa.eu/resource/celex/"
+    cellar_allowed_host: str = "publications.europa.eu"
+    eurlex_base_url: str = "https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:"
+    corpus_language: str = "fra"
+    corpus_user_agent: str = "vigie-corpus/0.1 (EFREI MLOps course; adam.beloucif@efrei.net)"
+    corpus_cache_dir: Path = Path("data/cache")
+    corpus_lock_path: Path = Path("data/corpus.lock")
+    corpus_min_interval_s: float = Field(default=1.0, ge=1.0)
+    corpus_max_retries: int = Field(default=4, ge=0, le=10)
+    corpus_backoff_s: float = Field(default=2.0, gt=0.0)
+    corpus_timeout_s: float = 60.0
+    corpus_max_redirects: int = 5
+    corpus_split_words: int = Field(default=1200, ge=50)
+
     # LLM
     llm_provider: LLMProvider = "ollama"
     ollama_url: str = "http://127.0.0.1:11434"
@@ -40,7 +56,20 @@ class Settings(BaseSettings):
     llm_timeout_s: float = 120.0
     mistral_api_key: str | None = None
     mistral_model: str = "ministral-3b-latest"
-    prompt_version: str = "v1"
+    mistral_url: str = "https://api.mistral.ai"
+    # The fake LLM flag keeps its historical unprefixed name so the load and red teaming
+    # scripts can flip it without knowing about the VIGIE_ convention.
+    fake_llm_hallucinate: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("FAKE_LLM_HALLUCINATE", "VIGIE_FAKE_LLM_HALLUCINATE"),
+    )
+
+    # RAG
+    # Passages scoring below this are treated as noise, which is what lets an off-topic
+    # question end in a refusal instead of an answer stitched from weak matches.
+    rag_min_score: float = Field(default=0.0, ge=0.0)
+    # An answer whose citations were all invented is not grounded, so it becomes a refusal.
+    rag_require_citation: bool = True
 
     # API
     host: str = "127.0.0.1"
@@ -67,6 +96,52 @@ class Settings(BaseSettings):
     load_p95_ms: float = Field(default=500.0, gt=0)
     load_max_error_ratio: float = Field(default=0.01, ge=0.0, le=1.0)
     load_max_attack_leak_ratio: float = Field(default=0.10, ge=0.0, le=1.0)
+
+    # Drift. The defaults were calibrated on the multilingual MiniLM model: in-scope
+    # questions sit above 0.3 of similarity to the nearest corpus centroid, off-topic
+    # ones around 0, so 0.3 leaves room on both sides.
+    drift_reference_path: Path = Path("data/drift/reference.npy")
+    drift_anchors_path: Path = Path("data/drift/anchors.npy")
+    drift_window_size: int = Field(default=500, ge=10)
+    drift_min_window: int = Field(default=30, ge=5)
+    drift_evaluate_every: int = Field(default=10, ge=1)
+    drift_centroid_threshold: float = Field(default=0.3, gt=0.0, le=2.0)
+    drift_out_of_scope_similarity: float = Field(default=0.3, ge=-1.0, le=1.0)
+    drift_out_of_scope_ratio: float = Field(default=0.25, gt=0.0, le=1.0)
+    drift_ks_alpha: float = Field(default=0.01, gt=0.0, lt=1.0)
+
+    # Guardrail benchmark (J4). Model ids are pinned here so a rerun months later compares
+    # the same checkpoints, not whatever the hub serves that day.
+    bench_seed_path: Path = Path("data/seed.jsonl")
+    bench_output_dir: Path = Path("results/guardbench")
+    bench_warmup_calls: int = Field(default=3, ge=0)
+    bench_http_timeout_s: float = 30.0
+    # Two threads, like the 2 OCPU Oracle VM; the default (every core) also made the
+    # timings swing with whatever else ran on the laptop.
+    bench_torch_threads: int = Field(default=2, ge=1)
+    bench_deepset_repo: str = "deepset/prompt-injections"
+    bench_deberta_model: str = "protectai/deberta-v3-base-prompt-injection-v2"
+    bench_gliguard_model: str = "fastino/gliguard-LLMGuardrails-300M"
+    bench_llamaguard_model: str = "llama-guard3:1b"
+    bench_presidio_entities: list[str] = [
+        "EMAIL_ADDRESS",
+        "IBAN_CODE",
+        "CREDIT_CARD",
+        "PHONE_NUMBER",
+    ]
+    bench_presidio_threshold: float = Field(default=0.5, ge=0.0, le=1.0)
+    lakera_url: str = "https://api.lakera.ai/v2/guard"
+    # The Lakera key keeps its vendor name so the same secrets file works for their own CLI.
+    lakera_api_key: SecretStr | None = Field(
+        default=None, validation_alias=AliasChoices("LAKERA_API_KEY", "VIGIE_LAKERA_API_KEY")
+    )
+    # MLflow 3 refuses the plain file store, SQLite keeps it local and dependency free.
+    mlflow_tracking_uri: str = "sqlite:///mlflow.db"
+    bench_mlflow_experiment: str = "guardbench"
+
+    # Evaluation
+    golden_path: Path = Path("data/golden/questions.jsonl")
+    golden_seal_path: Path = Path("data/golden/test.sha256")
 
 
 @lru_cache(maxsize=1)
