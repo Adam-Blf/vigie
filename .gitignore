@@ -23,6 +23,9 @@ mlartifacts/
 results/
 data/corpus/
 data/cache/
+data/quant/
+*.onnx
+*.onnx.data
 .qdrant/
 
 # Terraform

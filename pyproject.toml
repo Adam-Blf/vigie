@@ -26,12 +26,20 @@ dependencies = [
   "prometheus-client>=0.20",
   "numpy>=1.26",
   "requests>=2.32",
+  "pyyaml>=6.0",
 ]
 
 [project.optional-dependencies]
 bench = []
 tracking = ["mlflow>=2.16"]
-quant = ["onnx>=1.16", "onnxruntime>=1.18"]
+quant = [
+  "onnx>=1.16",
+  "onnxruntime>=1.18",
+  "onnxscript>=0.5",
+  "torch>=2.9",
+  "transformers>=4.46",
+  "matplotlib>=3.9",
+]
 load = ["locust>=2.31"]
 dev = [
   "pytest>=8.2",
@@ -40,12 +48,14 @@ dev = [
   "mypy>=1.11",
   "pre-commit>=3.8",
   "types-requests",
+  "types-PyYAML",
   "tomli>=2.0; python_version < '3.11'",
 ]
 
 [project.scripts]
 vigie-ingest = "vigie.corpus.cli:main"
 vigie-eval = "vigie.evaluation.cli:main"
+vigie-quant = "vigie.quant.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/vigie", "src/guardbench"]
