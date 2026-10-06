@@ -1,0 +1,20 @@
+$ curl -X POST http://127.0.0.1:8717/v1/ask -H Content-Type: application/json -H Authorization: Bearer vig_[REDACTED] --data-binary @results/j5/q.json
+HTTP/1.1 200 OK
+date: Tue, 06 Oct 2026 10:08:02 GMT
+content-length: 2341
+content-type: application/json
+vary: Origin
+x-content-type-options: nosniff
+referrer-policy: no-referrer
+x-frame-options: DENY
+content-security-policy: default-src 'none'; frame-ancestors 'none'
+cross-origin-opener-policy: same-origin
+cross-origin-resource-policy: same-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+cache-control: no-store
+x-trace-id: abb4a18c24fc4eeb96c9fd6dd7e9df99
+x-app-version: 0.12.0
+x-bundle-version: j5-proof-fake
+x-prompt-version: v2
+
+{"answer":"D'après les textes indexés : Les entités financières gèrent les risques liés aux prestataires tiers de services TIC en tant que partie intégrante du risque lié aux TIC dans leur cadre de gestion du risque lié aux TIC visé à l’article 6, paragraphe 1, et conformément aux principes suivants [DORA art. 28 §1]. Aux fins de leur cadre de gestion du risque lié aux TIC, les entités financières tiennent et mettent à jour, au niveau de l’entité et aux niveaux sous-consolidé et consolidé, un registre d’informations en rapport avec tous les accords contractuels portant sur l’utilisation de services TIC fournis par des prestataires tiers de services TIC [DORA art. 28 §3]. Avant de conclure un accord contractuel sur l’utilisation de services TIC, les entités financières [DORA art. 28 §4].","citations":[{"label":"[DORA art. 28 §1]","regulation":"DORA","article":"28","paragraph":"1","excerpt":"Les entités financières gèrent les risques liés aux prestataires tiers de services TIC en tant que partie intégrante du risque lié aux TIC dans leur cadre de gestion du risque lié aux TIC visé à l’article 6, paragraphe 1, et conformément...","url":"https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32022R2554"},{"label":"[DORA art. 28 §3]","regulation":"DORA","article":"28","paragraph":"3","excerpt":"Aux fins de leur cadre de gestion du risque lié aux TIC, les entités financières tiennent et mettent à jour, au niveau de l’entité et aux niveaux sous-consolidé et consolidé, un registre d’informations en rapport avec tous les accords...","url":"https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32022R2554"},{"label":"[DORA art. 28 §4]","regulation":"DORA","article":"28","paragraph":"4","excerpt":"Avant de conclure un accord contractuel sur l’utilisation de services TIC, les entités financières: a) déterminent si l’accord contractuel couvre l’utilisation de services TIC qui soutiennent une fonction critique ou importante; b)...","url":"https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32022R2554"}],"blocked":false,"block_reason":null,"refused":false,"citations_removed":0,"trace_id":"abb4a18c24fc4eeb96c9fd6dd7e9df99","app_version":"0.12.0","bundle_version":"j5-proof-fake","prompt_version":"v2","model":"fake-llm","latency_ms":43.0}

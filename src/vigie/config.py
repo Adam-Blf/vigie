@@ -8,10 +8,13 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
+from socket import gethostname
 from typing import Literal
 
 from pydantic import AliasChoices, Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from vigie import __version__
 
 LLMProvider = Literal["ollama", "mistral", "fake"]
 RetrieverKind = Literal["qdrant", "static"]
@@ -93,16 +96,33 @@ class Settings(BaseSettings):
     host: str = "127.0.0.1"
     port: int = 8710
     cors_origins: list[str] = ["http://127.0.0.1:4710", "http://localhost:4710"]
+    # Tokens and usage share one SQLite file in WAL mode, on a single volume.
     db_path: Path = Path("data/vigie.sqlite3")
+    token_ttl_days: int = Field(default=30, ge=1, le=365)
     audit_dir: Path = Path("data/audit")
-    audit_retention_days: int = 30
-    rate_limit_per_minute: int = 20
-    daily_quota: int = 200
-    max_question_chars: int = 2000
+    audit_retention_days: int = Field(default=30, ge=1)
+    # One audit file per pod: two replicas appending to one chained file would fork it.
+    audit_pod_name: str = Field(default_factory=gethostname)
+    rate_limit_per_minute: int = Field(default=20, ge=1)
+    daily_quota: int = Field(default=200, ge=1)
+    max_question_chars: int = Field(default=2000, ge=1)
+    max_body_bytes: int = Field(default=16384, ge=1024)
+    # Kill switch from the incident runbook: every /v1 route answers 503 while it is on.
     maintenance: bool = False
-    app_version: str = "0.1.0"
+    app_version: str = __version__
     bundle_version: str = "dev"
+    bundle_path: Path | None = None
     fault_error_rate: float = Field(default=0.0, ge=0.0, le=1.0)
+    # Generations running at once in this pod. Past it the API answers 503 with
+    # Retry-After at once, instead of queueing work the two VM cores cannot absorb.
+    llm_max_inflight: int = Field(default=2, ge=1)
+    retry_after_s: int = Field(default=10, ge=1)
+    # The local model costs nothing per token. A reference price lets the usage page
+    # show what the same traffic would cost on a hosted API.
+    usage_cost_per_1k_tokens_eur: float = Field(default=0.0, ge=0.0)
+    # Ollama answers /api/tags slowly right after a long generation; 2 s once marked a
+    # healthy pod not ready during the J5 proof run, so the probe waits a little longer.
+    readiness_timeout_s: float = Field(default=5.0, gt=0.0)
 
     # Guardrails. The input chain is the reference regex plus the ProtectAI DeBERTa
     # classifier, exported to ONNX int8 so the API image carries no torch. Revision pinned:
