@@ -1,0 +1,20 @@
+$ curl http://127.0.0.1:8717/v1/usage/me -H Authorization: Bearer vig_[REDACTED]
+HTTP/1.1 200 OK
+date: Tue, 06 Oct 2026 10:08:08 GMT
+content-length: 144
+content-type: application/json
+vary: Origin
+x-content-type-options: nosniff
+referrer-policy: no-referrer
+x-frame-options: DENY
+content-security-policy: default-src 'none'; frame-ancestors 'none'
+cross-origin-opener-policy: same-origin
+cross-origin-resource-policy: same-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+cache-control: no-store
+x-trace-id: d9dfbbe755b9482db9fa202db3f0ebdb
+x-app-version: 0.12.0
+x-bundle-version: j5-proof-fake
+x-prompt-version: v2
+
+{"user":"proof-user","requests":5,"blocked":2,"refused":0,"tokens_in":2283,"tokens_out":387,"cost_eur":0.0,"requests_today":5,"daily_quota":200}

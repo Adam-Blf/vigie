@@ -1,0 +1,592 @@
+$ curl -N -X POST http://127.0.0.1:8718/v1/ask/stream -H Content-Type: application/json -H Authorization: Bearer vig_[REDACTED] --data-binary @results/j5/q.json
+HTTP/1.1 200 OK
+date: Tue, 06 Oct 2026 10:12:28 GMT
+x-accel-buffering: no
+content-type: text/event-stream; charset=utf-8
+vary: Origin
+x-content-type-options: nosniff
+referrer-policy: no-referrer
+x-frame-options: DENY
+content-security-policy: default-src 'none'; frame-ancestors 'none'
+cross-origin-opener-policy: same-origin
+cross-origin-resource-policy: same-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+cache-control: no-store
+x-trace-id: c0e30fd58be24e979d7041ea0918ace6
+x-app-version: 0.12.0
+x-bundle-version: j5-proof-ollama
+x-prompt-version: v2
+transfer-encoding: chunked
+
+event: delta
+data: {"text": "Avant"}
+
+event: delta
+data: {"text": " de"}
+
+event: delta
+data: {"text": " concl"}
+
+event: delta
+data: {"text": "ure"}
+
+event: delta
+data: {"text": " un"}
+
+event: delta
+data: {"text": " accord"}
+
+event: delta
+data: {"text": " avec"}
+
+event: delta
+data: {"text": " un"}
+
+event: delta
+data: {"text": " prest"}
+
+event: delta
+data: {"text": "ataire"}
+
+event: delta
+data: {"text": " tiers"}
+
+event: delta
+data: {"text": " de"}
+
+event: delta
+data: {"text": " services"}
+
+event: delta
+data: {"text": " T"}
+
+event: delta
+data: {"text": "IC"}
+
+event: delta
+data: {"text": ","}
+
+event: delta
+data: {"text": " une"}
+
+event: delta
+data: {"text": " ent"}
+
+event: delta
+data: {"text": "ité"}
+
+event: delta
+data: {"text": " financière"}
+
+event: delta
+data: {"text": " doit"}
+
+event: delta
+data: {"text": " notamment"}
+
+event: delta
+data: {"text": " :"}
+
+event: delta
+data: {"text": "\n1"}
+
+event: delta
+data: {"text": "."}
+
+event: delta
+data: {"text": " **"}
+
+event: delta
+data: {"text": "Dé"}
+
+event: delta
+data: {"text": "termin"}
+
+event: delta
+data: {"text": "er"}
+
+event: delta
+data: {"text": "**"}
+
+event: delta
+data: {"text": " si"}
+
+event: delta
+data: {"text": " l"}
+
+event: delta
+data: {"text": "’accord"}
+
+event: delta
+data: {"text": " couvre"}
+
+event: delta
+data: {"text": " des"}
+
+event: delta
+data: {"text": " services"}
+
+event: delta
+data: {"text": " T"}
+
+event: delta
+data: {"text": "IC"}
+
+event: delta
+data: {"text": " sout"}
+
+event: delta
+data: {"text": "enant"}
+
+event: delta
+data: {"text": " une"}
+
+event: delta
+data: {"text": " **"}
+
+event: delta
+data: {"text": "fon"}
+
+event: delta
+data: {"text": "ction"}
+
+event: delta
+data: {"text": " critique"}
+
+event: delta
+data: {"text": " ou"}
+
+event: delta
+data: {"text": " importante"}
+
+event: delta
+data: {"text": "**"}
+
+event: delta
+data: {"text": " [D"}
+
+event: delta
+data: {"text": "OR"}
+
+event: delta
+data: {"text": "A"}
+
+event: delta
+data: {"text": " art"}
+
+event: delta
+data: {"text": "."}
+
+event: delta
+data: {"text": " 2"}
+
+event: delta
+data: {"text": "8"}
+
+event: delta
+data: {"text": " §"}
+
+event: delta
+data: {"text": "4"}
+
+event: delta
+data: {"text": " a"}
+
+event: delta
+data: {"text": "]."}
+
+event: delta
+data: {"text": "\n2"}
+
+event: delta
+data: {"text": "."}
+
+event: delta
+data: {"text": " **"}
+
+event: delta
+data: {"text": "É"}
+
+event: delta
+data: {"text": "valuer"}
+
+event: delta
+data: {"text": "**"}
+
+event: delta
+data: {"text": " si"}
+
+event: delta
+data: {"text": " les"}
+
+event: delta
+data: {"text": " conditions"}
+
+event: delta
+data: {"text": " de"}
+
+event: delta
+data: {"text": " surveillance"}
+
+event: delta
+data: {"text": " sont"}
+
+event: delta
+data: {"text": " rempl"}
+
+event: delta
+data: {"text": "ies"}
+
+event: delta
+data: {"text": " pour"}
+
+event: delta
+data: {"text": " ce"}
+
+event: delta
+data: {"text": " type"}
+
+event: delta
+data: {"text": " d"}
+
+event: delta
+data: {"text": "’accord"}
+
+event: delta
+data: {"text": " [D"}
+
+event: delta
+data: {"text": "OR"}
+
+event: delta
+data: {"text": "A"}
+
+event: delta
+data: {"text": " art"}
+
+event: delta
+data: {"text": "."}
+
+event: delta
+data: {"text": " 2"}
+
+event: delta
+data: {"text": "8"}
+
+event: delta
+data: {"text": " §"}
+
+event: delta
+data: {"text": "4"}
+
+event: delta
+data: {"text": " b"}
+
+event: delta
+data: {"text": "]."}
+
+event: delta
+data: {"text": "\n3"}
+
+event: delta
+data: {"text": "."}
+
+event: delta
+data: {"text": " **"}
+
+event: delta
+data: {"text": "Identifier"}
+
+event: delta
+data: {"text": " et"}
+
+event: delta
+data: {"text": " é"}
+
+event: delta
+data: {"text": "valuer"}
+
+event: delta
+data: {"text": "**"}
+
+event: delta
+data: {"text": " tous"}
+
+event: delta
+data: {"text": " les"}
+
+event: delta
+data: {"text": " risques"}
+
+event: delta
+data: {"text": " pert"}
+
+event: delta
+data: {"text": "in"}
+
+event: delta
+data: {"text": "ents"}
+
+event: delta
+data: {"text": ","}
+
+event: delta
+data: {"text": " y"}
+
+event: delta
+data: {"text": " compris"}
+
+event: delta
+data: {"text": " ceux"}
+
+event: delta
+data: {"text": " liés"}
+
+event: delta
+data: {"text": " à"}
+
+event: delta
+data: {"text": " la"}
+
+event: delta
+data: {"text": " concentration"}
+
+event: delta
+data: {"text": " inform"}
+
+event: delta
+data: {"text": "atique"}
+
+event: delta
+data: {"text": " [D"}
+
+event: delta
+data: {"text": "OR"}
+
+event: delta
+data: {"text": "A"}
+
+event: delta
+data: {"text": " art"}
+
+event: delta
+data: {"text": "."}
+
+event: delta
+data: {"text": " 2"}
+
+event: delta
+data: {"text": "8"}
+
+event: delta
+data: {"text": " §"}
+
+event: delta
+data: {"text": "4"}
+
+event: delta
+data: {"text": " c"}
+
+event: delta
+data: {"text": "]."}
+
+event: delta
+data: {"text": "\n4"}
+
+event: delta
+data: {"text": "."}
+
+event: delta
+data: {"text": " **"}
+
+event: delta
+data: {"text": "Ex"}
+
+event: delta
+data: {"text": "erc"}
+
+event: delta
+data: {"text": "er"}
+
+event: delta
+data: {"text": " la"}
+
+event: delta
+data: {"text": " dil"}
+
+event: delta
+data: {"text": "igence"}
+
+event: delta
+data: {"text": " requ"}
+
+event: delta
+data: {"text": "ise"}
+
+event: delta
+data: {"text": "**"}
+
+event: delta
+data: {"text": " envers"}
+
+event: delta
+data: {"text": " le"}
+
+event: delta
+data: {"text": " prest"}
+
+event: delta
+data: {"text": "ataire"}
+
+event: delta
+data: {"text": " tiers"}
+
+event: delta
+data: {"text": ","}
+
+event: delta
+data: {"text": " en"}
+
+event: delta
+data: {"text": " vér"}
+
+event: delta
+data: {"text": "ifiant"}
+
+event: delta
+data: {"text": " ses"}
+
+event: delta
+data: {"text": " qualités"}
+
+event: delta
+data: {"text": " nécessaires"}
+
+event: delta
+data: {"text": " [D"}
+
+event: delta
+data: {"text": "OR"}
+
+event: delta
+data: {"text": "A"}
+
+event: delta
+data: {"text": " art"}
+
+event: delta
+data: {"text": "."}
+
+event: delta
+data: {"text": " 2"}
+
+event: delta
+data: {"text": "8"}
+
+event: delta
+data: {"text": " §"}
+
+event: delta
+data: {"text": "4"}
+
+event: delta
+data: {"text": " d"}
+
+event: delta
+data: {"text": "]."}
+
+event: delta
+data: {"text": "\n5"}
+
+event: delta
+data: {"text": "."}
+
+event: delta
+data: {"text": " **"}
+
+event: delta
+data: {"text": "Identifier"}
+
+event: delta
+data: {"text": " et"}
+
+event: delta
+data: {"text": " é"}
+
+event: delta
+data: {"text": "valuer"}
+
+event: delta
+data: {"text": "**"}
+
+event: delta
+data: {"text": " les"}
+
+event: delta
+data: {"text": " conflits"}
+
+event: delta
+data: {"text": " d"}
+
+event: delta
+data: {"text": "’int"}
+
+event: delta
+data: {"text": "ér"}
+
+event: delta
+data: {"text": "êts"}
+
+event: delta
+data: {"text": " potentiel"}
+
+event: delta
+data: {"text": "s"}
+
+event: delta
+data: {"text": " liés"}
+
+event: delta
+data: {"text": " à"}
+
+event: delta
+data: {"text": " l"}
+
+event: delta
+data: {"text": "’accord"}
+
+event: delta
+data: {"text": " [D"}
+
+event: delta
+data: {"text": "OR"}
+
+event: delta
+data: {"text": "A"}
+
+event: delta
+data: {"text": " art"}
+
+event: delta
+data: {"text": "."}
+
+event: delta
+data: {"text": " 2"}
+
+event: delta
+data: {"text": "8"}
+
+event: delta
+data: {"text": " §"}
+
+event: delta
+data: {"text": "4"}
+
+event: delta
+data: {"text": " e"}
+
+event: delta
+data: {"text": "]."}
+
+event: answer
+data: {"answer": "Avant de conclure un accord avec un prestataire tiers de services TIC, une entité financière doit notamment :\n1. **Déterminer** si l’accord couvre des services TIC soutenant une **fonction critique ou importante** [DORA art. 28 §4].\n2. **Évaluer** si les conditions de surveillance sont remplies pour ce type d’accord [DORA art. 28 §4].\n3. **Identifier et évaluer** tous les risques pertinents, y compris ceux liés à la concentration informatique [DORA art. 28 §4].\n4. **Exercer la diligence requise** envers le prestataire tiers, en vérifiant ses qualités nécessaires [DORA art. 28 §4].\n5. **Identifier et évaluer** les conflits d’intérêts potentiels liés à l’accord [DORA art. 28 §4].", "citations": [{"label": "[DORA art. 28 §4]", "regulation": "DORA", "article": "28", "paragraph": "4", "excerpt": "Avant de conclure un accord contractuel sur l’utilisation de services TIC, les entités financières: a) déterminent si l’accord contractuel couvre l’utilisation de services TIC qui soutiennent une fonction critique ou importante; b)...", "url": "https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32022R2554"}], "blocked": false, "block_reason": null, "refused": false, "citations_removed": 0, "trace_id": "c0e30fd58be24e979d7041ea0918ace6", "app_version": "0.12.0", "bundle_version": "j5-proof-ollama", "prompt_version": "v2", "model": "ministral-3:3b-instruct-2512-q4_K_M", "latency_ms": 56886.0}
