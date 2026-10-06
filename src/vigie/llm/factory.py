@@ -16,7 +16,7 @@ from vigie.llm.ollama import OllamaClient
 
 def build_llm(settings: Settings) -> LLMClient:
     if settings.llm_provider == "fake":
-        return FakeLLM(hallucinate=settings.fake_llm_hallucinate)
+        return FakeLLM(hallucinate=settings.fake_llm_hallucinate, leak=settings.fake_llm_leak)
     if settings.llm_provider == "mistral":
         return MistralClient.from_settings(settings)
     return OllamaClient.from_settings(settings)
