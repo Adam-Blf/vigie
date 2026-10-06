@@ -63,7 +63,8 @@
         "path": "data/quant/tokenizer.json",
         "sha256": "2c3387be76557bd40970cec13153b3bbf80407865484b209e655e5e4729076b8"
       }
-    ]  },
+    ]
+  },
   "machine": "Windows 11 Pro 10.0.26200, 8 logical CPUs, shared with other jobs during the runs",
   "tools": {
     "python": "3.12.13",
