@@ -1,0 +1,65 @@
+{
+  "milestone": "J6",
+  "title": "Interface PWA, contre l'API simulée",
+  "branch": "feat/web",
+  "commit": "83470c2177ca22dc12d02d1ac37d3adf06184efa",
+  "merged_commit": "c4f218677328cd4e0e1224c360d1616ef176abd5",
+  "date": "2026-10-06",
+  "status": "PARTIEL",
+  "runs": [
+    {
+      "file": "raw/build.txt",
+      "command": "npm run --prefix web build",
+      "result": "typecheck, vite build, service worker généré (56 entrées), JS initial 26,8 Ko gzip pour un budget de 120 Ko"
+    },
+    {
+      "file": "raw/typecheck.txt",
+      "command": "npm run --prefix web typecheck",
+      "result": "tsc strict sans erreur"
+    },
+    {
+      "file": "raw/vitest.txt",
+      "command": "npm run --prefix web coverage",
+      "result": "14 fichiers, 93 tests passés ; résultat identique rejoué le 2026-10-06 sur le commit fusionné"
+    },
+    {
+      "file": "raw/contrast.txt",
+      "command": "python tasks.py contrast",
+      "result": "toutes les paires de jetons au-dessus de 4,5:1 (texte) et 3:1 (bordures, focus), thèmes clair et sombre"
+    },
+    {
+      "file": "raw/playwright.txt",
+      "command": "npm run --prefix web e2e",
+      "result": "journal d'origine tronqué après 15 des 54 tests, conservé tel quel"
+    },
+    {
+      "file": "raw/playwright-full.txt",
+      "command": "npm run --prefix web e2e",
+      "result": "54 tests passés sur le commit fusionné : chat, citations, PWA hors ligne, CSP de production, origines, axe clair et sombre, captures visuelles"
+    },
+    {
+      "file": "raw/python-check.txt",
+      "command": "python tasks.py check",
+      "result": "contrôle Python de la branche avant synchronisation avec main ; le contrôle complet après fusion passe en CI"
+    }
+  ],
+  "not_done_here": [
+    "Lighthouse (web/lighthouserc.json) jamais lancé, scores non mesurés",
+    "interface testée contre une API simulée, l'API du J5 a été fusionnée après ces mesures"
+  ],
+  "notes": [
+    "Chemins locaux remplacés par <repo>.",
+    "Le point médian que vitest écrit dans son résumé est remplacé par une virgule, la règle typographique du dépôt l'interdit partout.",
+    "Les captures de référence de Playwright sont celles de Chromium sous Windows (suffixe win32)."
+  ],
+  "tools": {
+    "node": "v24.14.1",
+    "npm": "11.11.0",
+    "typescript": "7.0.2",
+    "vite": "8.3.2",
+    "vitest": "5.0.3",
+    "playwright": "1.63.0",
+    "vite-plugin-pwa": "1.3.0",
+    "os": "Windows 11 Pro 10.0.26200"
+  }
+}

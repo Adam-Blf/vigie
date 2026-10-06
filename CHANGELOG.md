@@ -6,7 +6,7 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
-## [0.16.0] - 2026-10-06
+## [0.17.0] - 2026-10-06
 
 ### Added
 
@@ -40,6 +40,22 @@ les notes reprennent la section correspondante.
   poids dense 3, BM25 laissé de côté sur les questions anglaises (recall@5 0,638 et MRR
   0,509 sur `dev` ; 0,652 et 0,514 sur `test`, sous les planchers, jalon J2 toujours
   `PARTIEL`).
+## [0.16.0] - 2026-10-06
+
+### Added
+
+- Interface PWA du jalon J6 (`web/`) : TypeScript strict avec Vite et Preact, écran de
+  conversation avec réponses en flux et panneau de citations, écrans réglages, usage,
+  mentions légales, confidentialité et statut, dictionnaires français et anglais à clés
+  identiques, chouette de repli en SVG et contrat d'animation Rive.
+- Service worker en mode invite, coquille hors ligne, aucune réponse de l'API mise en
+  cache, politique CSP de production avec Trusted Types, icônes Phosphor et ressources
+  servies localement, sans CDN.
+- Jetons de design avec barrière de contraste (`python tasks.py contrast`), suite
+  Playwright (conversation, PWA, accessibilité axe, origines, captures visuelles) et
+  configuration Lighthouse CI.
+- Description de chaque écran dans `docs/design/screens.md` et preuves du jalon dans
+  `docs/proofs/J6/`.
 
 ## [0.15.0] - 2026-10-06
 

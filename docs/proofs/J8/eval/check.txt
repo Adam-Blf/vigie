@@ -1,7 +1,7 @@
 + C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe -m ruff check .
 All checks passed!
 + C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe -m ruff format --check .
-303 files already formatted
+304 files already formatted
 + C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe scripts/sync_version.py --check
 + C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe -m mypy
 Success: no issues found in 147 source files
@@ -164,7 +164,7 @@ TOTAL                                     5740    101   1062     15    98%
 
 11 empty files skipped.
 Coverage JSON written to file coverage.json
-925 passed, 2 deselected, 1 warning in 130.16s (0:02:10)
+925 passed, 2 deselected, 1 warning in 94.11s (0:01:34)
 + C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe scripts/coverage_gate.py coverage.json --total 80 --path src/vigie/guard=95 --path src/vigie/rag/citations.py=95 --path src/vigie/api/auth=95 --path src/vigie/api/usage=95 --path src/vigie/drift=95
 ok   total 98.2% (floor 80.0%)
 ok   src/vigie/guard 98.5% (floor 95.0%)
