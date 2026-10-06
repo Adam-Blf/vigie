@@ -34,9 +34,25 @@ for ax, metric, floor, title in (
     y = range(len(rows))
     ax.barh(list(y), values, color=colors, height=0.62, edgecolor=SURFACE, linewidth=2)
     ax.axvline(floor, color=MUTED, linestyle="--", linewidth=1.2)
-    ax.text(floor, len(rows) - 0.35, f" seuil {floor:.2f}", color=MUTED, fontsize=8, va="bottom")
+    ax.text(
+        floor,
+        len(rows) - 0.35,
+        f" seuil {floor:.2f}".replace(".", ","),
+        color=MUTED,
+        fontsize=8,
+        va="bottom",
+    )
     for i, v in enumerate(values):
-        ax.text(v + 0.01, i, f"{v:.3f}".replace(".", ","), va="center", fontsize=8, color=INK)
+        label = f"{v + 1e-9:.3f}".replace(".", ",")
+        ax.text(
+            v + 0.01,
+            i,
+            label,
+            va="center",
+            fontsize=8,
+            color=INK,
+            bbox={"facecolor": SURFACE, "edgecolor": "none", "pad": 1.0},
+        )
     ax.set_xlim(0, 1)
     ax.set_title(title, color=INK, fontsize=10, loc="left")
     ax.set_facecolor(SURFACE)

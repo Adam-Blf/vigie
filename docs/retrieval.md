@@ -5,25 +5,78 @@ classements dans Qdrant.
 
 | Branche | Modèle | Ce qu'elle attrape |
 |---|---|---|
-| dense (`dense`, 384 dimensions, cosinus) | fastembed `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` | les reformulations, et les questions en anglais sur un texte français |
-| creuse (`bm25`, IDF calculé par Qdrant) | fastembed `Qdrant/bm25`, langue `french` | les mots exacts du règlement et les références du type « article 28 » |
+| dense (`dense`, 384 dimensions, cosinus) | `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` en ONNX int8 (export du J12, 128 jetons) | les reformulations, et les questions en anglais sur un texte français |
+| creuse (`bm25`, IDF calculé par Qdrant) | fastembed `Qdrant/bm25`, langue `french` | les mots exacts du règlement, sur les questions en français |
 
 La fusion est un RRF (reciprocal rank fusion) : chaque passage reçoit la somme de
-`1/(k + position)` sur les deux listes. Le score dit à quel rang le passage est sorti, pas
-à quel point il ressemble à la question.
+`1/(k + position)` sur les deux listes, avec k = 60. Qdrant pondère en plus chaque liste
+(`Rrf(weights=...)`) : 3 pour la liste dense, 1 pour BM25. Le score dit à quel rang le
+passage est sorti, pas à quel point il ressemble à la question.
 
 ```mermaid
 flowchart LR
-    question[Question] --> embed[Embeddings dense et BM25]
-    embed --> dense[Prefetch dense, 20 candidats]
-    embed --> bm25[Prefetch BM25, 20 candidats]
-    dense --> rrf[Fusion RRF, k = 60]
-    bm25 --> rrf
-    rrf --> topk[top-k passages]
+    question[Question] --> refs[Références explicites ?]
+    question --> lang{Question en anglais ?}
+    lang -- non --> both[Prefetch dense et BM25, 20 candidats chacun]
+    lang -- oui --> dense[Prefetch dense seul]
+    both --> rrf[RRF k = 60, poids dense 3]
+    dense --> rrf
+    rrf --> rerank[Reranker, éteint par défaut]
+    rerank --> pin[Articles cités par numéro en tête]
+    refs --> pin
+    pin --> topk[top-k passages]
     topk --> rag[Pipeline RAG]
 ```
 
-fastembed tourne sur onnxruntime, sans torch, ce qui tient dans le budget mémoire de l'API.
+Ces réglages viennent du jalon J8, mesurés sur la partie `dev` du jeu de référence ; la
+comparaison complète et le chiffre publié sur `test` sont dans `docs/evaluation.md`.
+
+## Modèle dense et variante int8
+
+`VIGIE_DENSE_VARIANT` choisit le fichier du modèle dense :
+
+- `int8` (défaut, décision du J12) : le fichier ONNX quantifié par `vigie-quant export`,
+  lu dans `<VIGIE_QUANT_DIR>/<modèle en minuscules, tirets>/model-int8.onnx` avec son
+  `tokenizer.json`, tronqué à `VIGIE_DENSE_MAX_TOKENS` (128, la fenêtre d'entraînement de
+  MiniLM ; 512 la lui fait perdre 21 points) ;
+- `fp32` : la copie fastembed du modèle, comme au J2.
+
+```sh
+vigie-quant export --models data/quant/sentence-transformers-paraphrase-multilingual-minilm-l12-v2
+```
+
+Un fichier absent arrête la commande avec la marche à suivre. Les modèles e5
+(`intfloat/multilingual-e5-small`, `-base`, `-large`) sont reconnus : leurs préfixes
+`query: ` et `passage: ` sont ajoutés automatiquement (`src/vigie/retrieval/models.py`),
+et les tailles small et base, que fastembed ne fournit pas, sont déclarées à partir de leur
+export ONNX officiel.
+
+## Garde anglais
+
+BM25 racine du français. Sur une question en anglais il ne trouve que des nombres et des
+sigles, et ses candidats repoussent les bons passages denses. `VIGIE_RETRIEVAL_SPARSE_ON_ENGLISH=false`
+(défaut) le laisse de côté quand la question est détectée comme anglaise : la détection
+compte les mots outils propres à chaque langue (`src/vigie/retrieval/language.py`), sans
+modèle, et une égalité reste en français. Elle classe correctement les 54 questions `dev`.
+
+## Références explicites
+
+« article 28 DORA », « Art. 6 AI Act », « articles 28 et 30 du DORA » : quand une question
+nomme un article et un règlement, les chunks de cet article passent en tête
+(`src/vigie/retrieval/references.py`, trois chunks au plus par article, les chunks déjà
+trouvés d'abord). Chaque numéro va au règlement nommé le plus proche dans la phrase ; un
+numéro sans règlement n'est pas deviné. Le chunk épinglé prend le meilleur score de la
+liste, pour que le seuil de score du pipeline ne l'écarte jamais.
+`VIGIE_RETRIEVAL_PIN_REFERENCES=false` désactive l'épinglage.
+
+## Reranker
+
+`VIGIE_RERANK_MODEL` (vide par défaut) fait relire les `VIGIE_RERANK_DEPTH` premiers
+candidats fusionnés par un cross-encoder fastembed, par exemple
+`jinaai/jina-reranker-v2-base-multilingual`, sur les 1 500 premiers caractères de chaque
+passage. Le score devient la sigmoïde du logit, entre 0 et 1. Mesuré au J8 sur e5-large,
+il fait perdre 6 points de rappel et prend environ 73 s par question sur le poste : il
+reste éteint.
 
 ## Commande `vigie-index`
 
@@ -53,10 +106,12 @@ rarement « DORA » ou « article 28 », alors que c'est ainsi que les questions
   de l'ancre ELI. Relancer l'indexation réécrit les mêmes points au lieu d'en ajouter.
 - Une collection qui contient déjà le nombre de points attendu n'est pas recalculée.
 - Le nom suit `vigie_<id embedding>_<empreinte corpus sur 8 caractères>`, par exemple
-  `vigie_paraphrase-multilingual-minilm-l12-v2-f692d1_5abe72f5`. L'identifiant d'embedding
-  porte un hachage des deux modèles et de la langue BM25 ; l'empreinte du corpus est un
-  SHA-256 des chunks eux-mêmes. Un nouveau modèle ou un nouveau corpus crée donc une
-  nouvelle collection, et revenir en arrière consiste à pointer sur l'ancienne.
+  `vigie_paraphrase-multilingual-minilm-l12-v2-int8-84396c_5abe72f5`. L'identifiant
+  d'embedding porte un hachage des deux modèles, de la langue BM25 et, quand ils
+  existent, du préfixe des passages, de la variante int8 et de sa fenêtre de jetons ;
+  l'empreinte du corpus est un SHA-256 des chunks eux-mêmes. Un nouveau modèle, une autre
+  variante ou un nouveau corpus créent donc une nouvelle collection, et revenir en arrière
+  consiste à pointer sur l'ancienne.
 - Un processus qui n'a pas le corpus sur disque, l'API en production, reçoit le nom par
   `VIGIE_QDRANT_COLLECTION`.
 - La charge utile de chaque point reprend tous les champs du chunk.
@@ -77,31 +132,19 @@ un objet conforme au protocole `Retriever` du pipeline :
 `regulations=["DORA"]`. `VIGIE_RETRIEVER=static` avec `VIGIE_STATIC_PASSAGES_PATH` rejoue
 un fichier de passages fixes, pour mesurer le modèle seul.
 
-## Mesure sur la partie `dev`
+## Mesures
 
-```sh
-VIGIE_QDRANT_PATH=.qdrant vigie-eval retrieval --split dev --out results/retrieval-dev.json
-```
+Partie `dev`, 47 questions qui attendent un article (détail et intervalles dans
+`docs/evaluation.md`) :
 
-Les métriques portent sur des articles distincts : plusieurs paragraphes d'un même article
-comptent pour un seul résultat, d'où les 20 passages demandés par question pour en tirer
-5 articles. Seules les questions qui attendent un article comptent ; les questions hors
-périmètre relèvent du taux de refus. La partie `test` reste scellée pour les chiffres
-publiés et ne sert jamais à régler un paramètre.
-
-Résultats du 6 octobre 2026 (preuves dans `docs/proofs/J2/`), 47 questions `dev` :
-
-| Variante | recall@5 | MRR |
+| Configuration | recall@5 | MRR |
 |---|---|---|
-| dense seule | 0,532 | 0,422 |
-| BM25 seule | 0,362 | 0,292 |
-| RRF `FusionQuery`, constante fixée à 2 | 0,574 | 0,435 |
-| RRF, k = 60 (retenu) | 0,638 | 0,486 |
+| J2 : MiniLM fastembed, RRF k = 60 | 0,638 | 0,486 |
+| J8 retenue : MiniLM int8, garde anglais, poids dense 3 | 0,638 | 0,509 |
+| e5-large, garde anglais (ne tient pas dans le pod de l'API) | 0,809 | 0,620 |
+| e5-base, chunks de 350 mots, garde anglais (ne tient pas non plus) | 0,830 | 0,668 |
 
-Le seuil de `eval/thresholds.yaml` (recall@5 au moins 0,80, MRR au moins 0,60, mesurés sur
-`test`) n'est pas atteint sur `dev`, et le jalon J2 est noté `PARTIEL`. Trois essais ont
-été menés, tous sur `dev` : la profondeur de prefetch (10, 20, 50, 100 candidats) ne change
-pas le recall ; la constante RRF passée à 60 l'améliore et a été retenue ; un découpage plus
-fin des articles (200 mots) le dégrade (0,489) et a été rejeté. Les pistes suivantes relèvent du jalon J8 : le modèle
-dense plus fort `intfloat/multilingual-e5-large` prévu par le brief, et un découpage qui
-tienne dans les 512 jetons lus par le modèle dense.
+Partie `test`, mesurée une fois avec la configuration retenue : recall@5 0,652
+(IC 95 % 0,435 à 0,826), MRR 0,514 (0,344 à 0,692). Les seuils de `eval/thresholds.yaml`
+(0,80 et 0,60) ne sont pas atteints et le jalon J2 reste `PARTIEL`. Les configurations qui
+les passent sur `dev` demandent plus de mémoire que les 0,7 Go du pod de l'API.
