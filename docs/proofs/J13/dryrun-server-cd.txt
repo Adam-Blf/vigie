@@ -1,0 +1,7 @@
+imagepolicy.image.toolkit.fluxcd.io/vigie-api serverside-applied (server dry run)
+imagepolicy.image.toolkit.fluxcd.io/vigie-web serverside-applied (server dry run)
+imagerepository.image.toolkit.fluxcd.io/vigie-api serverside-applied (server dry run)
+imagerepository.image.toolkit.fluxcd.io/vigie-web serverside-applied (server dry run)
+imageupdateautomation.image.toolkit.fluxcd.io/vigie serverside-applied (server dry run)
+kustomization.kustomize.toolkit.fluxcd.io/vigie-prod serverside-applied (server dry run)
+gitrepository.source.toolkit.fluxcd.io/vigie serverside-applied (server dry run)

@@ -1,0 +1,21 @@
+
+Q1. Que prévoit l'article 28 de DORA sur les prestataires tiers de services TIC ?
+  1. [DORA art. 31 §10]     rrf=0.0325  10. Aux fins du paragraphe 1, point a), les autorités compétentes transmettent, sur une ba
+  2. [DORA art. 28 §7]      rrf=0.0311  7. Les entités financières veillent à ce que les accords contractuels relatifs à l’utilisa
+  3. [DORA art. 31 §8]      rrf=0.0306  8. La désignation visée au paragraphe 1, point a), ne s’applique pas: i) aux entités finan
+  4. [DORA art. 28 §1]      rrf=0.0291  1. Les entités financières gèrent les risques liés aux prestataires tiers de services TIC
+  5. [DORA art. 31 §2]      rrf=0.0289  2. La désignation visée au paragraphe 1, point a), repose sur l’ensemble des critères suiv
+
+Q2. Quelles pratiques d'intelligence artificielle sont interdites dans l'Union ?
+  1. [AIACT art. 5 §8]      rrf=0.0299  8. Le présent article ne porte pas atteinte aux interdictions qui s’appliquent lorsqu’une
+  2. [AIACT art. 105]       rrf=0.0293  À l’article 8 de la directive 2014/90/UE, le paragraphe suivant est ajouté: «5. Pour les s
+  3. [AIACT art. 109]       rrf=0.0292  À l’article 11 du règlement (UE) 2019/2144, le paragraphe suivant est ajouté: «3. Lors de
+  4. [AIACT art. 107]       rrf=0.0289  À l’article 5 du règlement (UE) 2018/858, le paragraphe suivant est ajouté: «4. Lors de l’
+  5. [AIACT art. 103]       rrf=0.0277  À l’article 17, paragraphe 5, du règlement (UE) no 167/2013, l’alinéa suivant est ajouté:
+
+Q3. Dans quel délai une violation de données personnelles doit-elle être notifiée ?
+  1. [RGPD art. 33]         rrf=0.0333  1. En cas de violation de données à caractère personnel, le responsable du traitement en n
+  2. [RGPD art. 34]         rrf=0.0328  1. Lorsqu'une violation de données à caractère personnel est susceptible d'engendrer un ri
+  3. [RGPD art. 19]         rrf=0.0161  Le responsable du traitement notifie à chaque destinataire auquel les données à caractère
+  4. [RGPD art. 83]         rrf=0.0161  1. Chaque autorité de contrôle veille à ce que les amendes administratives imposées en ver
+  5. [RGPD art. 10]         rrf=0.0159  Le traitement des données à caractère personnel relatives aux condamnations pénales et aux

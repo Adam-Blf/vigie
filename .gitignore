@@ -7,6 +7,7 @@ __pycache__/
 .ruff_cache/
 .coverage
 coverage.xml
+coverage.json
 htmlcov/
 *.egg-info/
 dist/
@@ -19,9 +20,11 @@ terraform.tfvars
 
 # Generated data and runs
 mlruns/
+mlflow.db
 mlartifacts/
 results/
 data/corpus/
+data/drift/
 data/cache/
 .qdrant/
 
@@ -37,3 +40,8 @@ web/test-results/
 web/playwright-report/
 web/coverage/
 .lighthouseci/
+# Local state of the design review tool, not project content
+.impeccable/
+
+# Guard classifier, fetched and quantized by python -m vigie.guard.prepare
+models/

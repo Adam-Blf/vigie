@@ -1,0 +1,46 @@
+# The CI pushes each image twice: `<git sha>` for people, and `main-<sha>-<unix time>`
+# for Flux. A bare git sha cannot be ordered, so the policies sort on the timestamp and
+# only ever consider builds of main.
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: vigie-api
+spec:
+  image: ghcr.io/adam-blf/vigie-api
+  interval: 5m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: vigie-web
+spec:
+  image: ghcr.io/adam-blf/vigie-web
+  interval: 5m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: vigie-api
+spec:
+  imageRepositoryRef:
+    name: vigie-api
+  filterTags:
+    pattern: '^main-[a-f0-9]{7,40}-(?P<ts>[0-9]+)$'
+    extract: '$ts'
+  policy:
+    numerical:
+      order: asc
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: vigie-web
+spec:
+  imageRepositoryRef:
+    name: vigie-web
+  filterTags:
+    pattern: '^main-[a-f0-9]{7,40}-(?P<ts>[0-9]+)$'
+    extract: '$ts'
+  policy:
+    numerical:
+      order: asc

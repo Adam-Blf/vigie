@@ -1,0 +1,16 @@
+..........................................                               [100%]
+=============================== tests coverage ================================
+______________ coverage: platform win32, python 3.12.13-final-0 _______________
+
+Name                         Stmts   Miss Branch BrPart  Cover   Missing
+------------------------------------------------------------------------
+src\guardbench\__init__.py       1      0      0      0   100%
+src\vigie\__init__.py            1      0      0      0   100%
+src\vigie\config.py             50      0      0      0   100%
+src\vigie\infra\redact.py       23      0      0      0   100%
+src\vigie\infra\retry.py        78      0     14      0   100%
+------------------------------------------------------------------------
+TOTAL                          153      0     14      0   100%
+
+9 empty files skipped.
+42 passed in 13.03s

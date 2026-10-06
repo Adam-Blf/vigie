@@ -1,0 +1,86 @@
+# Canary verdict, computed by Prometheus on the canary pods only (selected by their
+# rollouts-pod-template-hash) and compared with the stable pods.
+#
+# Every metric has both a success and a failure condition. When the query returns an
+# empty vector, because too few requests reached the canary yet, neither condition
+# holds and Argo Rollouts records the measurement as inconclusive, never as a pass.
+# The `and on() ... >= min-requests` clause turns a thin sample into such an empty
+# vector on purpose.
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: vigie-canary
+spec:
+  args:
+    - name: canary-hash
+    - name: stable-hash
+    - name: prometheus
+      value: http://prometheus.vigie.svc.cluster.local:9090
+    - name: window
+      value: 2m
+    - name: min-requests
+      value: "30"
+  metrics:
+    # Server errors of the canary, minus the LLM errors (queue full, timeout): those
+    # come from the shared Ollama instance and would punish a healthy canary. A version
+    # without any 5xx has no such series at all, hence the `or vector(0)`.
+    - name: error-rate
+      initialDelay: 30s
+      interval: 15s
+      count: 4
+      failureLimit: 1
+      inconclusiveLimit: 2
+      successCondition: len(result) > 0 && result[0] < 0.01
+      failureCondition: len(result) > 0 && result[0] >= 0.01
+      provider:
+        prometheus:
+          address: "{{args.prometheus}}"
+          query: |
+            clamp_min(
+              (sum(rate(vigie_requests_total{route="/v1/ask", status=~"5..", rollouts_pod_template_hash="{{args.canary-hash}}"}[{{args.window}}])) or vector(0))
+              - (sum(rate(vigie_llm_errors_total{rollouts_pod_template_hash="{{args.canary-hash}}"}[{{args.window}}])) or vector(0)),
+              0
+            )
+            / sum(rate(vigie_requests_total{route="/v1/ask", rollouts_pod_template_hash="{{args.canary-hash}}"}[{{args.window}}]))
+            and on() sum(increase(vigie_requests_total{route="/v1/ask", rollouts_pod_template_hash="{{args.canary-hash}}"}[{{args.window}}])) >= {{args.min-requests}}
+    # p95 latency of the canary divided by the p95 of the stable pods.
+    - name: latency-p95-ratio
+      initialDelay: 30s
+      interval: 15s
+      count: 4
+      failureLimit: 1
+      inconclusiveLimit: 2
+      successCondition: len(result) > 0 && result[0] < 1.5
+      failureCondition: len(result) > 0 && result[0] >= 1.5
+      provider:
+        prometheus:
+          address: "{{args.prometheus}}"
+          query: |
+            histogram_quantile(0.95, sum by (le) (rate(vigie_request_latency_seconds_bucket{route="/v1/ask", rollouts_pod_template_hash="{{args.canary-hash}}"}[{{args.window}}])))
+            / histogram_quantile(0.95, sum by (le) (rate(vigie_request_latency_seconds_bucket{route="/v1/ask", rollouts_pod_template_hash="{{args.stable-hash}}"}[{{args.window}}])))
+            and on() sum(increase(vigie_requests_total{route="/v1/ask", rollouts_pod_template_hash="{{args.canary-hash}}"}[{{args.window}}])) >= {{args.min-requests}}
+    # Share of blocked questions, canary against stable. The stable share is floored at
+    # 1 % so that a stable version blocking nothing does not turn one blocked attack on
+    # the canary into a division by zero.
+    - name: blocked-rate-ratio
+      initialDelay: 30s
+      interval: 15s
+      count: 4
+      failureLimit: 1
+      inconclusiveLimit: 2
+      successCondition: len(result) > 0 && result[0] < 3
+      failureCondition: len(result) > 0 && result[0] >= 3
+      provider:
+        prometheus:
+          address: "{{args.prometheus}}"
+          query: |
+            (
+              (sum(rate(vigie_blocked_total{rollouts_pod_template_hash="{{args.canary-hash}}"}[{{args.window}}])) or vector(0))
+              / sum(rate(vigie_requests_total{route="/v1/ask", rollouts_pod_template_hash="{{args.canary-hash}}"}[{{args.window}}]))
+            )
+            / clamp_min(
+              (sum(rate(vigie_blocked_total{rollouts_pod_template_hash="{{args.stable-hash}}"}[{{args.window}}])) or vector(0))
+              / sum(rate(vigie_requests_total{route="/v1/ask", rollouts_pod_template_hash="{{args.stable-hash}}"}[{{args.window}}])),
+              0.01
+            )
+            and on() sum(increase(vigie_requests_total{route="/v1/ask", rollouts_pod_template_hash="{{args.canary-hash}}"}[{{args.window}}])) >= {{args.min-requests}}

@@ -1,0 +1,34 @@
+name: release
+
+# Images are published, signed and scanned by build.yml, which also runs on version tags.
+# Publishing them here too would push the same tags twice, the second push unsigned.
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6
+        with:
+          python-version: "3.12"
+      - name: Check tag against pyproject and extract notes
+        run: python -m scripts.release_notes "${GITHUB_REF_NAME}" --verify-tag > release-notes.md
+      - name: Build wheel and sdist
+        run: uv build
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${GITHUB_REF_NAME}" dist/* --title "Vigie ${GITHUB_REF_NAME}" --notes-file release-notes.md --verify-tag

@@ -1,0 +1,10 @@
+Split dev, 106 exemples
+
+| Mesure | Valeur | Seuil |
+|---|---|---|
+| Rappel injections directes FR | 100.0 % | atteint |
+| Rappel injections directes EN | 100.0 % | atteint |
+| Faux positifs benign | 0.0 % | atteint |
+| Faux positifs benign_tricky | 0.0 % | atteint |
+| p95 de la chaîne (ms) | 251.7 | MANQUÉ |
+exit=1

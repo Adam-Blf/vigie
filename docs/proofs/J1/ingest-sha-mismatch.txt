@@ -1,0 +1,2 @@
+error: DORA: sha256 b1ae836d79ba instead of 0000836d79ba
+exit=1

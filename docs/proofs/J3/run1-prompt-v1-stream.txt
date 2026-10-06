@@ -1,0 +1,17 @@
+D'après les extraits indexés, une entité financière doit effectuer les vérifications suivantes avant de conclure un accord avec un prestataire tiers de services TIC :
+
+1. **Déterminer si l’accord couvre des services TIC soutenant une fonction critique ou importante** :
+   [DORA art. 28 §4 a].
+
+2. **Évaluer les conditions de surveillance en matière de conclusion de contrats** :
+   [DORA art. 28 §4 b].
+
+3. **Identifier et évaluer tous les risques pertinents**, y compris :
+   - La possibilité que l’accord contribue à accroître le **risque de concentration informatique** (visé à l’article 29) :
+     [DORA art. 28 §4 c].
+
+4. **S’assurer que le prestataire tiers présente les qualités requises** et faire preuve de diligence appropriée :
+   [DORA art. 28 §4 d].
+
+5. **Identifier et évaluer les conflits d’intérêts potentiels liés à l’accord** :
+   [DORA art. 28 §4 e].

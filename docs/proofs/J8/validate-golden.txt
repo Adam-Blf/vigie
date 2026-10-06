@@ -1,0 +1,8 @@
+corpus: 366 articles read from data\cache\cellar
+questions: 80
+  by regulation: AIACT=18, AMLR=17, DORA=18, RGPD=17, none=10
+  by lang: en=24, fr=56
+  by category: in_scope=60, out_of_scope=10, trap=10
+  by split: dev=54, test=26
+golden set OK
+exit=0

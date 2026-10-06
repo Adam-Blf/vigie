@@ -1,0 +1,34 @@
+== error-rate promtool rc=0
+query:
+clamp_min(
+  (sum(rate(vigie_requests_total{route="/v1/ask", status=~"5..", rollouts_pod_template_hash="5546d847b4"}[2m])) or vector(0))
+  - (sum(rate(vigie_llm_errors_total{rollouts_pod_template_hash="5546d847b4"}[2m])) or vector(0)),
+  0
+)
+/ sum(rate(vigie_requests_total{route="/v1/ask", rollouts_pod_template_hash="5546d847b4"}[2m]))
+and on() sum(increase(vigie_requests_total{route="/v1/ask", rollouts_pod_template_hash="5546d847b4"}[2m])) >= 30
+
+result: (empty vector: inconclusive)
+
+== latency-p95-ratio promtool rc=0
+query:
+histogram_quantile(0.95, sum by (le) (rate(vigie_request_latency_seconds_bucket{route="/v1/ask", rollouts_pod_template_hash="5546d847b4"}[2m])))
+/ histogram_quantile(0.95, sum by (le) (rate(vigie_request_latency_seconds_bucket{route="/v1/ask", rollouts_pod_template_hash="5546d847b4"}[2m])))
+and on() sum(increase(vigie_requests_total{route="/v1/ask", rollouts_pod_template_hash="5546d847b4"}[2m])) >= 30
+
+result: (empty vector: inconclusive)
+
+== blocked-rate-ratio promtool rc=0
+query:
+(
+  (sum(rate(vigie_blocked_total{rollouts_pod_template_hash="5546d847b4"}[2m])) or vector(0))
+  / sum(rate(vigie_requests_total{route="/v1/ask", rollouts_pod_template_hash="5546d847b4"}[2m]))
+)
+/ clamp_min(
+  (sum(rate(vigie_blocked_total{rollouts_pod_template_hash="5546d847b4"}[2m])) or vector(0))
+  / sum(rate(vigie_requests_total{route="/v1/ask", rollouts_pod_template_hash="5546d847b4"}[2m])),
+  0.01
+)
+and on() sum(increase(vigie_requests_total{route="/v1/ask", rollouts_pod_template_hash="5546d847b4"}[2m])) >= 30
+
+result: (empty vector: inconclusive)
