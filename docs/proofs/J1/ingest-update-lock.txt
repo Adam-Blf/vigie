@@ -1,0 +1,8 @@
+DORA   32022R2554  articles=64   annexes=0   chunks=106  sha256=b1ae836d79ba
+AIACT  32024R1689  articles=113  annexes=13  chunks=185  sha256=d8b1a7775f59
+RGPD   32016R0679  articles=99   annexes=0   chunks=100  sha256=27a2248cf0cf
+AMLR   32024R1624  articles=90   annexes=6   chunks=120  sha256=96c5d8db365c
+
+real	0m17.002s
+user	0m0.031s
+sys	0m0.031s

@@ -1,0 +1,48 @@
+{
+  "milestone": "J8 part 1, golden dataset and validator",
+  "branch": "feat/golden",
+  "commit": "198e3625a3a930439ec51982546e6dc66e19535f",
+  "date": "2026-10-02T13:52:05Z",
+  "commands": {
+    "validate-golden.txt": "vigie-eval validate-golden --corpus data/cache/cellar",
+    "validate-golden-drafts.txt": "vigie-eval validate-golden --corpus data/cache/cellar --golden <questions.jsonl of commit 198e362~1, every row still draft>",
+    "validate-golden-degraded.txt": "vigie-eval validate-golden --corpus data/cache/cellar --golden <copy with a wrong quote on dora-01, unknown article on rgpd-02, draft status on amlr-04>",
+    "counts.txt": "cross count of data/golden/questions.jsonl by regulation, category, lang and split",
+    "check.txt": "python tasks.py check"
+  },
+  "results": {
+    "questions": 80,
+    "by_regulation": {"AIACT": 18, "AMLR": 17, "DORA": 18, "RGPD": 17, "none": 10},
+    "by_lang": {"fr": 56, "en": 24},
+    "by_category": {"in_scope": 60, "trap": 10, "out_of_scope": 10},
+    "by_split": {"dev": 54, "test": 26},
+    "test_seal": "e34ecb159622dbe05b0de6cbb78bb3ebed0f6959c3f83b3b8f895f0cf20fc828",
+    "gate_green_exit_code": 0,
+    "gate_red_exit_codes": {"drafts": 1, "degraded": 1},
+    "tests": "64 passed, coverage 100 % on src/vigie/evaluation"
+  },
+  "corpus_source": {
+    "endpoint": "https://publications.europa.eu/resource/celex/{CELEX}",
+    "headers": {"Accept": "application/xhtml+xml", "Accept-Language": "fra"},
+    "rate": "one request every 1.5 s",
+    "downloaded": "2026-10-02",
+    "sha256": {
+      "32022R2554.xhtml": "b1ae836d79ba2831d3be11834b359eb5a0cf099cc3e478d1b2ef3198061e7c57",
+      "32024R1689.xhtml": "d8b1a7775f597dc8d49a2bdc91af0dca3bc12ac558b97504685f9534660bb44e",
+      "32016R0679.xhtml": "27a2248cf0cf7c79a3ec7eae30b6e871817230d9f577632fed915181642144c2",
+      "32024R1624.xhtml": "96c5d8db365cd98a1c8ed50e8e09a4306c7662d24d2849cc92bebc9ec379a0c2"
+    },
+    "articles_read": 366
+  },
+  "tools": {
+    "python": "3.12.13",
+    "uv": "0.11.32",
+    "pytest": "9.1.1",
+    "ruff": "0.16.10",
+    "mypy": "2.4.0",
+    "beautifulsoup4": "4.15.0",
+    "lxml": "6.1.3",
+    "numpy": "2.5.3",
+    "pydantic": "2.13.5"
+  }
+}

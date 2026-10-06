@@ -1,0 +1,3 @@
++ python -m mypy tests src
+Success: no issues found in 14 source files
+exit=0
