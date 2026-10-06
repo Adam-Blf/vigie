@@ -1,0 +1,2 @@
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  61%|██████    | 121/199 [00:00<00:00, 1203.53it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1876.34it/s]
+max abs gap between ONNX fp32 and PyTorch sentence vectors: 7.451e-08

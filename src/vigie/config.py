@@ -17,6 +17,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from vigie import __version__
 
 LLMProvider = Literal["ollama", "mistral", "fake"]
+DenseVariant = Literal["fp32", "int8"]
 RetrieverKind = Literal["qdrant", "static"]
 
 
@@ -207,6 +208,26 @@ class Settings(BaseSettings):
     # Evaluation
     golden_path: Path = Path("data/golden/questions.jsonl")
     golden_seal_path: Path = Path("data/golden/test.sha256")
+    thresholds_path: Path = Path("eval/thresholds.yaml")
+
+    # Quantization (J12). The deployed embedding variant is the outcome of the study in
+    # docs/quantization.md, applied here and nowhere else.
+    dense_variant: DenseVariant = "int8"
+    # Pinned commit of the Hugging Face repository, so an upstream push cannot change the
+    # weights the study measured.
+    dense_model_revision: str = "e8f8c211226b894fcb81acc59f3b34ba3efd5f42"
+    dense_max_tokens: int = Field(default=128, ge=8, le=512)
+    quant_dir: Path = Path("data/quant")
+    quant_warmup_queries: int = Field(default=5, ge=0)
+    quant_latency_passes: int = Field(default=3, ge=1)
+    quant_llm_questions: int = Field(default=10, ge=1)
+    # Longer than llm_timeout_s: on a CPU, reading a 4096 token prompt alone can take over
+    # two minutes, and the study must measure that wait rather than abort on it.
+    quant_llm_timeout_s: float = Field(default=900.0, gt=0.0)
+    quant_llm_models: list[str] = [
+        "ministral-3:3b-instruct-2512-q4_K_M",
+        "ministral-3:3b-instruct-2512-q8_0",
+    ]
 
 
 @lru_cache(maxsize=1)
