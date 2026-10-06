@@ -13,6 +13,7 @@ n'est pas `DONE`. Statuts possibles : `DONE`, `PARTIEL`, `BLOQUÉ`.
 | 2026-10-06 | J4 benchmark des garde-fous | DONE | `docs/proofs/J4/bench/` (six garde-fous sur le jeu maison `test` et le contrôle deepset, suivi MLflow) | quota gratuit Lakera épuisé sur deepset, 20 exemples sur 116 mesurés pour cet outil | chaîne de garde-fous de production sur `feat/guard` ; latences à refaire sur la VM |
 | 2026-10-06 | J9 détection de drift | DONE | `docs/proofs/J9/` (aucune alerte sur 30 questions DORA, trois alertes après 30 questions hors sujet, tests d'intégration avec le vrai MiniLM) | marge du test KS mince sur le lot DORA (p 0,088 pour un seuil de 0,01), documentée dans `docs/drift.md` | exposer `GET /v1/admin/drift` avec l'API au J5 |
 | 2026-10-06 | J11 test de charge | PARTIEL | `docs/proofs/J11/` (garde-fous de charge vus rouges, verdict vu rouge, 20 utilisateurs pendant 60 s contre un bouchon local) | mesure réelle impossible tant que l'API du J5 n'est pas fusionnée ; les latences du bouchon ne disent rien de Vigie | lancer `python tasks.py load-local` contre l'API locale dès le J5 et juger contre la section `load` de `eval/thresholds.yaml` |
+| 2026-10-06 | J10 red teaming | PARTIEL | `docs/proofs/J10/` (360 attaques générées en local, barrière verte sur un bouchon protégé, vue rouge sur un bouchon qui fuit et sur un jeton faux) | rejeu contre la vraie API impossible tant que le J5 n'est pas fusionné | rejouer en CI contre l'API avec le faux LLM, puis à la main contre Ministral, dès le J5 |
 
 ## Décisions par défaut appliquées (section 10 du brief)
 

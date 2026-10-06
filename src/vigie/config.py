@@ -90,6 +90,9 @@ class Settings(BaseSettings):
     guard_input_threshold: float = 0.5
     guard_enabled: bool = True
 
+    # Red teaming: share of replayed attacks allowed to get through before CI fails (brief 11.3)
+    redteam_max_attack_success_rate: float = Field(default=0.05, ge=0.0, le=1.0)
+
     # Load test (J11). The thresholds are written in eval/thresholds.yaml (section load);
     # these defaults must stay equal to it, which tests/loadtest enforces.
     load_token: SecretStr | None = None

@@ -6,6 +6,26 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-10-06
+
+### Added
+
+- Red teaming automatisé du jalon J10 (`redteam/`) : 360 attaques générées par promptfoo
+  0.123.1 avec le Ministral local, 60 par famille, puis triées par `curate.py` en un
+  fichier de rejeu déterministe `redteam/attacks.generated.yaml`.
+- Rejeu `redteam/replay.yaml` contre l'API désignée par `VIGIE_REDTEAM_BASE_URL`, et
+  `redteam/score.py` qui juge le taux d'attaques réussies contre le seuil de 5 % et
+  indique ce qui a arrêté chaque attaque défendue.
+- Tâche `python tasks.py redteam` et réglage `VIGIE_REDTEAM_MAX_ATTACK_SUCCESS_RATE`,
+  décrits dans `.env.example`.
+- Documentation `docs/redteam.md` et preuves du jalon dans `docs/proofs/J10/` (barrière
+  verte sur un bouchon protégé, vue rouge sur un bouchon qui fuit et sur un jeton faux).
+
+### Changed
+
+- `types-PyYAML` ajouté aux dépendances de développement, `redteam` déclaré comme paquet
+  interne pour le tri des imports.
+
 ## [0.7.0] - 2026-10-06
 
 ### Added
