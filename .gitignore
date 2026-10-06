@@ -38,3 +38,6 @@ web/dist/
 web/test-results/
 web/playwright-report/
 .lighthouseci/
+
+# Guard classifier, fetched and quantized by python -m vigie.guard.prepare
+models/

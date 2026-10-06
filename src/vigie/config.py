@@ -86,9 +86,18 @@ class Settings(BaseSettings):
     bundle_version: str = "dev"
     fault_error_rate: float = Field(default=0.0, ge=0.0, le=1.0)
 
-    # Guardrails
-    guard_input_threshold: float = 0.5
-    guard_enabled: bool = True
+    # Guardrails. The input chain is the reference regex plus the ProtectAI DeBERTa
+    # classifier, exported to ONNX int8 so the API image carries no torch. Revision pinned:
+    # the benchmark measured this exact checkpoint.
+    guard_input_threshold: float = Field(default=0.5, ge=0.0, le=1.0)
+    # "off" leaves the regex alone, for tests and for a machine without the model files.
+    guard_classifier: Literal["onnx", "off"] = "onnx"
+    guard_model_dir: Path = Path("models/guard")
+    guard_model_repo: str = "protectai/deberta-v3-base-prompt-injection-v2"
+    guard_model_revision: str = "90c9989b1a342275dd0d1a95aad283c04e075671"
+    guard_max_tokens: int = Field(default=512, ge=16, le=512)
+    # ONNX Runtime threads; two, like the cores of the Oracle VM.
+    guard_threads: int = Field(default=2, ge=1)
 
     # Load test (J11). The thresholds are written in eval/thresholds.yaml (section load);
     # these defaults must stay equal to it, which tests/loadtest enforces.
