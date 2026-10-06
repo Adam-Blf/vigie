@@ -60,6 +60,7 @@ def open_retriever(
             resolve_collection(settings, embedder),
             embedder,
             prefetch_limit=settings.retrieval_prefetch_limit,
+            rrf_k=settings.retrieval_rrf_k or None,
         )
     finally:
         # Local mode holds a lock on its folder until closed; a second process would fail.

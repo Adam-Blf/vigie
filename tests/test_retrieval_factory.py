@@ -5,6 +5,7 @@ from tests.retrieval_fixtures import FakeEmbedder, indexed_settings, local_setti
 
 from vigie.config import Settings
 from vigie.rag.static_retriever import StaticRetriever
+from vigie.retrieval import client as client_module
 from vigie.retrieval import factory
 from vigie.retrieval.client import QdrantNotConfiguredError, open_client
 from vigie.retrieval.factory import RetrieverConfigError, open_retriever, resolve_collection
@@ -20,17 +21,22 @@ def test_settings_default_to_qdrant_with_french_bm25() -> None:
     assert settings.collection_prefix == "vigie"
     assert settings.qdrant_collection is None
     assert settings.retrieval_prefetch_limit == 20
+    assert settings.retrieval_rrf_k == 60
 
 
-def test_client_prefers_the_server_url(tmp_path: Path) -> None:
+def test_client_prefers_the_server_url(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    # A real remote client asks the server for its version on creation; the recorder keeps
+    # the unit test off the network.
+    calls: list[dict[str, object]] = []
+    monkeypatch.setattr(client_module, "QdrantClient", lambda **kwargs: calls.append(kwargs))
     settings = Settings(
-        _env_file=None, qdrant_url="http://127.0.0.1:6733", qdrant_path=str(tmp_path)
+        _env_file=None,
+        qdrant_url="http://127.0.0.1:6733",
+        qdrant_api_key="k",
+        qdrant_path=str(tmp_path),
     )
-    client = open_client(settings)
-    try:
-        assert client.init_options["url"] == "http://127.0.0.1:6733"
-    finally:
-        client.close()
+    open_client(settings)
+    assert calls == [{"url": "http://127.0.0.1:6733", "api_key": "k"}]
 
 
 def test_client_memory_and_folder_modes(tmp_path: Path) -> None:
@@ -100,3 +106,13 @@ def test_no_corpus_and_no_pin_is_a_config_error(tmp_path: Path) -> None:
     settings = Settings(_env_file=None, corpus_dir=tmp_path / "empty")
     with pytest.raises(RetrieverConfigError, match="VIGIE_QDRANT_COLLECTION"):
         resolve_collection(settings, FakeEmbedder())
+
+
+@pytest.mark.parametrize(("rrf_k", "top_score"), [(60, 2 / 60), (0, 1.0)])
+def test_rrf_constant_comes_from_the_settings(tmp_path: Path, rrf_k: int, top_score: float) -> None:
+    # First in both lists: 2/k with a constant, 1/2 + 1/2 with the plain FusionQuery.
+    settings = indexed_settings(tmp_path, retrieval_rrf_k=rrf_k)
+    with open_retriever(settings, embedder=FakeEmbedder()) as retriever:
+        top = retriever.search("notification violation de données 72 heures", 1)[0]
+    assert top.article_id == "RGPD:33"
+    assert top.score == pytest.approx(top_score)

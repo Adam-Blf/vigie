@@ -40,6 +40,9 @@ class Settings(BaseSettings):
     embedding_cache_dir: Path | None = None
     # Candidates each branch (dense, BM25) hands to the RRF fusion before the final top-k.
     retrieval_prefetch_limit: int = Field(default=20, ge=1, le=200)
+    # RRF constant. 60 is the value of the original RRF paper and measured best on the dev
+    # split; 0 means Qdrant's plain FusionQuery, whose constant is fixed at 2.
+    retrieval_rrf_k: int = Field(default=60, ge=0)
     # qdrant for real answers; static replays a JSON file of passages to measure the LLM alone.
     retriever: RetrieverKind = "qdrant"
     static_passages_path: Path | None = None
