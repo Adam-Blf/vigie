@@ -1,7 +1,7 @@
 {
   "milestone": "J12 quantization",
   "branch": "feat/quant",
-  "commit": "da264bee675e9939439ae0ec39c587523021d75d",
+  "commit": "79a5d4b7fa61b174a41dd08c8e586396941f3525",
   "date": "2026-10-06",
   "threshold_commit": {
     "sha": "e5b8c0cff8e73ff4238635adef79658741e65e26",
@@ -37,7 +37,7 @@
       "ministral-3:3b-instruct-2512-q8_0": {"first_token_p50_ms": 127846.225, "first_token_p95_ms": 159059.989, "tokens_per_s": 3.23, "memory_bytes": 4236247039, "raw_citation_validity": 1.0, "answers_with_valid_citation": 3, "expected_coverage": 0.1, "refusals": 2},
       "decision": "keep Q4_K_M"
     },
-    "tests": "742 passed, coverage 98 % on src, 100 % on decision, dense, stats, study, runner, llm_bench, tracking"
+    "tests": "848 passed, coverage 98 % on src, 100 % on decision, dense, stats, study, runner, llm_bench, tracking"
   },
   "mlflow_runs": {
     "experiment": "vigie-quantization",
