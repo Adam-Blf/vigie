@@ -91,7 +91,12 @@ def test_from_settings_passes_models_language_and_cache(
     # over the configured names without downloading anything.
     monkeypatch.setattr(fastembed, "TextEmbedding", StubDense)
     monkeypatch.setattr(fastembed, "SparseTextEmbedding", StubSparse)
-    settings = Settings(_env_file=None, embedding_cache_dir=tmp_path, sparse_language="english")
+    settings = Settings(
+        _env_file=None,
+        embedding_cache_dir=tmp_path,
+        sparse_language="english",
+        dense_variant="fp32",
+    )
 
     embedder = FastEmbedEmbedder.from_settings(settings)
 
@@ -105,6 +110,6 @@ def test_from_settings_passes_models_language_and_cache(
 def test_no_cache_dir_lets_fastembed_choose(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(fastembed, "TextEmbedding", StubDense)
     monkeypatch.setattr(fastembed, "SparseTextEmbedding", StubSparse)
-    embedder = FastEmbedEmbedder.from_settings(Settings(_env_file=None))
+    embedder = FastEmbedEmbedder.from_settings(Settings(_env_file=None, dense_variant="fp32"))
     assert isinstance(embedder._dense, StubDense)
     assert embedder._dense.cache_dir is None

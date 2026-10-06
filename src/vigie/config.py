@@ -53,6 +53,13 @@ class Settings(BaseSettings):
     rerank_depth: int = Field(default=30, ge=1, le=200)
     # Put the chunks of an article named in the question ("article 28 DORA") first.
     retrieval_pin_references: bool = True
+    # Weight of the dense list in the RRF sum, BM25 keeping 1. Ignored when the RRF
+    # constant is 0, Qdrant's plain fusion takes no weights. 3 measured best on the dev
+    # split with the int8 MiniLM (docs/evaluation.md).
+    retrieval_dense_weight: float = Field(default=3.0, gt=0.0)
+    # BM25 matches French stems; False leaves it out of questions detected as English,
+    # where its candidates only diluted the dense ones on the dev split.
+    retrieval_sparse_on_english: bool = False
     # qdrant for real answers; static replays a JSON file of passages to measure the LLM alone.
     retriever: RetrieverKind = "qdrant"
     static_passages_path: Path | None = None

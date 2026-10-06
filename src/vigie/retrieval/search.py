@@ -29,6 +29,7 @@ from qdrant_client import QdrantClient, models
 from vigie.rag.types import Passage
 from vigie.retrieval.embeddings import Embedder
 from vigie.retrieval.index import DENSE, SPARSE
+from vigie.retrieval.language import is_english
 from vigie.retrieval.references import ArticleRef, parse_references
 from vigie.retrieval.rerank import Reranker, rerank
 
@@ -110,6 +111,8 @@ class QdrantRetriever:
         reranker: Reranker | None = None,
         rerank_depth: int = 0,
         pin_references: bool = False,
+        dense_weight: float = 1.0,
+        sparse_on_english: bool = True,
     ) -> None:
         if not client.collection_exists(collection):
             raise CollectionMissingError(f"collection {collection} not found, run vigie-index")
@@ -120,11 +123,17 @@ class QdrantRetriever:
         self._reranker = reranker
         self._rerank_depth = rerank_depth
         self._pin = pin_references
-        self._fusion: models.FusionQuery | models.RrfQuery = (
+        self._sparse_on_english = sparse_on_english
+        # A single list (English question, BM25 left out) is ranked by the same formula,
+        # so its scores stay on the RRF scale the pipeline's score floor expects.
+        self._single: models.FusionQuery | models.RrfQuery = (
             models.FusionQuery(fusion=models.Fusion.RRF)
             if rrf_k is None
             else models.RrfQuery(rrf=models.Rrf(k=rrf_k))
         )
+        self._fusion = self._single
+        if rrf_k is not None and dense_weight != 1.0:
+            self._fusion = models.RrfQuery(rrf=models.Rrf(k=rrf_k, weights=[dense_weight, 1.0]))
 
     @property
     def collection(self) -> str:
@@ -143,13 +152,19 @@ class QdrantRetriever:
         limit = max(self._prefetch_limit, top_k)
         # The reranker needs a wider pool than top_k to have something to reorder.
         pool = max(top_k, self._rerank_depth) if self._reranker else top_k
+        branches = [
+            models.Prefetch(query=list(query.dense), using=DENSE, limit=limit, filter=where)
+        ]
+        fusion = self._single
+        # BM25 stems French; on an English question its candidates only dilute the dense
+        # ones (dev split, docs/evaluation.md), so it sits those questions out.
+        if self._sparse_on_english or not is_english(question):
+            branches.append(models.Prefetch(query=sparse, using=SPARSE, limit=limit, filter=where))
+            fusion = self._fusion
         response = self._client.query_points(
             self._collection,
-            prefetch=[
-                models.Prefetch(query=list(query.dense), using=DENSE, limit=limit, filter=where),
-                models.Prefetch(query=sparse, using=SPARSE, limit=limit, filter=where),
-            ],
-            query=self._fusion,
+            prefetch=branches,
+            query=fusion,
             limit=pool,
             with_payload=True,
         )

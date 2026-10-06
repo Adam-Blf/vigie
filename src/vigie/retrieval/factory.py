@@ -72,6 +72,8 @@ def open_retriever(
             reranker=reranker,
             rerank_depth=settings.rerank_depth,
             pin_references=settings.retrieval_pin_references,
+            dense_weight=settings.retrieval_dense_weight,
+            sparse_on_english=settings.retrieval_sparse_on_english,
         )
     finally:
         # Local mode holds a lock on its folder until closed; a second process would fail.

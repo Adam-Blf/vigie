@@ -111,7 +111,8 @@ def test_no_corpus_and_no_pin_is_a_config_error(tmp_path: Path) -> None:
 @pytest.mark.parametrize(("rrf_k", "top_score"), [(60, 2 / 60), (0, 1.0)])
 def test_rrf_constant_comes_from_the_settings(tmp_path: Path, rrf_k: int, top_score: float) -> None:
     # First in both lists: 2/k with a constant, 1/2 + 1/2 with the plain FusionQuery.
-    settings = indexed_settings(tmp_path, retrieval_rrf_k=rrf_k)
+    # Equal weights, so the score shows the constant alone.
+    settings = indexed_settings(tmp_path, retrieval_rrf_k=rrf_k, retrieval_dense_weight=1.0)
     with open_retriever(settings, embedder=FakeEmbedder()) as retriever:
         top = retriever.search("notification violation de données 72 heures", 1)[0]
     assert top.article_id == "RGPD:33"

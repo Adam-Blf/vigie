@@ -65,3 +65,18 @@ def test_fastembed_reranker_wraps_the_cross_encoder(tmp_path: Path) -> None:
     assert isinstance(reranker._encoder, StubEncoder)
     assert reranker._encoder.cache_dir == str(tmp_path)
     assert FastEmbedReranker("jina", factory=StubEncoder)._encoder.cache_dir is None  # type: ignore[attr-defined]
+
+
+def test_the_default_factory_opens_fastembed_s_cross_encoder(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from fastembed.rerank import cross_encoder
+
+    monkeypatch.setattr(
+        cross_encoder,
+        "TextCrossEncoder",
+        lambda model_name, cache_dir: StubEncoder(model_name, cache_dir),
+    )
+    reranker = FastEmbedReranker("jinaai/jina-reranker-v2-base-multilingual", tmp_path)
+    assert isinstance(reranker._encoder, StubEncoder)
+    assert reranker._encoder.model == "jinaai/jina-reranker-v2-base-multilingual"
