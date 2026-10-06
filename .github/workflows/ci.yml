@@ -36,7 +36,7 @@ jobs:
         run: |
           {
             echo "web=${{ hashFiles('web/package-lock.json') != '' }}"
-            echo "eval=${{ hashFiles('src/vigie/evaluation/cli.py') != '' && hashFiles('eval/thresholds.yaml') != '' }}"
+            echo "eval=${{ hashFiles('src/vigie/evaluation/gate.py') != '' && hashFiles('eval/thresholds.yaml') != '' }}"
             echo "redteam=${{ hashFiles('redteam/replay.yaml') != '' && hashFiles('redteam/attacks.generated.yaml') != '' && hashFiles('docker-compose.yml') != '' }}"
           } | tee -a "$GITHUB_OUTPUT"
 
@@ -50,6 +50,8 @@ jobs:
       - uses: ./.github/actions/python-env
       - name: Ruff
         run: uv run --no-sync python tasks.py lint
+      - name: README version matches pyproject
+        run: uv run --no-sync python tasks.py version-check
       - name: Mypy (strict)
         run: uv run --no-sync python tasks.py typecheck
       - name: Pytest

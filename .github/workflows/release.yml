@@ -1,5 +1,8 @@
 name: release
 
+# Images are published, signed and scanned by build.yml, which also runs on version tags.
+# Publishing them here too would push the same tags twice, the second push unsigned.
+
 on:
   push:
     tags: ["v*.*.*"]
@@ -29,46 +32,3 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release create "${GITHUB_REF_NAME}" dist/* --title "Vigie ${GITHUB_REF_NAME}" --notes-file release-notes.md --verify-tag
-
-  images:
-    runs-on: ubuntu-latest
-    needs: python
-    permissions:
-      contents: read
-      packages: write
-    strategy:
-      matrix:
-        image: [api, web]
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Detect Dockerfile
-        id: dockerfile
-        run: |
-          if [ -f "deploy/docker/${{ matrix.image }}.Dockerfile" ]; then
-            echo "present=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "present=false" >> "$GITHUB_OUTPUT"
-            echo "No Dockerfile for ${{ matrix.image }} yet, image not published."
-          fi
-      - if: steps.dockerfile.outputs.present == 'true'
-        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3
-      - if: steps.dockerfile.outputs.present == 'true'
-        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
-      - if: steps.dockerfile.outputs.present == 'true'
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
-      - if: steps.dockerfile.outputs.present == 'true'
-        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
-        with:
-          context: .
-          file: deploy/docker/${{ matrix.image }}.Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          tags: |
-            ghcr.io/adam-blf/vigie-${{ matrix.image }}:${{ github.ref_name }}
-            ghcr.io/adam-blf/vigie-${{ matrix.image }}:${{ github.sha }}

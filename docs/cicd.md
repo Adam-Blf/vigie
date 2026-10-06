@@ -33,7 +33,7 @@ côté GitHub, la CD se résume à la publication de l'image.
 | `pip-audit` | dépendance Python avec une vulnérabilité connue | toujours |
 | `web` | build Vite, tests vitest, tests Playwright | `web/package-lock.json` existe |
 | `npm-audit` | dépendance npm avec une vulnérabilité `high` ou `critical` | `web/` ou `redteam/` existe |
-| `eval-gate` | régression des métriques déterministes sous les seuils | `src/vigie/evaluation/cli.py` et `eval/thresholds.yaml` existent |
+| `eval-gate` | régression des métriques déterministes sous les seuils | `src/vigie/evaluation/gate.py` (commande `vigie-eval gate`) et `eval/thresholds.yaml` existent |
 | `redteam-gate` | plus de 5 % d'attaques réussies au rejeu Promptfoo | `redteam/replay.yaml`, `redteam/attacks.generated.yaml` et `docker-compose.yml` existent |
 
 Le job `detect` calcule ces conditions avec `hashFiles` une seule fois, puis les autres
