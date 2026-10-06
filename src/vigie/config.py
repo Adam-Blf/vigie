@@ -85,6 +85,12 @@ class Settings(BaseSettings):
         default=False,
         validation_alias=AliasChoices("FAKE_LLM_HALLUCINATE", "VIGIE_FAKE_LLM_HALLUCINATE"),
     )
+    # Red teaming only: the fake model recites its system prompt, the worst case of a model
+    # that obeys an extraction attempt (see docs/redteam.md).
+    fake_llm_leak: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("FAKE_LLM_LEAK", "VIGIE_FAKE_LLM_LEAK"),
+    )
 
     # RAG
     # Passages scoring below this are treated as noise, which is what lets an off-topic
