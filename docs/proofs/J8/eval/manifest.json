@@ -1,0 +1,27 @@
+{
+  "milestone": "J8 evaluation, MLflow and model choice",
+  "branch": "feat/evaluation",
+  "commit": "3726a70c1d662cff84f13647ffcb3c534837bf39",
+  "date": "2026-10-06",
+  "commands": {
+    "runs/dev-*.txt": "vigie-eval run --split dev (one MLflow run per configuration, 14 configurations)",
+    "run-test.txt": "vigie-eval run --split test (chosen configuration, measured once)",
+    "register-refused.txt": "vigie-eval register <run of run-test.txt> (refused, gate red)",
+    "promotion-demo-dev.txt": "vigie-eval run --split dev (e5-large, dense weight 2, English guard), then gate and register with docs/proofs/gates/thresholds-dev-copy.yaml on a scratch MLflow store",
+    "check.txt": "python tasks.py check"
+  },
+  "results": {
+    "chosen_configuration": "MiniLM-L12 int8, dense weight 3, BM25 off English questions",
+    "dev": {"questions": 47, "recall_at_5": 0.6383, "mrr": 0.5089},
+    "test": {"questions": 23, "recall_at_5": 0.6522, "mrr": 0.5142, "floors": {"recall_at_5": 0.80, "mrr": 0.60}, "gate": "red"},
+    "promotion_demo_dev": {"config": "e5-large, dense weight 2, English guard", "recall_at_5": 0.8085, "mrr": 0.62, "gate": "green", "registered": "vigie-rag version 1, alias challenger, scratch store only"},
+    "degraded_candidate": {"recall_at_5": 0.5319, "gate": "red", "regression_vs_champion_points": 10.64},
+    "tests": "925 passed, total coverage 98.2 %"
+  },
+  "limits": [
+    "no vigie-rag version in the repository registry: the chosen configuration fails the retrieval floors on test",
+    "LLM judge (DeepEval) not run, still open",
+    "the dev promotion demo proves the mechanism only, dev was used to choose the configuration"
+  ],
+  "tools": {"python": "3.12.13"}
+}

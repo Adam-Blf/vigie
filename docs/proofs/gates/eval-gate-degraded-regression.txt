@@ -1,0 +1,10 @@
+FAIL  recall_at_k                        0.5319 >= 0.8000
+FAIL  mrr                                0.4666 >= 0.6000
+PASS  invented_in_final_answer           0.0000 <= 0.0000
+PASS  citation_precision                 0.1756 >= 0.8500  (fake LLM, reported only)
+PASS  citation_coverage                  0.4894 >= 0.8000  (fake LLM, reported only)
+PASS  correct_refusal_rate               0.0000 >= 0.9000  (fake LLM, reported only)
+FAIL  recall_at_k vs champion            0.1064 drop <= 0.0200  (champion 0.6383)
+PASS  raw_citation_validity vs champion   0.0000 drop <= 0.0200  (champion 0.7360)
+gate FAILED
+exit 1

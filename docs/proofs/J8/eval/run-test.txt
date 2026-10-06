@@ -1,0 +1,11 @@
+2026/10/06 14:53:56 INFO mlflow.agent.hint: Load the `instrumenting-with-mlflow-tracing` skill at C:\Users\adamb\Documents\Projets\school\vigie\.venv\Lib\site-packages\mlflow\assistant\skills\instrumenting-with-mlflow-tracing\SKILL.md before writing any tracing code; it ships with this MLflow install. Set MLFLOW_DISABLE_AGENT_HINT=1 to silence this.
+split=test llm=fake-llm collection=vigie_paraphrase-multilingual-minilm-l12-v2-int8-84396c_5abe72f5
+  recall_at_k                0.6522  95 % CI [0.4348, 0.8261]
+  mrr                        0.5142  95 % CI [0.3436, 0.6915]
+  raw_citation_validity      0.7326
+  invented_in_final_answer   0.0000
+  citation_precision         0.2063  95 % CI [0.1269, 0.2857]
+  citation_coverage          0.5652  95 % CI [0.3478, 0.7826]
+  correct_refusal_rate       0.0000
+report: docs\proofs\J8\eval\report-test.json
+mlflow run: b013888dacc4414385645d61be1bcf1f

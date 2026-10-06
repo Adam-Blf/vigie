@@ -1,0 +1,21 @@
+{
+  "split": "dev",
+  "questions": 47,
+  "floors": {"recall_at_5": 0.8, "mrr": 0.6},
+  "candidates": [
+    {"run": "dev-a-minilm-j2", "label": "a. MiniLM fastembed, RRF (J2)", "recall_at_5": 0.6383, "mrr": 0.4863, "fits_vm": true},
+    {"run": "dev-b-minilm-int8", "label": "b. MiniLM int8, RRF", "recall_at_5": 0.6170, "mrr": 0.5094, "fits_vm": true},
+    {"run": "dev-c-minilm-gated", "label": "c. MiniLM fastembed, garde anglais", "recall_at_5": 0.6383, "mrr": 0.5132, "fits_vm": true},
+    {"run": "dev-d-minilm-int8-gated-w3", "label": "d. MiniLM int8, garde anglais, poids 3 (retenu)", "recall_at_5": 0.6383, "mrr": 0.5089, "fits_vm": true, "chosen": true},
+    {"run": "dev-e-e5-small", "label": "e. e5-small, RRF", "recall_at_5": 0.5106, "mrr": 0.3966, "fits_vm": true},
+    {"run": "dev-f-e5-base", "label": "f. e5-base, RRF", "recall_at_5": 0.7021, "mrr": 0.4919, "fits_vm": false},
+    {"run": "dev-g-e5-base-int8", "label": "g. e5-base int8, RRF", "recall_at_5": 0.6383, "mrr": 0.4382, "fits_vm": false},
+    {"run": "dev-h-e5-large", "label": "h. e5-large, RRF", "recall_at_5": 0.7872, "mrr": 0.5900, "fits_vm": false},
+    {"run": "dev-i-e5-large-gated-w2", "label": "i. e5-large, garde anglais, poids 2", "recall_at_5": 0.8085, "mrr": 0.6200, "fits_vm": false},
+    {"run": "dev-j-minilm-int8-chunks350", "label": "j. MiniLM int8, chunks 350 mots", "recall_at_5": 0.5319, "mrr": 0.4840, "fits_vm": true},
+    {"run": "dev-k-e5-base-chunks350", "label": "k. e5-base, chunks 350 mots", "recall_at_5": 0.7660, "mrr": 0.5868, "fits_vm": false},
+    {"run": "dev-l-e5-base-chunks350-gated-w3", "label": "l. e5-base, chunks 350, garde, poids 3", "recall_at_5": 0.8298, "mrr": 0.6684, "fits_vm": false},
+    {"run": "dev-m-e5-base-int8-chunks350-gated-w3", "label": "m. e5-base int8, chunks 350, garde, poids 3", "recall_at_5": 0.7234, "mrr": 0.5829, "fits_vm": false},
+    {"run": "dev-n-e5-large-jina-rerank30", "label": "n. e5-large puis reranker jina-v2", "recall_at_5": 0.7234, "mrr": 0.5634, "fits_vm": false}
+  ]
+}
