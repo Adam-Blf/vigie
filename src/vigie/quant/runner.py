@@ -110,8 +110,13 @@ def run_llm_variant(
     model: str,
     items: Sequence[tuple[GoldenQuestion, list[Passage]]],
     log_run: LogRun | None = None,
+    on_answer: Callable[[list[dict[str, Any]]], None] | None = None,
 ) -> tuple[LlmVariantResult, list[dict[str, Any]]]:
-    """Warm the model up on the first item, then measure every item and free the memory."""
+    """Warm the model up on the first item, then measure every item and free the memory.
+
+    ``on_answer`` receives the answers so far after each one: a CPU run takes minutes per
+    answer, and an incident near the end must not throw away what was already measured.
+    """
     first_question, first_passages = items[0]
     probe.chat(model, build_messages(first_question.question, first_passages))
     generations: list[Generation] = []
@@ -123,6 +128,8 @@ def run_llm_variant(
         generations.append(generation)
         qualities.append(quality)
         answers.append({"id": question.id, **asdict(generation), **asdict(quality)})
+        if on_answer is not None:
+            on_answer(answers)
     memory = probe.memory_bytes(model)
     probe.unload(model)
     result = summarize_llm(model, generations, qualities, memory)

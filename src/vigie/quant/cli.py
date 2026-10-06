@@ -110,16 +110,24 @@ def _llm(args: argparse.Namespace, settings: Settings) -> int:
         "num_predict": settings.llm_num_predict,
         "temperature": settings.llm_temperature,
     }
-    probe = OllamaProbe(settings.ollama_url, options, settings.llm_timeout_s)
+    probe = OllamaProbe(settings.ollama_url, options, settings.quant_llm_timeout_s)
     variants: dict[str, object] = {}
+    embedding = settings.dense_variant
     try:
         for model in args.model or settings.quant_llm_models:
-            result, answers = run_llm_variant(probe, model, items, _logger(args, settings))
+
+            def save(answers: list[dict[str, object]], model: str = model) -> None:
+                variants[model] = {"summary": None, "answers": answers}
+                write_json(args.results, {"embedding_variant": embedding, "variants": variants})
+
+            result, answers = run_llm_variant(
+                probe, model, items, _logger(args, settings), on_answer=save
+            )
             variants[model] = {"summary": asdict(result), "answers": answers}
             _print_table({model: asdict(result)})
     finally:
         probe.close()
-    write_json(args.results, {"embedding_variant": settings.dense_variant, "variants": variants})
+    write_json(args.results, {"embedding_variant": embedding, "variants": variants})
     return 0
 
 
