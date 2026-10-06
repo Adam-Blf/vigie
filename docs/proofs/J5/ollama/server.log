@@ -1,0 +1,21 @@
+2026-10-06 12:10:09,792 INFO uvicorn.error Started server process [26360]
+2026-10-06 12:10:09,792 INFO uvicorn.error Waiting for application startup.
+2026-10-06 12:10:09,794 INFO uvicorn.error Application startup complete.
+2026-10-06 12:10:09,795 INFO uvicorn.error Uvicorn running on http://127.0.0.1:8718 (Press CTRL+C to quit)
+2026-10-06 12:10:10,179 INFO uvicorn.access 127.0.0.1:59709 - "GET /healthz HTTP/1.1" 200
+2026-10-06 12:10:11,439 INFO uvicorn.access 127.0.0.1:59713 - "POST /v1/ask HTTP/1.1" 401
+2026-10-06 12:10:15,165 INFO uvicorn.access 127.0.0.1:59715 - "POST /v1/ask HTTP/1.1" 401
+2026-10-06 12:11:12,151 INFO httpx HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-10-06 12:12:11,519 INFO uvicorn.access 127.0.0.1:59717 - "POST /v1/ask HTTP/1.1" 200
+2026-10-06 12:12:15,950 INFO uvicorn.access 127.0.0.1:51036 - "POST /v1/ask HTTP/1.1" 200
+2026-10-06 12:12:19,872 INFO uvicorn.access 127.0.0.1:64553 - "POST /v1/ask HTTP/1.1" 200
+2026-10-06 12:12:23,817 INFO httpx HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-10-06 12:12:27,263 INFO uvicorn.access 127.0.0.1:64559 - "POST /v1/ask HTTP/1.1" 200
+2026-10-06 12:12:28,752 INFO uvicorn.access 127.0.0.1:54812 - "POST /v1/ask/stream HTTP/1.1" 200
+2026-10-06 12:12:31,132 INFO httpx HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-10-06 12:13:30,069 INFO uvicorn.access 127.0.0.1:53906 - "GET /v1/usage/me HTTP/1.1" 200
+2026-10-06 12:13:33,198 INFO uvicorn.access 127.0.0.1:53911 - "GET /v1/admin/usage HTTP/1.1" 403
+2026-10-06 12:13:42,338 INFO uvicorn.access 127.0.0.1:61095 - "GET /readyz HTTP/1.1" 503
+2026-10-06 12:13:54,569 INFO uvicorn.access 127.0.0.1:61104 - "POST /v1/ask HTTP/1.1" 413
+2026-10-06 12:14:19,336 INFO uvicorn.access 127.0.0.1:57309 - "POST /v1/ask HTTP/1.1" 422
+2026-10-06 12:14:21,250 INFO uvicorn.access 127.0.0.1:57312 - "GET /metrics HTTP/1.1" 200

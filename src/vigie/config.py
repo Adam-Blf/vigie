@@ -8,12 +8,16 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
+from socket import gethostname
 from typing import Literal
 
 from pydantic import AliasChoices, Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from vigie import __version__
+
 LLMProvider = Literal["ollama", "mistral", "fake"]
+DenseVariant = Literal["fp32", "int8"]
 RetrieverKind = Literal["qdrant", "static"]
 
 
@@ -99,20 +103,53 @@ class Settings(BaseSettings):
     host: str = "127.0.0.1"
     port: int = 8710
     cors_origins: list[str] = ["http://127.0.0.1:4710", "http://localhost:4710"]
+    # Tokens and usage share one SQLite file in WAL mode, on a single volume.
     db_path: Path = Path("data/vigie.sqlite3")
+    token_ttl_days: int = Field(default=30, ge=1, le=365)
     audit_dir: Path = Path("data/audit")
-    audit_retention_days: int = 30
-    rate_limit_per_minute: int = 20
-    daily_quota: int = 200
-    max_question_chars: int = 2000
+    audit_retention_days: int = Field(default=30, ge=1)
+    # One audit file per pod: two replicas appending to one chained file would fork it.
+    audit_pod_name: str = Field(default_factory=gethostname)
+    rate_limit_per_minute: int = Field(default=20, ge=1)
+    daily_quota: int = Field(default=200, ge=1)
+    max_question_chars: int = Field(default=2000, ge=1)
+    max_body_bytes: int = Field(default=16384, ge=1024)
+    # Kill switch from the incident runbook: every /v1 route answers 503 while it is on.
     maintenance: bool = False
-    app_version: str = "0.1.0"
+    app_version: str = __version__
     bundle_version: str = "dev"
+    bundle_path: Path | None = None
     fault_error_rate: float = Field(default=0.0, ge=0.0, le=1.0)
+    # Generations running at once in this pod. Past it the API answers 503 with
+    # Retry-After at once, instead of queueing work the two VM cores cannot absorb.
+    llm_max_inflight: int = Field(default=2, ge=1)
+    retry_after_s: int = Field(default=10, ge=1)
+    # The local model costs nothing per token. A reference price lets the usage page
+    # show what the same traffic would cost on a hosted API.
+    usage_cost_per_1k_tokens_eur: float = Field(default=0.0, ge=0.0)
+    # Ollama answers /api/tags slowly right after a long generation; 2 s once marked a
+    # healthy pod not ready during the J5 proof run, so the probe waits a little longer.
+    readiness_timeout_s: float = Field(default=5.0, gt=0.0)
 
-    # Guardrails
-    guard_input_threshold: float = 0.5
-    guard_enabled: bool = True
+    # Guardrails. The input chain is the reference regex plus the ProtectAI DeBERTa
+    # classifier, exported to ONNX int8 so the API image carries no torch. Revision pinned:
+    # the benchmark measured this exact checkpoint.
+    guard_input_threshold: float = Field(default=0.5, ge=0.0, le=1.0)
+    # "off" leaves the regex alone, for tests and for a machine without the model files.
+    guard_classifier: Literal["onnx", "off"] = "onnx"
+    guard_model_dir: Path = Path("models/guard")
+    guard_model_repo: str = "protectai/deberta-v3-base-prompt-injection-v2"
+    guard_model_revision: str = "90c9989b1a342275dd0d1a95aad283c04e075671"
+    guard_max_tokens: int = Field(default=512, ge=16, le=512)
+    # ONNX Runtime threads; two, like the cores of the Oracle VM.
+    guard_threads: int = Field(default=2, ge=1)
+
+    # Kubernetes budget of the single Always Free node (12 GB, 2 OCPU, brief 11.7).
+    # 1.5 GB stays outside Kubernetes for the OS; k3s itself takes the reserve.
+    k8s_requests_budget_mib: int = 8704
+    k8s_limits_budget_mib: int = 10752
+    k8s_system_reserve_mib: int = 1229
+    k8s_cpu_requests_budget_m: int = 1800
 
     # Oracle infrastructure. State and logs sit in the home directory, never in the repo.
     infra_dir: Path = Path("infra/terraform")
@@ -177,7 +214,7 @@ class Settings(BaseSettings):
     # Evaluation
     golden_path: Path = Path("data/golden/questions.jsonl")
     golden_seal_path: Path = Path("data/golden/test.sha256")
-    eval_thresholds_path: Path = Path("eval/thresholds.yaml")
+    thresholds_path: Path = Path("eval/thresholds.yaml")
     # Local MLflow store of vigie-eval, a SQLite file and an artifact folder, both under
     # mlruns/ which stays out of the repository. CI points it at a throwaway folder, a
     # cluster at its server.
@@ -186,6 +223,25 @@ class Settings(BaseSettings):
     eval_experiment: str = "vigie-eval"
     eval_registered_model: str = "vigie-rag"
     eval_report_dir: Path = Path("results/eval")
+
+    # Quantization (J12). The deployed embedding variant is the outcome of the study in
+    # docs/quantization.md, applied here and nowhere else.
+    dense_variant: DenseVariant = "int8"
+    # Pinned commit of the Hugging Face repository, so an upstream push cannot change the
+    # weights the study measured.
+    dense_model_revision: str = "e8f8c211226b894fcb81acc59f3b34ba3efd5f42"
+    dense_max_tokens: int = Field(default=128, ge=8, le=512)
+    quant_dir: Path = Path("data/quant")
+    quant_warmup_queries: int = Field(default=5, ge=0)
+    quant_latency_passes: int = Field(default=3, ge=1)
+    quant_llm_questions: int = Field(default=10, ge=1)
+    # Longer than llm_timeout_s: on a CPU, reading a 4096 token prompt alone can take over
+    # two minutes, and the study must measure that wait rather than abort on it.
+    quant_llm_timeout_s: float = Field(default=900.0, gt=0.0)
+    quant_llm_models: list[str] = [
+        "ministral-3:3b-instruct-2512-q4_K_M",
+        "ministral-3:3b-instruct-2512-q8_0",
+    ]
 
 
 @lru_cache(maxsize=1)

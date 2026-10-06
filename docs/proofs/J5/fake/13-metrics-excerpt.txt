@@ -1,0 +1,10 @@
+vigie_requests_total{bundle_version="j5-proof-fake",route="/healthz",status="200"} 1.0
+vigie_requests_total{bundle_version="j5-proof-fake",route="/v1/ask",status="401"} 2.0
+vigie_requests_total{bundle_version="j5-proof-fake",route="/v1/ask",status="200"} 4.0
+vigie_requests_total{bundle_version="j5-proof-fake",route="/v1/ask/stream",status="200"} 1.0
+vigie_requests_total{bundle_version="j5-proof-fake",route="/v1/usage/me",status="200"} 1.0
+vigie_requests_total{bundle_version="j5-proof-fake",route="/v1/admin/usage",status="403"} 1.0
+vigie_requests_total{bundle_version="j5-proof-fake",route="/readyz",status="200"} 1.0
+vigie_requests_total{bundle_version="j5-proof-fake",route="/v1/ask",status="413"} 1.0
+vigie_requests_total{bundle_version="j5-proof-fake",route="/v1/ask",status="422"} 1.0
+vigie_blocked_total{bundle_version="j5-proof-fake",reason="injection"} 2.0

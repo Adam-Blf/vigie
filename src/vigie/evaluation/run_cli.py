@@ -171,7 +171,7 @@ def _alias(args: argparse.Namespace) -> int:
 
 def add_commands(commands: Any, settings: Settings) -> None:
     def common(sub: argparse.ArgumentParser) -> None:
-        sub.add_argument("--thresholds", type=Path, default=settings.eval_thresholds_path)
+        sub.add_argument("--thresholds", type=Path, default=settings.thresholds_path)
         sub.add_argument("--tracking-uri", default=settings.eval_tracking_uri)
 
     run = commands.add_parser("run", help="evaluate the configured setup and log it to MLflow")

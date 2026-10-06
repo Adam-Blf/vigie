@@ -6,6 +6,131 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-10-06
+
+### Added
+
+- Étude de quantization du jalon J12 (`src/vigie/quant/`, commande `vigie-quant`) : export
+  ONNX fp32 du modèle d'embedding à révision épinglée, quantization dynamique int8 par
+  onnxruntime, contrôle de parité avec PyTorch, puis mesure de la taille, de la latence
+  p50 et p95 par requête, du rappel@5 et du MRR sur la partie `dev` du jeu de référence,
+  chaque variante journalisée comme un run MLflow.
+- Seuil de décision écrit avant la mesure dans `eval/thresholds.yaml` (section
+  `quantization`) : int8 retenu si le rappel@5 perd au plus 2 points et si le fichier est
+  au moins divisé par 2.
+- Étude LLM Ministral 3B Q4_K_M contre Q8_0 par Ollama, sur CPU seul : premier token,
+  débit, mémoire et validité des citations sur 10 questions `dev` fixes.
+- Documentation `docs/quantization.md` avec tableau et graphique, preuves dans
+  `docs/proofs/J12/`, réglages `VIGIE_DENSE_VARIANT`, `VIGIE_DENSE_MODEL_REVISION` et
+  `VIGIE_QUANT_*` décrits dans `.env.example`.
+
+### Changed
+
+- Le modèle d'embedding déployé est la version int8 (`dense_variant = "int8"`) : taille
+  divisée par 4, rappel@5 sans perte sur la partie `dev`. Ministral 3B reste en Q4_K_M :
+  Q8_0 double l'attente du premier token et ajoute 1,5 Go pour une qualité identique.
+- `pyyaml` passe dans les dépendances d'exécution, l'extra `quant` gagne torch,
+  transformers, onnxscript et matplotlib.
+
+## [0.14.0] - 2026-10-06
+
+### Added
+
+- API sécurisée du jalon J5 (`python -m vigie.api`, 127.0.0.1:8710) : `POST /v1/ask` et
+  sa version en flux SSE `POST /v1/ask/stream`, `GET /v1/usage/me`,
+  `GET /v1/admin/usage`, `GET /healthz`, `GET /readyz`, `GET /metrics`. Chaque réponse
+  porte `trace_id`, versions de l'application, du bundle et du prompt, modèle et latence.
+- Jetons `vig_` de 32 octets aléatoires, stockés hachés en SHA-256, valables 30 jours,
+  portée `user` ou `admin`, commandes `python -m vigie.api.tokens create`, `list`,
+  `revoke` et `rotate-admin` ; 401 identique pour un jeton absent, inconnu, expiré ou
+  révoqué, 403 pour un jeton `user` sur `/v1/admin/*`.
+- Suivi d'usage dans SQLite en mode WAL, une ligne par requête sans texte de question,
+  quota quotidien par jeton et limite par minute, tous deux avec `Retry-After`.
+- Journal d'audit AI Act en JSONL par pod, chaîné par hash, sans IP ni User-Agent, données
+  personnelles masquées, purge automatique à 30 jours, `python -m vigie.api.audit_cli
+  verify` et `purge`.
+- Filtre de rédaction des journaux (en-tête `Authorization`, jetons, champs `question`),
+  corps limité à 16 Ko, erreurs génériques avec `trace_id`, en-têtes de sécurité, CORS
+  restreint, coupe-circuit `VIGIE_MAINTENANCE`, créneaux de génération bornés (503 avec
+  `Retry-After`), compteur dédié aux erreurs du LLM, panne injectable par le bundle.
+- Bundle de version lu depuis un fichier (`VIGIE_BUNDLE_PATH`), jamais depuis MLflow ;
+  le démarrage échoue si sa version de prompt diffère de celle du code.
+- Contrat publié dans `docs/openapi.json` (`python -m vigie.api.contract`), vérifié par
+  un test ; documentation dans `docs/api.md`, réglages dans `.env.example`.
+- Preuves dans `docs/proofs/J5/` : appels `curl` réels avec le faux LLM et avec
+  Ministral 3B servi par Ollama, jetons masqués.
+
+## [0.13.0] - 2026-10-06
+
+### Added
+
+- Chaîne CI/CD du jalon J15 : actions tierces épinglées par SHA complet, contrôle des
+  workflows par actionlint vérifié par somme de contrôle, crédit du binôme sur chaque commit
+  d'une pull request (`scripts/check_coauthors.py`), recherche de secrets par gitleaks,
+  audit des dépendances Python et npm, tests de l'interface, porte d'évaluation et porte de
+  red teaming qui démarrent dès que leurs prérequis existent.
+- Planchers de couverture par module critique (`scripts/coverage_gate.py`, tâche
+  `python tasks.py coverage-gate`, appelée par `check`) : 80 % au total, 95 % sur les
+  garde-fous, les citations, l'authentification, l'usage et le drift.
+- Publication d'images multi-architecture signées sans clé par cosign, avec SBOM et scan
+  Trivy (`.github/workflows/build.yml`), et Dependabot pour pip, npm, les actions et Docker.
+- Documentation `docs/cicd.md`, preuves du jalon dans `docs/proofs/J15/` et barrières vues
+  rouges dans `docs/proofs/gates/`.
+
+### Changed
+
+- Le job `quality` vérifie aussi la version du README.
+- Les images ne sont plus publiées par `release.yml` : `build.yml` s'en charge aussi sur
+  les tags de version, signées et scannées.
+
+## [0.12.0] - 2026-10-06
+
+### Added
+
+- Chaîne de garde-fous de production du jalon J4 dans `src/vigie/guard/` : normalisation
+  de l'entrée (NFKC, caractères invisibles et bidirectionnels retirés, base64,
+  encodage pourcentage et entités HTML décodés), regex de référence reprise de
+  `src/guardbench`, puis classifieur DeBERTa ProtectAI v2 en ONNX int8 pour les textes
+  en anglais, sans torch.
+- Chaîne de sortie : seconde vérification des citations contre les passages retrouvés
+  et masquage des e-mails, IBAN, cartes (Luhn) et téléphones.
+- `python -m vigie.guard.prepare` télécharge l'export ONNX à une révision épinglée, le
+  quantifie en int8 par canal (738 Mo vers 244 Mo) et écrit un manifeste d'empreintes ;
+  extra `guard-model` pour cette étape de construction.
+- `python -m vigie.guard.measure` mesure la chaîne sur le jeu maison contre la nouvelle
+  section `guard` de `eval/thresholds.yaml` et sort en erreur si un seuil manque.
+- Réglages `VIGIE_GUARD_*` décrits dans `.env.example` ; `onnxruntime` et `tokenizers`
+  deviennent des dépendances directes.
+- Preuves dans `docs/proofs/J4/guard/` : sur `test`, rappel des injections directes 1,0
+  en français et en anglais, aucun faux positif, p95 de 96 ms.
+
+### Changed
+
+- `scripts/sync_version.py` réécrit aussi `__version__` de `src/vigie/__init__.py`, que
+  l'API renverra dans chaque réponse.
+
+### Removed
+
+- Réglage `guard_enabled`, jamais lu, remplacé par `VIGIE_GUARD_CLASSIFIER`.
+
+## [0.11.0] - 2026-10-06
+
+### Added
+
+- Manifestes Kubernetes du jalon J13 (`deploy/k8s/`) : base kustomize avec déploiement
+  canary Argo Rollouts et analyse Prometheus, pods durcis (Pod Security restricted),
+  politiques réseau, Qdrant avec instantanés, Ollama, MLflow, Prometheus et interface web,
+  surcouches `dev`, `prod` et `prod-loadtest`.
+- Livraison continue en mode tiré avec l'automatisation d'images de Flux (`deploy/k8s/cd/`)
+  et versions épinglées des modules dans `deploy/versions.env`.
+- Contrôle du budget du nœud unique (`python -m vigie.deploy`) : requêtes, limites et CPU
+  des manifestes rendus jugés contre les réglages `VIGIE_K8S_*`, décrits dans
+  `.env.example`.
+- Tâche `python tasks.py k8s-validate` qui rend chaque couche, la valide avec kubeconform
+  puis vérifie le budget.
+- Documentation `deploy/k8s/README.md` et preuves du jalon dans `docs/proofs/J13/`
+  (validation, budget vu rouge, essais côté serveur, grappe k3d de développement).
+
 ## [0.10.0] - 2026-10-06
 
 ### Added

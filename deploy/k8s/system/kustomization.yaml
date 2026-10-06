@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Cluster add-ons, applied once by an administrator from Adam's workstation before the
+# first application overlay. Flux then keeps everything else in sync from Git.
+resources:
+  - argo-rollouts
+  - flux

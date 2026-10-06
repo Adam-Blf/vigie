@@ -1,0 +1,12 @@
+# Public host name of the deployment (decision 3 of the brief: sslip.io by default).
+# The value is a placeholder on a documentation address (203.0.113.0/24, RFC 5737):
+# replace it with vigie.<public ip with dashes>.sslip.io once the VM exists. This
+# ConfigMap only feeds the build and is never applied to the cluster.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vigie-public-host
+  annotations:
+    config.kubernetes.io/local-config: "true"
+data:
+  host: vigie.203-0-113-10.sslip.io

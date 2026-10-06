@@ -1,0 +1,170 @@
+$ kubectl version
+Client Version: v1.34.1
+Kustomize Version: v5.7.1
+Server Version: v1.35.5+k3s1
+exit code: 0
+
+$ kubectl get nodes -o wide
+NAME                     STATUS   ROLES           AGE    VERSION        INTERNAL-IP   EXTERNAL-IP   OS-IMAGE           KERNEL-VERSION                     CONTAINER-RUNTIME
+k3d-vigie-dev-server-0   Ready    control-plane   152m   v1.35.5+k3s1   172.19.0.3    <none>        K3s v1.35.5+k3s1   6.6.87.2-microsoft-standard-WSL2   containerd://2.2.3-k3s1
+exit code: 0
+
+$ kubectl get ns vigie --show-labels
+NAME    STATUS   AGE    LABELS
+vigie   Active   103m   app.kubernetes.io/part-of=vigie,kubernetes.io/metadata.name=vigie,pod-security.kubernetes.io/audit=restricted,pod-security.kubernetes.io/enforce-version=latest,pod-security.kubernetes.io/enforce=restricted,pod-security.kubernetes.io/warn=restricted
+exit code: 0
+
+$ kubectl get pods -A
+NAMESPACE       NAME                                          READY   STATUS             RESTARTS   AGE
+argo-rollouts   argo-rollouts-5d48c88784-rn9g5                1/1     Running            0          105m
+flux-system     image-automation-controller-698cf88d4-4km8x   1/1     Running            0          105m
+flux-system     image-reflector-controller-5997f6994b-mzzt8   1/1     Running            0          105m
+flux-system     kustomize-controller-56d554f7f5-rh5d4         1/1     Running            0          105m
+flux-system     source-controller-6df6d854bf-qmzd8            1/1     Running            0          105m
+kube-system     coredns-8db54c48d-tkdq4                       1/1     Running            0          152m
+kube-system     helm-install-traefik-crd-rsg9c                0/1     Completed          0          152m
+kube-system     helm-install-traefik-mssxc                    0/1     Completed          1          152m
+kube-system     local-path-provisioner-5d9d9885bc-w9xkx       1/1     Running            0          152m
+kube-system     metrics-server-786d997795-dhrzd               1/1     Running            0          152m
+kube-system     svclb-traefik-b1c5483d-fl65m                  2/2     Running            0          149m
+kube-system     traefik-9bcdbbd9-9b6gj                        1/1     Running            0          149m
+vigie           mlflow-78d9c75bb9-974k6                       1/1     Running            0          58m
+vigie           prometheus-6948b58765-84xgp                   1/1     Running            0          58m
+vigie           qdrant-0                                      1/1     Running            0          103m
+vigie           qdrant-snapshot-proof-fgwfs                   0/1     Completed          1          2m16s
+vigie           vigie-api-5546d847b4-pztth                    0/1     ImagePullBackOff   0          58m
+vigie           vigie-api-598bf6498c-mqm46                    0/1     ImagePullBackOff   0          98m
+vigie           vigie-ingest-f8m66                            0/1     ImagePullBackOff   0          10m
+vigie           vigie-web-5f8b68bf9b-zxcj6                    1/1     Running            0          92m
+exit code: 0
+
+$ kubectl -n vigie top pod
+NAME                          CPU(cores)   MEMORY(bytes)
+mlflow-78d9c75bb9-974k6       5m           341Mi
+prometheus-6948b58765-84xgp   12m          46Mi
+qdrant-0                      3m           39Mi
+vigie-web-5f8b68bf9b-zxcj6    1m           7Mi
+exit code: 0
+
+$ kubectl -n vigie get rollout,analysistemplate,hpa,traefikservice,ingressroute,middleware,networkpolicy,cronjob,job,pvc
+NAME                            DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+rollout.argoproj.io/vigie-api   1         2         1                        103m
+
+NAME                                        AGE
+analysistemplate.argoproj.io/vigie-canary   103m
+
+NAME                                            REFERENCE           TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+horizontalpodautoscaler.autoscaling/vigie-api   Rollout/vigie-api   cpu: <unknown>/70%   1         3         1          103m
+
+NAME                                           AGE
+traefikservice.traefik.io/vigie-api-weighted   103m
+
+NAME                            AGE
+ingressroute.traefik.io/vigie   103m
+
+NAME                                     AGE
+middleware.traefik.io/vigie-body-limit   103m
+middleware.traefik.io/vigie-headers      103m
+middleware.traefik.io/vigie-rate-limit   103m
+
+NAME                                              POD-SELECTOR                             AGE
+networkpolicy.networking.k8s.io/allow-dns         <none>                                   103m
+networkpolicy.networking.k8s.io/api               app.kubernetes.io/name=vigie-api         103m
+networkpolicy.networking.k8s.io/default-deny      <none>                                   103m
+networkpolicy.networking.k8s.io/ingest            app.kubernetes.io/name=vigie-ingest      103m
+networkpolicy.networking.k8s.io/ollama            app.kubernetes.io/name=ollama            103m
+networkpolicy.networking.k8s.io/ollama-pull       app.kubernetes.io/name=ollama-pull       103m
+networkpolicy.networking.k8s.io/prometheus        app.kubernetes.io/name=prometheus        103m
+networkpolicy.networking.k8s.io/qdrant            app.kubernetes.io/name=qdrant            103m
+networkpolicy.networking.k8s.io/qdrant-snapshot   app.kubernetes.io/name=qdrant-snapshot   103m
+networkpolicy.networking.k8s.io/web               app.kubernetes.io/name=vigie-web         103m
+
+NAME                            SCHEDULE     TIMEZONE       SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+cronjob.batch/qdrant-snapshot   17 3 * * *   Europe/Paris   False     0        <none>          103m
+
+NAME                              STATUS     COMPLETIONS   DURATION   AGE
+job.batch/qdrant-snapshot-proof   Complete   1/1           7s         2m21s
+job.batch/vigie-ingest            Running    0/1           10m        10m
+
+NAME                                     STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/mlflow-data        Bound     pvc-7a7b204c-21b9-4594-aa8f-5a6cd23abf3b   2Gi        RWO            local-path     <unset>                 103m
+persistentvolumeclaim/ollama-models      Pending                                                                        local-path     <unset>                 103m
+persistentvolumeclaim/storage-qdrant-0   Bound     pvc-f819d516-3540-4aee-9065-34a7213505f8   2Gi        RWO            local-path     <unset>                 103m
+persistentvolumeclaim/vigie-api-data     Bound     pvc-41aa51f9-c166-4cf2-94a0-c05e714c03a6   1Gi        RWO            local-path     <unset>                 103m
+exit code: 0
+
+$ kubectl argo rollouts get rollout vigie-api -n vigie
+Name:            vigie-api
+Namespace:       vigie
+Status:          ✖ Degraded
+Message:         ProgressDeadlineExceeded: ReplicaSet "vigie-api-5546d847b4" has timed out progressing.
+Strategy:        Canary
+  Step:          0/8
+  SetWeight:     0
+  ActualWeight:  0
+Images:          ghcr.io/adam-blf/vigie-api:dev (canary, stable)
+Replicas:
+  Desired:       1
+  Current:       2
+  Updated:       1
+  Ready:         0
+  Available:     0
+
+NAME                                   KIND        STATUS              AGE   INFO
+⟳ vigie-api                            Rollout     ✖ Degraded          103m
+├──# revision:2
+│  └──⧉ vigie-api-5546d847b4           ReplicaSet  ◌ Progressing       58m   canary
+│     └──□ vigie-api-5546d847b4-pztth  Pod         ⚠ ImagePullBackOff  58m   ready:0/1
+└──# revision:1
+   └──⧉ vigie-api-598bf6498c           ReplicaSet  ◌ Progressing       98m   stable
+      └──□ vigie-api-598bf6498c-mqm46  Pod         ⚠ ImagePullBackOff  98m   ready:0/1
+exit code: 0
+
+$ argo-rollouts controller args
+["--traefik-api-group=traefik.io","--traefik-api-version=traefik.io/v1alpha1"]exit code: 0
+
+$ deploy/vigie-web -> http://qdrant:6333/readyz (expected refused)
+wget: can't connect to remote host (10.43.117.165): Connection refused
+command terminated with exit code 1
+exit code: 1
+
+$ deploy/vigie-web -> http://169.254.169.254/ (expected refused)
+wget: can't connect to remote host (169.254.169.254): Connection refused
+command terminated with exit code 1
+exit code: 1
+
+$ deploy/prometheus -> http://mlflow:5000/health (expected refused)
+wget: can't connect to remote host (10.43.29.119): Connection refused
+command terminated with exit code 1
+exit code: 1
+
+$ prometheus up series (allowed scrape)
+up{app="vigie-api", instance="10.42.0.30:9711", job="vigie-pods", pod="vigie-api-5546d847b4-pztth", rollouts_pod_template_hash="5546d847b4"} => 0 @[1790957239.567]
+up{app="prometheus", instance="10.42.0.31:9090", job="vigie-pods", pod="prometheus-6948b58765-84xgp"} => 1 @[1790957239.567]
+up{app="vigie-api", instance="10.42.0.22:9711", job="vigie-pods", pod="vigie-api-598bf6498c-mqm46", rollouts_pod_template_hash="598bf6498c"} => 0 @[1790957239.567]
+exit code: 0
+
+$ GET http://127.0.0.1:4780/ through Traefik
+status 200 {'X-Frame-Options': 'DENY', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer'}
+
+$ GET http://127.0.0.1:4780/v1/ask through Traefik
+status 503
+
+$ GET qdrant /collections without api-key
+status 401
+
+$ GET qdrant /collections with api-key from the Secret
+status 200 {}
+
+$ create job from cronjob/qdrant-snapshot
+job.batch/qdrant-snapshot-proof created
+exit code: 0
+
+$ wait for completion
+job.batch/qdrant-snapshot-proof condition met
+exit code: 0
+
+$ snapshot job logs
+snapshot full-snapshot-2026-10-02-16-07-34.snapshot created
+no vigie-backup secret, snapshot kept in Qdrant only
+exit code: 0

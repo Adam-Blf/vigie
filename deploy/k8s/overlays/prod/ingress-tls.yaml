@@ -1,0 +1,27 @@
+# Same routes as the base, bound to the public host and served on HTTPS only. The host
+# below is overwritten by the replacement declared in kustomization.yaml.
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: vigie
+spec:
+  entryPoints: [websecure]
+  routes:
+    - kind: Rule
+      match: Host(`public-host`) && PathPrefix(`/v1`)
+      middlewares:
+        - name: vigie-rate-limit
+        - name: vigie-body-limit
+        - name: vigie-headers
+      services:
+        - kind: TraefikService
+          name: vigie-api-weighted
+    - kind: Rule
+      match: Host(`public-host`) && PathPrefix(`/`)
+      middlewares:
+        - name: vigie-headers
+      services:
+        - name: vigie-web
+          port: 8080
+  tls:
+    certResolver: letsencrypt

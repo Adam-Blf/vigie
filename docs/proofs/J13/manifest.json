@@ -1,0 +1,45 @@
+{
+  "milestone": "J13 Kubernetes manifests",
+  "branch": "feat/k8s",
+  "commit": "19c8c5d53a48203ed5e0d821e46f53e228dadb2a",
+  "date": "2026-10-02T16:05:11Z",
+  "status": "PARTIEL",
+  "commands": {
+    "render_validate_budget": "python tasks.py k8s-validate (kustomize and kubeconform on PATH)",
+    "budget_red": "python -m vigie.deploy prod-red.yaml system-red.yaml (Flux limits at 160Mi, before the fix)",
+    "k3d_cluster": "k3d cluster create vigie-dev --image rancher/k3s:v1.35.5-k3s1 --api-port 127.0.0.1:6550 -p 127.0.0.1:4780:80@loadbalancer --wait",
+    "apply_system": "kubectl apply --server-side -f build/k8s/system.yaml",
+    "apply_dev": "kubectl apply --server-side -f build/k8s/overlays-dev.yaml",
+    "dry_run_prod": "kubectl apply --server-side --dry-run=server -f build/k8s/overlays-prod.yaml (same for prod-loadtest and cd)",
+    "promql": "python build/promql_check.py <kubeconfig> <pod-template-hash> (promtool query instant inside the Prometheus pod)",
+    "cluster_checks": "python build/cluster_proof.py <kubeconfig> <kubectl-argo-rollouts>",
+    "tests": "python tasks.py check"
+  },
+  "outputs": {
+    "k8s-validate.txt": "kubeconform on 5 layers: 190 resources, 170 valid, 0 invalid, 0 errors, 20 upstream CRDs skipped; budget OK (requests 8029 Mi, limits 10445 Mi, CPU 1465 m)",
+    "budget-red.txt": "same check failing on a real overshoot found during development (limits 10829 Mi > 10752 Mi), exit code 1",
+    "rendered/": "kustomize output of dev, prod, prod-loadtest and cd; system output is upstream-sized, its SHA-256 is kept instead",
+    "dryrun-server-*.txt": "server-side dry run of prod, prod-loadtest and cd on k3s v1.35.5 with Pod Security restricted enforced",
+    "promql-check.txt": "the three AnalysisTemplate queries parsed and evaluated by Prometheus v3.15.0 (empty vector, hence inconclusive, with no API traffic)",
+    "k3d-dev-cluster.txt": "dev overlay applied: pods, Rollout tree, HPA, controller Traefik args, NetworkPolicy refusals, Traefik route with security headers, Qdrant 401 without key and 200 with it, snapshot CronJob run"
+  },
+  "findings_fixed_on_the_cluster": [
+    "MLflow 3 OOM-killed at 512 Mi and 768 Mi because of one job worker per CPU (1.6 GiB measured); fixed with MLFLOW_SERVER_ENABLE_JOB_EXECUTION=false, 341 Mi measured after",
+    "MLflow 3 rejects non-localhost Host headers; probes send Host: localhost",
+    "Job templates are immutable, which blocked the apply of a new overlay; Jobs now carry kustomize.toolkit.fluxcd.io/force: Enabled"
+  ],
+  "tools": {
+    "kustomize": "v5.8.2",
+    "kubeconform": "v0.8.0",
+    "crds_catalog_commit": "d373c2da9702bc9509a004db83e57263fe3bdfc1",
+    "k3d": "v5.9.0",
+    "k3s": "v1.35.5+k3s1",
+    "traefik": "3.6.13 (chart 39.0.7)",
+    "kubectl": "v1.34.1",
+    "kubectl-argo-rollouts": "v1.10.0",
+    "argo_rollouts": "v1.10.0",
+    "flux": "v2.9.6",
+    "docker": "29.4.0",
+    "python": "3.12.13"
+  }
+}

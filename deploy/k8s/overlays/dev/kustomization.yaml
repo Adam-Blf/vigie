@@ -1,0 +1,39 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Local k3d cluster. Images carry the `dev` tag and are loaded with
+#   k3d image import ghcr.io/adam-blf/vigie-api:dev ghcr.io/adam-blf/vigie-web:dev -c vigie-dev
+# The fake LLM replaces Ollama, which would need 3 GB a laptop cluster does not spare.
+resources:
+  - ../../base
+
+images:
+  - name: ghcr.io/adam-blf/vigie-api
+    newTag: dev
+  - name: ghcr.io/adam-blf/vigie-web
+    newTag: dev
+
+configMapGenerator:
+  - name: vigie-bundle
+    behavior: merge
+    literals:
+      - VIGIE_BUNDLE_VERSION=dev
+      - VIGIE_LLM_PROVIDER=fake
+
+patches:
+  - target:
+      kind: Deployment
+      name: ollama
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 0
+  - target:
+      kind: Job
+      name: ollama-pull
+    patch: |-
+      $patch: delete
+      apiVersion: batch/v1
+      kind: Job
+      metadata:
+        name: ollama-pull

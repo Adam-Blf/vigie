@@ -1,0 +1,16 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: vigie
+spec:
+  interval: 1m
+  url: ssh://git@github.com/Adam-Blf/vigie
+  ref:
+    branch: main
+  secretRef:
+    name: vigie-git
+  # Only the deployment manifests matter to the cluster; ignoring the rest keeps the
+  # artifact small and avoids a reconcile on every documentation commit.
+  ignore: |
+    /*
+    !/deploy/k8s/

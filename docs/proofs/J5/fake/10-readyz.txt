@@ -1,0 +1,20 @@
+$ curl http://127.0.0.1:8717/readyz
+HTTP/1.1 200 OK
+date: Tue, 06 Oct 2026 10:08:12 GMT
+content-length: 57
+content-type: application/json
+vary: Origin
+x-content-type-options: nosniff
+referrer-policy: no-referrer
+x-frame-options: DENY
+content-security-policy: default-src 'none'; frame-ancestors 'none'
+cross-origin-opener-policy: same-origin
+cross-origin-resource-policy: same-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+cache-control: no-store
+x-trace-id: 5d2cf00b634e49f7a16c9ba4705dd17c
+x-app-version: 0.12.0
+x-bundle-version: j5-proof-fake
+x-prompt-version: v2
+
+{"status":"ready","checks":{"retriever":true,"llm":true}}
