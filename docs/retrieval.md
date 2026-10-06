@@ -99,7 +99,9 @@ Résultats du 6 octobre 2026 (preuves dans `docs/proofs/J2/`), 47 questions `dev
 | RRF, k = 60 (retenu) | 0,638 | 0,486 |
 
 Le seuil de `eval/thresholds.yaml` (recall@5 au moins 0,80, MRR au moins 0,60, mesurés sur
-`test`) n'est pas atteint sur `dev`. Un découpage plus fin des articles (200 mots) a été
-essayé et rejeté : recall@5 0,489. Les pistes suivantes relèvent du jalon J8 : le modèle
+`test`) n'est pas atteint sur `dev`, et le jalon J2 est noté `PARTIEL`. Trois essais ont
+été menés, tous sur `dev` : la profondeur de prefetch (10, 20, 50, 100 candidats) ne change
+pas le recall ; la constante RRF passée à 60 l'améliore et a été retenue ; un découpage plus
+fin des articles (200 mots) le dégrade (0,489) et a été rejeté. Les pistes suivantes relèvent du jalon J8 : le modèle
 dense plus fort `intfloat/multilingual-e5-large` prévu par le brief, et un découpage qui
 tienne dans les 512 jetons lus par le modèle dense.
