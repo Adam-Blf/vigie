@@ -209,7 +209,9 @@ test("history survives a reload and the new conversation button clears it", asyn
   await mockAsk(page, streamOf(fixture("dora-register")));
   await page.goto("/");
   await ask(page, "Contrats TIC ?");
-  await expect(page.locator(".bubble-answer")).toHaveCount(1);
+  // The pending bubble shares the answer class and pending turns are never saved, so reload
+  // only once the streamed answer has settled, otherwise the history is legitimately empty.
+  await expect(page.locator(".bubble-answer:not(.bubble-pending)")).toHaveCount(1);
   await page.reload();
   await expect(page.locator(".bubble-question")).toContainText("Contrats TIC ?");
   await page.getByRole("button", { name: "Nouvelle conversation" }).click();
