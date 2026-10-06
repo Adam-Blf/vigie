@@ -41,6 +41,20 @@ quantization:
   max_recall_drop: 0.02
   max_size_ratio: 0.5
 
+# Dense embedding choice, decided on 2026-10-07 and written before the e5-base int8 measurement
+# (per-channel export). e5-base int8 becomes the deployed model only if, on the dev split,
+# recall@5 and MRR reach the retrieval floors above, parity with PyTorch stays under
+# max_parity_gap, the file is at most max_size_ratio of the fp32 one, and one API pod stays
+# under max_pod_rss_mib (brief 11.7: 8.5 GB of requests minus 5.65 GB of fixed components,
+# shared by 3 API pods). The test split is measured once, only after dev clears.
+dense_embedding:
+  model: intfloat/multilingual-e5-base
+  variant: int8
+  split: dev
+  max_parity_gap: 0.0001
+  max_size_ratio: 0.5
+  max_pod_rss_mib: 950
+
 bootstrap:
   draws: 1000
   seed: 20261002
