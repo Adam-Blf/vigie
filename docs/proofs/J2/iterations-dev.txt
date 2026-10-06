@@ -1,0 +1,11 @@
+dense only                   recall@5=0.5319 mrr=0.4222
+bm25 only                    recall@5=0.3617 mrr=0.2921
+hybrid rrf prefetch=10       recall@5=0.5745 mrr=0.4344
+hybrid rrf prefetch=20       recall@5=0.5745 mrr=0.4350
+hybrid rrf prefetch=50       recall@5=0.5745 mrr=0.4303
+hybrid rrf prefetch=100      recall@5=0.5745 mrr=0.4279
+rrf k=2 w=[2.0, 1.0]         recall@5=0.5745 mrr=0.4437
+rrf k=2 w=[3.0, 1.0]         recall@5=0.5745 mrr=0.4493
+rrf k=10 w=[1.0, 1.0]        recall@5=0.6170 mrr=0.4752
+rrf k=60 w=[1.0, 1.0]        recall@5=0.6383 mrr=0.4863
+rrf k=60 w=[2.0, 1.0]        recall@5=0.6170 mrr=0.4739

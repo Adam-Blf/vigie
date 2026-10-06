@@ -1,0 +1,5 @@
+collection   vigie_paraphrase-multilingual-minilm-l12-v2-f692d1_5abe72f5
+chunks read  511
+embedded     511
+points       511
+elapsed      147.1 s

@@ -3,10 +3,12 @@ import json
 from pathlib import Path
 
 import pytest
+from tests.retrieval_fixtures import FakeEmbedder, indexed_settings
 
 from vigie.config import get_settings
 from vigie.rag.cli import main
 from vigie.rag.static_retriever import StaticRetriever
+from vigie.retrieval import factory
 
 FIXTURE = Path(__file__).parent / "fixtures" / "dora_art28_passages.json"
 
@@ -43,6 +45,28 @@ def test_cli_streams_then_prints_the_validated_answer(monkeypatch: pytest.Monkey
         "[DORA art. 28 §3]",
         "[DORA art. 28 §4]",
     }
+
+
+def test_cli_without_passages_retrieves_from_qdrant(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    settings = indexed_settings(tmp_path)
+    monkeypatch.setenv("VIGIE_LLM_PROVIDER", "fake")
+    monkeypatch.setenv("VIGIE_QDRANT_PATH", str(settings.qdrant_path))
+    monkeypatch.setenv("VIGIE_CORPUS_DIR", str(settings.corpus_dir))
+    monkeypatch.setattr(factory.FastEmbedEmbedder, "from_settings", lambda s: FakeEmbedder())
+    get_settings.cache_clear()
+    out, live = io.StringIO(), io.StringIO()
+    try:
+        code = main(["Que dit l'article 28 de DORA ?"], out, live)
+    finally:
+        get_settings.cache_clear()
+
+    assert code == 0
+    report = json.loads(out.getvalue())
+    assert report["refused"] is False
+    assert report["sources"][0]["eid"] == "art_28.par_1"
+    assert "[DORA art. 28 §1]" in {c["label"] for c in report["citations"]}
 
 
 def test_usage_names_the_module_command(capsys: pytest.CaptureFixture[str]) -> None:

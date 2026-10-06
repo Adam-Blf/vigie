@@ -1,0 +1,26 @@
+# Flux rewrites the image tags marked with `$imagepolicy` in the prod overlay and
+# pushes the change to its own branch, never to main: the update reaches main through
+# a pull request like any other commit, so history and review rules stay the same.
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageUpdateAutomation
+metadata:
+  name: vigie
+spec:
+  interval: 10m
+  sourceRef:
+    kind: GitRepository
+    name: vigie
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        name: vigie-flux
+        email: vigie-flux@users.noreply.github.com
+      messageTemplate: "chore(deploy): update images in the prod overlay"
+    push:
+      branch: flux/image-updates
+  update:
+    path: ./deploy/k8s/overlays/prod
+    strategy: Setters

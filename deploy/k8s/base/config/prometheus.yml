@@ -1,0 +1,30 @@
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+scrape_configs:
+  # Only pods that opt in with prometheus.io/scrape, in this namespace only.
+  - job_name: vigie-pods
+    kubernetes_sd_configs:
+      - role: pod
+        namespaces:
+          names: [vigie]
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: "true"
+      - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+        action: replace
+        regex: ([^:]+)(?::\d+)?;(\d+)
+        replacement: $1:$2
+        target_label: __address__
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+        action: replace
+        regex: (.+)
+        target_label: __metrics_path__
+      # The canary analysis tells canary from stable pods by this hash.
+      - source_labels: [__meta_kubernetes_pod_label_rollouts_pod_template_hash]
+        target_label: rollouts_pod_template_hash
+      - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+        target_label: app
+      - source_labels: [__meta_kubernetes_pod_name]
+        target_label: pod

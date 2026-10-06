@@ -1,0 +1,27 @@
++ kustomize build overlays/dev > .\build\k8s\overlays-dev.yaml
++ kustomize build overlays/prod > .\build\k8s\overlays-prod.yaml
++ kustomize build overlays/prod-loadtest > .\build\k8s\overlays-prod-loadtest.yaml
++ kustomize build system > .\build\k8s\system.yaml
++ kustomize build cd > .\build\k8s\cd.yaml
++ kubeconform -strict -summary -output text -kubernetes-version 1.35.0 -skip CustomResourceDefinition -schema-location default -schema-location https://raw.githubusercontent.com/datreeio/CRDs-catalog/d373c2da9702bc9509a004db83e57263fe3bdfc1/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json .\build\k8s\overlays-dev.yaml .\build\k8s\overlays-prod.yaml .\build\k8s\overlays-prod-loadtest.yaml .\build\k8s\system.yaml .\build\k8s\cd.yaml
+Summary: 190 resources found in 5 files - Valid: 170, Invalid: 0, Errors: 0, Skipped: 20
++ .\.venv\Scripts\python.exe -m vigie.deploy .\build\k8s\overlays-prod.yaml .\build\k8s\system.yaml
+workload                                             pods   req Mi   lim Mi   cpu m
+vigie/Deployment/ollama                                 1     3072     3584     500
+vigie/Rollout/vigie-api                                 4     2048     2560     400
+vigie/Job/vigie-ingest                                  1      512      768     200
+vigie/Deployment/mlflow                                 1      384      640      50
+vigie/Deployment/prometheus                             1      256      384      50
+vigie/StatefulSet/qdrant                                1      256      512     100
+argo-rollouts/Deployment/argo-rollouts                  1       48      128      25
+flux-system/Deployment/image-automation-controller      1       40      128      25
+flux-system/Deployment/image-reflector-controller       1       40      128      25
+flux-system/Deployment/kustomize-controller             1       40      128      25
+flux-system/Deployment/source-controller                1       40      128      25
+vigie/Deployment/vigie-web                              1       32       64      20
+vigie/CronJob/qdrant-snapshot                           1       16       32      10
+vigie/Job/ollama-pull                                   1       16       32      10
+k3s system reserve                                            1229
+total                                                         8029    10445    1465
+budget                                                        8704    10752    1800
+OK

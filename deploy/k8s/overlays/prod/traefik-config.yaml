@@ -1,0 +1,31 @@
+# Values for the Traefik chart that k3s installs (chart 39, Traefik 3.6 with k3s
+# v1.35). k3s merges them into its own HelmChart, so Traefik stays managed by k3s.
+# The ACME account and certificates go to a small persistent volume: without it every
+# restart would request new certificates and hit the Let's Encrypt rate limits.
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    ports:
+      web:
+        http:
+          redirections:
+            entryPoint:
+              to: websecure
+              scheme: https
+              permanent: true
+    certificatesResolvers:
+      letsencrypt:
+        acme:
+          storage: /data/acme.json
+          httpChallenge:
+            entryPoint: web
+    persistence:
+      enabled: true
+      size: 128Mi
+    logs:
+      access:
+        enabled: true

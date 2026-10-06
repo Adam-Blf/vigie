@@ -5,6 +5,7 @@ Usage: python tasks.py <task> [args...]
 
 from __future__ import annotations
 
+import shutil
 import subprocess
 import sys
 from collections.abc import Callable, Sequence
@@ -101,6 +102,85 @@ def load_local(args: Sequence[str]) -> int:
             str(out / "load"),
             *args,
         )
+    )
+
+
+@task
+def redteam(args: Sequence[str]) -> int:
+    # Replays redteam/attacks.generated.yaml against the API named by VIGIE_REDTEAM_BASE_URL,
+    # then lets score.py decide. promptfoo exits 100 as soon as one attack gets through, which
+    # is expected below the 5 % gate, so only other codes stop the task here.
+    bin_dir = ROOT / "redteam" / "node_modules" / ".bin"
+    promptfoo = shutil.which("promptfoo", path=str(bin_dir))
+    if promptfoo is None:
+        print("promptfoo missing: run `npm ci` in redteam/ first", file=sys.stderr)
+        return 2
+    results = "redteam/results.json"
+    replay = [promptfoo, "eval", "-c", "redteam/replay.yaml", "-o", results]
+    code = run([*replay, "--no-cache", "--no-share"])
+    if code not in (0, 100):
+        return code
+    return run([sys.executable, "redteam/score.py", results, *args])
+
+
+@task
+def infra_retry(_: Sequence[str]) -> int:
+    # Lazy import: the other tasks must keep working in an environment without the package.
+    from vigie.infra.retry import main as retry_main
+
+    return retry_main(ROOT)
+
+
+# Kubernetes API version of k3s v1.35 (deploy/versions.env), for the core schemas.
+K8S_SCHEMA_VERSION = "1.35.0"
+K8S_LAYERS = ("overlays/dev", "overlays/prod", "overlays/prod-loadtest", "system", "cd")
+CRDS_CATALOG = (
+    "https://raw.githubusercontent.com/datreeio/CRDs-catalog/"
+    "d373c2da9702bc9509a004db83e57263fe3bdfc1/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
+)
+
+
+@task
+def k8s_validate(args: Sequence[str]) -> int:
+    """Render every kustomize layer, validate it, then check the node budget.
+
+    Needs kustomize and kubeconform on PATH. Usage: k8s-validate [output dir].
+    """
+    out = Path(args[0]) if args else ROOT / "build" / "k8s"
+    out.mkdir(parents=True, exist_ok=True)
+    rendered = {}
+    for layer in K8S_LAYERS:
+        target = out / (layer.replace("/", "-") + ".yaml")
+        print("+ kustomize build", layer, ">", target, flush=True)
+        build = subprocess.run(  # noqa: S603 - fixed command, layer from a constant
+            ["kustomize", "build", str(ROOT / "deploy" / "k8s" / layer)],  # noqa: S607
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if build.returncode:
+            print(build.stderr)
+            return build.returncode
+        target.write_text(build.stdout, encoding="utf-8")
+        rendered[layer] = str(target)
+    schemas = ["-schema-location", "default", "-schema-location", CRDS_CATALOG]
+    # CustomResourceDefinitions come verbatim from the pinned Argo Rollouts and Flux
+    # releases and no schema catalog covers the CRD kind itself; the resources built on
+    # them (Rollout, ImagePolicy, IngressRoute...) are validated against the catalog.
+    validate = [
+        "kubeconform",
+        "-strict",
+        "-summary",
+        "-output",
+        "text",
+        "-kubernetes-version",
+        K8S_SCHEMA_VERSION,
+        "-skip",
+        "CustomResourceDefinition",
+        *schemas,
+    ]
+    return run([*validate, *rendered.values()]) or run(
+        py("vigie.deploy", rendered["overlays/prod"], rendered["system"])
     )
 
 
