@@ -1,0 +1,37 @@
+regulation  category      lang  split  count
+AIACT       in_scope      en    dev    3
+AIACT       in_scope      en    test   2
+AIACT       in_scope      fr    dev    7
+AIACT       in_scope      fr    test   3
+AIACT       trap          en    dev    1
+AIACT       trap          fr    dev    1
+AIACT       trap          fr    test   1
+AMLR        in_scope      en    dev    3
+AMLR        in_scope      en    test   1
+AMLR        in_scope      fr    dev    7
+AMLR        in_scope      fr    test   4
+AMLR        trap          fr    dev    1
+AMLR        trap          fr    test   1
+DORA        in_scope      en    dev    3
+DORA        in_scope      en    test   2
+DORA        in_scope      fr    dev    7
+DORA        in_scope      fr    test   3
+DORA        trap          en    dev    1
+DORA        trap          fr    dev    1
+DORA        trap          fr    test   1
+RGPD        in_scope      en    dev    3
+RGPD        in_scope      en    test   1
+RGPD        in_scope      fr    dev    7
+RGPD        in_scope      fr    test   4
+RGPD        trap          en    dev    1
+RGPD        trap          fr    dev    1
+none        out_of_scope  en    dev    2
+none        out_of_scope  en    test   1
+none        out_of_scope  fr    dev    5
+none        out_of_scope  fr    test   2
+
+regulation {'AIACT': 18, 'AMLR': 17, 'DORA': 18, 'RGPD': 17, 'none': 10}
+lang {'en': 24, 'fr': 56}
+category {'in_scope': 60, 'out_of_scope': 10, 'trap': 10}
+split {'dev': 54, 'test': 26}
+french share: 56/80 = 70.0%

@@ -1,0 +1,53 @@
+# Evaluation floors, written on 2026-10-02 before the first measurement.
+#
+# These numbers come from the project brief (section 11.3), not from a run. Lowering one is
+# a decision of the project owner recorded in an ADR, never a fix for a red gate. Published
+# figures are computed on the sealed test split only (data/golden/test.sha256).
+
+version: 1
+split: test
+
+retrieval:
+  k: 5
+  recall_at_k_min: 0.80
+  mrr_min: 0.60
+
+citations:
+  # Citations left in the final answer that point outside the retrieved passages.
+  invented_in_final_answer_max: 0
+  precision_min: 0.85
+  coverage_min: 0.80
+
+refusal:
+  # At least 9 correct refusals out of 10 out-of-scope questions. Measured on all 10
+  # out-of-scope rows, dev and test, not on the test split alone (see data/golden/README.md).
+  correct_refusal_rate_min: 0.90
+
+# Relative gate, added on top of the floors: compared with the current champion, recall@k
+# and raw citation validity may not drop by more than this many points (0.02 = 2 points).
+regression:
+  max_drop: 0.02
+  metrics:
+    - recall_at_k
+    - raw_citation_validity
+
+bootstrap:
+  draws: 1000
+  seed: 20261002
+  confidence: 0.95
+
+# Load test thresholds (J11), written before the first real measurement. They come from
+# the local load targets of the project brief, not from a run. The runtime reads them
+# through Settings (VIGIE_LOAD_*), whose defaults must stay equal to the values below:
+# tests/loadtest/test_load_thresholds_file.py fails the build when they drift.
+load:
+  # p95 of POST /v1/ask on the answering path, attacks excluded. Strictly below.
+  p95_ms: 500
+  # Failed requests over all requests, attacks included. Strictly below.
+  max_error_ratio: 0.01
+  # Injections the input guard let through, over judged attacks. At most. Complement of
+  # the 0.90 guard recall floor.
+  max_attack_leak_ratio: 0.10
+  # Users allowed against any host that is not this machine. A code constant, not a
+  # setting: see src/vigie/loadtest/guard.py.
+  remote_max_users: 8
