@@ -69,6 +69,41 @@ def check(args: Sequence[str]) -> int:
     return 0
 
 
+@task
+def load_local(args: Sequence[str]) -> int:
+    """Local load protocol: 20 users for 5 minutes, report in results/load/.
+
+    The API must run on this machine with VIGIE_LLM_PROVIDER=fake. Extra arguments are
+    passed to Locust after the defaults, so they win (for example -t 30s for a dry run).
+    """
+    from vigie.config import get_settings  # lazy: other tasks must work before install
+
+    out = ROOT / "results" / "load"
+    out.mkdir(parents=True, exist_ok=True)
+    host = f"http://127.0.0.1:{get_settings().port}"
+    return run(
+        py(
+            "locust",
+            "-f",
+            "load/locustfile.py",
+            "--headless",
+            "-u",
+            "20",
+            "-r",
+            "4",
+            "-t",
+            "5m",
+            "--host",
+            host,
+            "--html",
+            str(out / "report.html"),
+            "--csv",
+            str(out / "load"),
+            *args,
+        )
+    )
+
+
 # The project bans these characters everywhere. The dashes and the middle dot are a house
 # style rule; the invisible ones are worse, they silently break grep, slugs and links.
 # Code points rather than literals: writing them in the source would make this file fail

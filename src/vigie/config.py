@@ -90,6 +90,13 @@ class Settings(BaseSettings):
     guard_input_threshold: float = 0.5
     guard_enabled: bool = True
 
+    # Load test (J11). The thresholds are written in eval/thresholds.yaml (section load);
+    # these defaults must stay equal to it, which tests/loadtest enforces.
+    load_token: SecretStr | None = None
+    load_p95_ms: float = Field(default=500.0, gt=0)
+    load_max_error_ratio: float = Field(default=0.01, ge=0.0, le=1.0)
+    load_max_attack_leak_ratio: float = Field(default=0.10, ge=0.0, le=1.0)
+
     # Drift. The defaults were calibrated on the multilingual MiniLM model: in-scope
     # questions sit above 0.3 of similarity to the nearest corpus centroid, off-topic
     # ones around 0, so 0.3 leaves room on both sides.
