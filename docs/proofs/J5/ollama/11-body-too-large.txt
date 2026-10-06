@@ -1,0 +1,19 @@
+$ curl -X POST http://127.0.0.1:8718/v1/ask -H Content-Type: application/json -H Authorization: Bearer vig_[REDACTED] --data-binary @results/j5/big.txt
+HTTP/1.1 413 Request Entity Too Large
+date: Tue, 06 Oct 2026 10:13:53 GMT
+content-type: application/json
+content-length: 78
+x-content-type-options: nosniff
+referrer-policy: no-referrer
+x-frame-options: DENY
+content-security-policy: default-src 'none'; frame-ancestors 'none'
+cross-origin-opener-policy: same-origin
+cross-origin-resource-policy: same-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+cache-control: no-store
+x-trace-id: 3f0410c2e17e40c6aa571501b9a50389
+x-app-version: 0.12.0
+x-bundle-version: j5-proof-ollama
+x-prompt-version: v2
+
+{"error": "payload_too_large", "trace_id": "3f0410c2e17e40c6aa571501b9a50389"}

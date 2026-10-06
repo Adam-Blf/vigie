@@ -1,0 +1,38 @@
+All checks passed!
+Name                                     Stmts   Miss Branch BrPart  Cover   Missing
+------------------------------------------------------------------------------------
+src\vigie\api\__main__.py                   22      1      2      1    92%   44
+src\vigie\api\app.py                        29      0      2      0   100%
+src\vigie\api\audit.py                      88      0     18      1    99%   73->71
+src\vigie\api\audit_cli.py                  25      1      6      1    94%   43
+src\vigie\api\auth.py                       76      0      8      0   100%
+src\vigie\api\bundle.py                     38      0      6      0   100%
+src\vigie\api\contract.py                   26      1      6      1    94%   46
+src\vigie\api\db.py                         20      0      0      0   100%
+src\vigie\api\deps.py                       32      0     10      0   100%
+src\vigie\api\errors.py                     45      0      0      0   100%
+src\vigie\api\factory.py                    19      0      0      0   100%
+src\vigie\api\metrics.py                    19      0      0      0   100%
+src\vigie\api\middleware.py                 85      1     22      2    97%   106, 112->103
+src\vigie\api\probes.py                     26      0      6      0   100%
+src\vigie\api\ratelimit.py                  23      0      4      0   100%
+src\vigie\api\redaction.py                  26      0     10      0   100%
+src\vigie\api\routes.py                     62      0      6      0   100%
+src\vigie\api\schemas.py                    54      0      0      0   100%
+src\vigie\api\service.py                   105      0     12      0   100%
+src\vigie\api\state.py                      33      0      0      0   100%
+src\vigie\api\tokens.py                     45      1     12      1    96%   71
+src\vigie\api\usage.py                      56      0      0      0   100%
+src\vigie\guard\base.py                     17      0      4      0   100%
+src\vigie\guard\chain.py                    25      0      6      0   100%
+src\vigie\guard\classifier.py               50      0      6      0   100%
+src\vigie\guard\factory.py                   9      0      2      0   100%
+src\vigie\guard\lang.py                     14      0      0      0   100%
+src\vigie\guard\measure.py                  85      1      4      1    98%   153
+src\vigie\guard\normalize.py                56      1     10      1    97%   60
+src\vigie\guard\output.py                   19      0      2      0   100%
+src\vigie\guard\pii.py                      32      0      8      0   100%
+src\vigie\guard\prepare.py                  47      1      4      1    96%   91
+------------------------------------------------------------------------------------
+TOTAL                                     4453      9    856     13    99%
+749 passed, 2 deselected, 1 warning in 277.35s (0:04:37)

@@ -1,0 +1,3 @@
+id=9d713c9a9201 user=proof-user scope=user expires=2026-11-05T10:09:34.713955+00:00
+Copy the token now, it will not be shown again:
+vig_[REDACTED]

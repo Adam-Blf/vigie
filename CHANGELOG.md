@@ -6,7 +6,7 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
-## [0.14.0] - 2026-10-06
+## [0.15.0] - 2026-10-06
 
 ### Added
 
@@ -22,6 +22,34 @@ les notes reprennent la section correspondante.
   configuration Lighthouse CI.
 - Description de chaque écran dans `docs/design/screens.md` et preuves du jalon dans
   `docs/proofs/J6/`.
+
+## [0.14.0] - 2026-10-06
+
+### Added
+
+- API sécurisée du jalon J5 (`python -m vigie.api`, 127.0.0.1:8710) : `POST /v1/ask` et
+  sa version en flux SSE `POST /v1/ask/stream`, `GET /v1/usage/me`,
+  `GET /v1/admin/usage`, `GET /healthz`, `GET /readyz`, `GET /metrics`. Chaque réponse
+  porte `trace_id`, versions de l'application, du bundle et du prompt, modèle et latence.
+- Jetons `vig_` de 32 octets aléatoires, stockés hachés en SHA-256, valables 30 jours,
+  portée `user` ou `admin`, commandes `python -m vigie.api.tokens create`, `list`,
+  `revoke` et `rotate-admin` ; 401 identique pour un jeton absent, inconnu, expiré ou
+  révoqué, 403 pour un jeton `user` sur `/v1/admin/*`.
+- Suivi d'usage dans SQLite en mode WAL, une ligne par requête sans texte de question,
+  quota quotidien par jeton et limite par minute, tous deux avec `Retry-After`.
+- Journal d'audit AI Act en JSONL par pod, chaîné par hash, sans IP ni User-Agent, données
+  personnelles masquées, purge automatique à 30 jours, `python -m vigie.api.audit_cli
+  verify` et `purge`.
+- Filtre de rédaction des journaux (en-tête `Authorization`, jetons, champs `question`),
+  corps limité à 16 Ko, erreurs génériques avec `trace_id`, en-têtes de sécurité, CORS
+  restreint, coupe-circuit `VIGIE_MAINTENANCE`, créneaux de génération bornés (503 avec
+  `Retry-After`), compteur dédié aux erreurs du LLM, panne injectable par le bundle.
+- Bundle de version lu depuis un fichier (`VIGIE_BUNDLE_PATH`), jamais depuis MLflow ;
+  le démarrage échoue si sa version de prompt diffère de celle du code.
+- Contrat publié dans `docs/openapi.json` (`python -m vigie.api.contract`), vérifié par
+  un test ; documentation dans `docs/api.md`, réglages dans `.env.example`.
+- Preuves dans `docs/proofs/J5/` : appels `curl` réels avec le faux LLM et avec
+  Ministral 3B servi par Ollama, jetons masqués.
 
 ## [0.13.0] - 2026-10-06
 

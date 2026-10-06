@@ -1,0 +1,409 @@
+$ curl -N -X POST http://127.0.0.1:8717/v1/ask/stream -H Content-Type: application/json -H Authorization: Bearer vig_[REDACTED] --data-binary @results/j5/q.json
+HTTP/1.1 200 OK
+date: Tue, 06 Oct 2026 10:08:07 GMT
+x-accel-buffering: no
+content-type: text/event-stream; charset=utf-8
+vary: Origin
+x-content-type-options: nosniff
+referrer-policy: no-referrer
+x-frame-options: DENY
+content-security-policy: default-src 'none'; frame-ancestors 'none'
+cross-origin-opener-policy: same-origin
+cross-origin-resource-policy: same-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+cache-control: no-store
+x-trace-id: 70756fd169664118a0bb0ca9b6d919ec
+x-app-version: 0.12.0
+x-bundle-version: j5-proof-fake
+x-prompt-version: v2
+transfer-encoding: chunked
+
+event: delta
+data: {"text": "D'après"}
+
+event: delta
+data: {"text": " les"}
+
+event: delta
+data: {"text": " textes"}
+
+event: delta
+data: {"text": " indexés"}
+
+event: delta
+data: {"text": " :"}
+
+event: delta
+data: {"text": " Les"}
+
+event: delta
+data: {"text": " entités"}
+
+event: delta
+data: {"text": " financières"}
+
+event: delta
+data: {"text": " gèrent"}
+
+event: delta
+data: {"text": " les"}
+
+event: delta
+data: {"text": " risques"}
+
+event: delta
+data: {"text": " liés"}
+
+event: delta
+data: {"text": " aux"}
+
+event: delta
+data: {"text": " prestataires"}
+
+event: delta
+data: {"text": " tiers"}
+
+event: delta
+data: {"text": " de"}
+
+event: delta
+data: {"text": " services"}
+
+event: delta
+data: {"text": " TIC"}
+
+event: delta
+data: {"text": " en"}
+
+event: delta
+data: {"text": " tant"}
+
+event: delta
+data: {"text": " que"}
+
+event: delta
+data: {"text": " partie"}
+
+event: delta
+data: {"text": " intégrante"}
+
+event: delta
+data: {"text": " du"}
+
+event: delta
+data: {"text": " risque"}
+
+event: delta
+data: {"text": " lié"}
+
+event: delta
+data: {"text": " aux"}
+
+event: delta
+data: {"text": " TIC"}
+
+event: delta
+data: {"text": " dans"}
+
+event: delta
+data: {"text": " leur"}
+
+event: delta
+data: {"text": " cadre"}
+
+event: delta
+data: {"text": " de"}
+
+event: delta
+data: {"text": " gestion"}
+
+event: delta
+data: {"text": " du"}
+
+event: delta
+data: {"text": " risque"}
+
+event: delta
+data: {"text": " lié"}
+
+event: delta
+data: {"text": " aux"}
+
+event: delta
+data: {"text": " TIC"}
+
+event: delta
+data: {"text": " visé"}
+
+event: delta
+data: {"text": " à"}
+
+event: delta
+data: {"text": " l’article"}
+
+event: delta
+data: {"text": " 6,"}
+
+event: delta
+data: {"text": " paragraphe"}
+
+event: delta
+data: {"text": " 1,"}
+
+event: delta
+data: {"text": " et"}
+
+event: delta
+data: {"text": " conformément"}
+
+event: delta
+data: {"text": " aux"}
+
+event: delta
+data: {"text": " principes"}
+
+event: delta
+data: {"text": " suivants"}
+
+event: delta
+data: {"text": " [DORA"}
+
+event: delta
+data: {"text": " art."}
+
+event: delta
+data: {"text": " 28"}
+
+event: delta
+data: {"text": " §1]."}
+
+event: delta
+data: {"text": " Aux"}
+
+event: delta
+data: {"text": " fins"}
+
+event: delta
+data: {"text": " de"}
+
+event: delta
+data: {"text": " leur"}
+
+event: delta
+data: {"text": " cadre"}
+
+event: delta
+data: {"text": " de"}
+
+event: delta
+data: {"text": " gestion"}
+
+event: delta
+data: {"text": " du"}
+
+event: delta
+data: {"text": " risque"}
+
+event: delta
+data: {"text": " lié"}
+
+event: delta
+data: {"text": " aux"}
+
+event: delta
+data: {"text": " TIC,"}
+
+event: delta
+data: {"text": " les"}
+
+event: delta
+data: {"text": " entités"}
+
+event: delta
+data: {"text": " financières"}
+
+event: delta
+data: {"text": " tiennent"}
+
+event: delta
+data: {"text": " et"}
+
+event: delta
+data: {"text": " mettent"}
+
+event: delta
+data: {"text": " à"}
+
+event: delta
+data: {"text": " jour,"}
+
+event: delta
+data: {"text": " au"}
+
+event: delta
+data: {"text": " niveau"}
+
+event: delta
+data: {"text": " de"}
+
+event: delta
+data: {"text": " l’entité"}
+
+event: delta
+data: {"text": " et"}
+
+event: delta
+data: {"text": " aux"}
+
+event: delta
+data: {"text": " niveaux"}
+
+event: delta
+data: {"text": " sous-consolidé"}
+
+event: delta
+data: {"text": " et"}
+
+event: delta
+data: {"text": " consolidé,"}
+
+event: delta
+data: {"text": " un"}
+
+event: delta
+data: {"text": " registre"}
+
+event: delta
+data: {"text": " d’informations"}
+
+event: delta
+data: {"text": " en"}
+
+event: delta
+data: {"text": " rapport"}
+
+event: delta
+data: {"text": " avec"}
+
+event: delta
+data: {"text": " tous"}
+
+event: delta
+data: {"text": " les"}
+
+event: delta
+data: {"text": " accords"}
+
+event: delta
+data: {"text": " contractuels"}
+
+event: delta
+data: {"text": " portant"}
+
+event: delta
+data: {"text": " sur"}
+
+event: delta
+data: {"text": " l’utilisation"}
+
+event: delta
+data: {"text": " de"}
+
+event: delta
+data: {"text": " services"}
+
+event: delta
+data: {"text": " TIC"}
+
+event: delta
+data: {"text": " fournis"}
+
+event: delta
+data: {"text": " par"}
+
+event: delta
+data: {"text": " des"}
+
+event: delta
+data: {"text": " prestataires"}
+
+event: delta
+data: {"text": " tiers"}
+
+event: delta
+data: {"text": " de"}
+
+event: delta
+data: {"text": " services"}
+
+event: delta
+data: {"text": " TIC"}
+
+event: delta
+data: {"text": " [DORA"}
+
+event: delta
+data: {"text": " art."}
+
+event: delta
+data: {"text": " 28"}
+
+event: delta
+data: {"text": " §3]."}
+
+event: delta
+data: {"text": " Avant"}
+
+event: delta
+data: {"text": " de"}
+
+event: delta
+data: {"text": " conclure"}
+
+event: delta
+data: {"text": " un"}
+
+event: delta
+data: {"text": " accord"}
+
+event: delta
+data: {"text": " contractuel"}
+
+event: delta
+data: {"text": " sur"}
+
+event: delta
+data: {"text": " l’utilisation"}
+
+event: delta
+data: {"text": " de"}
+
+event: delta
+data: {"text": " services"}
+
+event: delta
+data: {"text": " TIC,"}
+
+event: delta
+data: {"text": " les"}
+
+event: delta
+data: {"text": " entités"}
+
+event: delta
+data: {"text": " financières"}
+
+event: delta
+data: {"text": " [DORA"}
+
+event: delta
+data: {"text": " art."}
+
+event: delta
+data: {"text": " 28"}
+
+event: delta
+data: {"text": " §4]."}
+
+event: answer
+data: {"answer": "D'après les textes indexés : Les entités financières gèrent les risques liés aux prestataires tiers de services TIC en tant que partie intégrante du risque lié aux TIC dans leur cadre de gestion du risque lié aux TIC visé à l’article 6, paragraphe 1, et conformément aux principes suivants [DORA art. 28 §1]. Aux fins de leur cadre de gestion du risque lié aux TIC, les entités financières tiennent et mettent à jour, au niveau de l’entité et aux niveaux sous-consolidé et consolidé, un registre d’informations en rapport avec tous les accords contractuels portant sur l’utilisation de services TIC fournis par des prestataires tiers de services TIC [DORA art. 28 §3]. Avant de conclure un accord contractuel sur l’utilisation de services TIC, les entités financières [DORA art. 28 §4].", "citations": [{"label": "[DORA art. 28 §1]", "regulation": "DORA", "article": "28", "paragraph": "1", "excerpt": "Les entités financières gèrent les risques liés aux prestataires tiers de services TIC en tant que partie intégrante du risque lié aux TIC dans leur cadre de gestion du risque lié aux TIC visé à l’article 6, paragraphe 1, et conformément...", "url": "https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32022R2554"}, {"label": "[DORA art. 28 §3]", "regulation": "DORA", "article": "28", "paragraph": "3", "excerpt": "Aux fins de leur cadre de gestion du risque lié aux TIC, les entités financières tiennent et mettent à jour, au niveau de l’entité et aux niveaux sous-consolidé et consolidé, un registre d’informations en rapport avec tous les accords...", "url": "https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32022R2554"}, {"label": "[DORA art. 28 §4]", "regulation": "DORA", "article": "28", "paragraph": "4", "excerpt": "Avant de conclure un accord contractuel sur l’utilisation de services TIC, les entités financières: a) déterminent si l’accord contractuel couvre l’utilisation de services TIC qui soutiennent une fonction critique ou importante; b)...", "url": "https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32022R2554"}], "blocked": false, "block_reason": null, "refused": false, "citations_removed": 0, "trace_id": "70756fd169664118a0bb0ca9b6d919ec", "app_version": "0.12.0", "bundle_version": "j5-proof-fake", "prompt_version": "v2", "model": "fake-llm", "latency_ms": 126.7}

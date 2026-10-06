@@ -1,0 +1,21 @@
+$ curl -X POST http://127.0.0.1:8718/v1/ask -H Content-Type: application/json -H Authorization: Bearer vig_[REDACTED] --data-binary @results/j5/q.json
+HTTP/1.1 401 Unauthorized
+date: Tue, 06 Oct 2026 10:10:14 GMT
+www-authenticate: Bearer
+content-length: 70
+content-type: application/json
+vary: Origin
+x-content-type-options: nosniff
+referrer-policy: no-referrer
+x-frame-options: DENY
+content-security-policy: default-src 'none'; frame-ancestors 'none'
+cross-origin-opener-policy: same-origin
+cross-origin-resource-policy: same-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+cache-control: no-store
+x-trace-id: 3193a009897e4c1cb5b7ce40b9ecea07
+x-app-version: 0.12.0
+x-bundle-version: j5-proof-ollama
+x-prompt-version: v2
+
+{"error":"unauthorized","trace_id":"3193a009897e4c1cb5b7ce40b9ecea07"}

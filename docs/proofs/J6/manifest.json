@@ -45,7 +45,7 @@
   ],
   "not_done_here": [
     "Lighthouse (web/lighthouserc.json) jamais lancé, scores non mesurés",
-    "interface branchée sur une API simulée, l'API réelle arrive au J5"
+    "interface testée contre une API simulée, l'API du J5 a été fusionnée après ces mesures"
   ],
   "notes": [
     "Chemins locaux remplacés par <repo>.",
