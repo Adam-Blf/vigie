@@ -68,6 +68,11 @@ def test_the_bundle_pins_what_production_needs() -> None:
     assert bundle["embedding"]["fingerprint"] == "m-123456"
     assert bundle["retrieval"]["rerank_model"] == ""
     assert bundle["retrieval"]["top_k"] == 6
+    assert (bundle["retrieval"]["dense_weight"], bundle["retrieval"]["sparse_on_english"]) == (
+        3.0,
+        False,
+    )
+    assert (bundle["embedding"]["variant"], bundle["embedding"]["max_tokens"]) == ("int8", 128)
     assert bundle["llm"]["model"] == "ministral-3:3b-instruct-2512-q4_K_M"
     assert bundle["guard"]["input_threshold"] == SETTINGS.guard_input_threshold
     assert bundle["qdrant_collection"] == "vigie_m-123456_abababab"
