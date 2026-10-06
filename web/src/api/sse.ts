@@ -26,9 +26,9 @@ function toStreamEvent(raw: RawEvent): StreamEvent | null {
     unknown
   >;
   switch (raw.event) {
-    case "token":
+    case "delta":
       return typeof data.text === "string" ? { type: "token", text: data.text } : null;
-    case "final":
+    case "answer":
       return isAskResponse(payload)
         ? { type: "final", response: payload }
         : { type: "error", status: 0, detail: "malformed final answer", traceId: null };
@@ -36,7 +36,7 @@ function toStreamEvent(raw: RawEvent): StreamEvent | null {
       return {
         type: "error",
         status: typeof data.status === "number" ? data.status : 500,
-        detail: typeof data.detail === "string" ? data.detail : "server error",
+        detail: typeof data.error === "string" ? data.error : "server error",
         traceId: typeof data.trace_id === "string" ? data.trace_id : null,
       };
     default:

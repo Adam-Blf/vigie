@@ -75,7 +75,7 @@ export function createHttpClient(options: ClientOptions): ApiClient {
   return {
     async ask(question, handlers, signal) {
       try {
-        const response = await doFetch(joinUrl(options.baseUrl, "/v1/ask"), {
+        const response = await doFetch(joinUrl(options.baseUrl, "/v1/ask/stream"), {
           method: "POST",
           headers: headers({ "Content-Type": "application/json", Accept: "text/event-stream" }),
           body: JSON.stringify({ question }),
