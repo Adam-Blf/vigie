@@ -46,6 +46,7 @@ dev = [
 [project.scripts]
 vigie-ingest = "vigie.corpus.cli:main"
 vigie-eval = "vigie.evaluation.cli:main"
+vigie-index = "vigie.retrieval.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/vigie", "src/guardbench"]
