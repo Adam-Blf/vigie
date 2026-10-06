@@ -100,10 +100,23 @@ vigie-eval validate-golden --corpus data/cache
 
 Les seuils que l'évaluation devra tenir sont fixés d'avance dans `eval/thresholds.yaml`.
 
-Une question se pose déjà au modèle sur un jeu de passages fixe, en attendant l'index
-Qdrant :
+L'index de recherche se construit ensuite avec `vigie-index` : embeddings denses
+multilingues et BM25 français, fusion RRF dans Qdrant, collection nommée
+`vigie_<modèle>_<empreinte du corpus>` (détail dans [docs/retrieval.md](docs/retrieval.md)).
+Une seconde exécution ne recalcule rien. La qualité de la recherche se mesure sur la partie
+`dev` du jeu de référence :
 
 ```sh
+VIGIE_QDRANT_PATH=.qdrant vigie-index
+VIGIE_QDRANT_PATH=.qdrant python -m scripts.retrieval_demo
+VIGIE_QDRANT_PATH=.qdrant vigie-eval retrieval --split dev
+```
+
+Une question passe alors par la recherche Qdrant, ou par un jeu de passages fixe avec
+`--passages` pour mesurer le modèle seul :
+
+```sh
+VIGIE_QDRANT_PATH=.qdrant python -m vigie.rag.cli "Quelles vérifications avant de conclure avec un prestataire TIC ?"
 python -m vigie.rag.cli --passages tests/fixtures/dora_art28_passages.json "Quelles vérifications avant de conclure avec un prestataire TIC ?"
 ```
 
