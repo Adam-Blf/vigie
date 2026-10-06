@@ -1,0 +1,121 @@
+name: redteam
+
+# The red teaming gate has its own workflow so that ci.yml stays readable. It replays the
+# versioned attacks against the real API on every pull request and on main. Third party
+# actions are pinned by full commit SHA, as in ci.yml.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: redteam-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  FORCE_COLOR: "1"
+
+jobs:
+  redteam-gate:
+    # Replays the versioned Promptfoo attacks against the real API running with the fake LLM.
+    # What this measures is the guardrail chain, not the model (see docs/redteam.md). The API
+    # runs straight from the checkout, with the real guard model and a hybrid index of the
+    # corpus, so the gate does not wait for the Docker images.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      VIGIE_LLM_PROVIDER: fake
+      # The fake model recites its rules after every answer, so an attack that gets past the
+      # input guard is only stopped if the output check catches it (docs/redteam.md).
+      VIGIE_FAKE_LLM_LEAK: "true"
+      VIGIE_PORT: "8710"
+      VIGIE_QDRANT_PATH: ${{ github.workspace }}/.qdrant
+      VIGIE_DB_PATH: ${{ github.workspace }}/.redteam/vigie.sqlite3
+      VIGIE_AUDIT_DIR: ${{ github.workspace }}/.redteam/audit
+      # One throwaway token sends every attack: the per-token limits would only measure 429s.
+      VIGIE_RATE_LIMIT_PER_MINUTE: "100000"
+      VIGIE_DAILY_QUOTA: "100000"
+      # promptfoo sends four attacks at once; with the default two model slots the rest
+      # would be answered 503 and retried, which only slows the run down.
+      VIGIE_LLM_MAX_INFLIGHT: "8"
+      FASTEMBED_CACHE_PATH: ${{ github.workspace }}/.cache/fastembed
+      VIGIE_REDTEAM_BASE_URL: http://127.0.0.1:8710
+      PROMPTFOO_DISABLE_TELEMETRY: "1"
+      PROMPTFOO_DISABLE_UPDATE: "1"
+      PROMPTFOO_DISABLE_REMOTE_GENERATION: "true"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/python-env
+        with:
+          extras: dev,guard-model
+      - name: Restore corpus and embedding models
+        id: corpus
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            data/corpus
+            .cache/fastembed
+          key: corpus-${{ hashFiles('data/corpus.lock', 'src/vigie/corpus/parse.py', 'src/vigie/config.py') }}
+      - name: Download the corpus
+        if: steps.corpus.outputs.cache-hit != 'true'
+        run: uv run --no-sync vigie-ingest --out data/corpus/
+      - name: Restore the guard model
+        id: guard
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: models/guard
+          key: guard-${{ hashFiles('src/vigie/config.py', 'src/vigie/guard/prepare.py') }}
+      - name: Fetch and quantize the guard model
+        if: steps.guard.outputs.cache-hit != 'true'
+        run: uv run --no-sync python -m vigie.guard.prepare
+      - name: Index the corpus
+        run: uv run --no-sync vigie-index
+      - name: Issue a throwaway test token
+        # The token lives as long as this runner. It is masked before anything else can print it.
+        run: |
+          mkdir -p .redteam
+          out="$(uv run --no-sync python -m vigie.api.tokens create redteam-ci)"
+          token="$(grep -oE 'vig_[A-Za-z0-9_-]+' <<< "$out" | head -n 1)"
+          if [ -z "$token" ]; then
+            echo "::error::the token command printed no vig_ token"
+            exit 1
+          fi
+          echo "::add-mask::$token"
+          echo "VIGIE_REDTEAM_TOKEN=$token" >> "$GITHUB_ENV"
+      - name: Start the API with the fake LLM
+        run: |
+          nohup uv run --no-sync python -m vigie.api > .redteam/api.log 2>&1 &
+          for _ in $(seq 1 90); do
+            if curl -fsS http://127.0.0.1:8710/readyz > /dev/null 2>&1; then exit 0; fi
+            sleep 2
+          done
+          echo "::error::the API did not become ready within 3 minutes"
+          exit 1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: redteam/package-lock.json
+      - run: npm ci --prefix redteam
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+      - name: Red teaming gate (at most 5 % successful attacks)
+        run: uv run --no-sync python tasks.py redteam --summary redteam/summary.json
+      - name: API logs
+        if: failure()
+        run: tail -n 200 .redteam/api.log
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: redteam-results
+          path: |
+            redteam/results.json
+            redteam/summary.json
+          if-no-files-found: ignore
+          retention-days: 14
