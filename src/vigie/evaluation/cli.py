@@ -3,11 +3,13 @@
 Subcommands:
   validate-golden  check the golden set against the corpus and its seal, exit 1 on any issue
   seal-golden      write data/golden/test.sha256 from the current test rows
+  retrieval        recall@k and MRR of the configured retriever on one split (dev by default)
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from collections.abc import Sequence
 from pathlib import Path
@@ -15,7 +17,9 @@ from pathlib import Path
 from vigie.config import get_settings
 from vigie.evaluation.corpus_text import load_corpus
 from vigie.evaluation.golden import load_golden, read_seal, sealed_digest, write_seal
+from vigie.evaluation.retrieval_eval import evaluate_retrieval
 from vigie.evaluation.validate import Report, validate_golden
+from vigie.retrieval.factory import open_retriever
 
 
 def _print_report(report: Report, total: int) -> None:
@@ -55,6 +59,27 @@ def _seal(args: argparse.Namespace) -> int:
     return 0
 
 
+def _retrieval(args: argparse.Namespace) -> int:
+    questions = load_golden(args.golden)
+    with open_retriever(get_settings()) as retriever:
+        result = evaluate_retrieval(
+            questions, retriever, split=args.split, k=args.k, depth=args.depth
+        )
+    for row in result.rows:
+        top = ", ".join(row.retrieved[: args.k])
+        print(f"{row.id:<10} rr={row.reciprocal_rank:.3f} expected={','.join(row.expected)}  {top}")
+    print(
+        f"split={result.split} questions={result.questions} k={result.k} depth={result.depth} "
+        f"recall@{result.k}={result.recall_at_k:.4f} mrr={result.mrr:.4f}"
+    )
+    if args.out:
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        args.out.write_text(
+            json.dumps(result.as_dict(), ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     settings = get_settings()
     parser = argparse.ArgumentParser(prog="vigie-eval", description="Vigie evaluation tools")
@@ -78,6 +103,16 @@ def build_parser() -> argparse.ArgumentParser:
     golden_args(seal)
     seal.add_argument("--force", action="store_true", help="overwrite a different seal")
     seal.set_defaults(handler=_seal)
+
+    retrieval = commands.add_parser("retrieval", help="recall@k and MRR of the retriever")
+    golden_args(retrieval)
+    # dev by default: the test split is sealed for the published figures and must never be
+    # the one a setting is tuned on.
+    retrieval.add_argument("--split", choices=["dev", "test"], default="dev")
+    retrieval.add_argument("--k", type=int, default=5)
+    retrieval.add_argument("--depth", type=int, default=20, help="passages asked per question")
+    retrieval.add_argument("--out", type=Path, help="also write the result as JSON")
+    retrieval.set_defaults(handler=_retrieval)
     return parser
 
 
