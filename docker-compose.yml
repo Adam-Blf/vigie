@@ -1,0 +1,196 @@
+# The whole Vigie stack on one machine, grading level 0 of the course.
+#
+#   python tasks.py up                 build, start, wait, print a demo token once
+#   python tasks.py up --local-llm     same, with Ollama and the real model
+#   python tasks.py down               stop, keep the volumes
+#
+# Plain `docker compose up -d` works too once .env holds VIGIE_QDRANT_API_KEY (tasks.py up
+# writes a random one on first run). The LLM is the fake one unless the local-llm profile
+# is on: `VIGIE_COMPOSE_LLM_PROVIDER=ollama docker compose --profile local-llm up -d`.
+#
+# Ports are bound to 127.0.0.1 only and registered in the project port table:
+# api 8710, web 4710, qdrant 6733 (gRPC 6734), mlflow 5710. Images pulled from outside
+# are the digests of deploy/versions.env.
+
+name: vigie
+
+x-hardening: &hardening
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+
+x-vigie-env: &vigie-env
+  VIGIE_QDRANT_URL: http://qdrant:6333
+  VIGIE_QDRANT_API_KEY: ${VIGIE_QDRANT_API_KEY:?run python tasks.py up once, or set VIGIE_QDRANT_API_KEY in .env}
+  VIGIE_CORPUS_CACHE_DIR: /data/cache
+  VIGIE_OLLAMA_URL: http://ollama:11434
+  VIGIE_OLLAMA_MODEL: ${VIGIE_OLLAMA_MODEL:-ministral-3:3b-instruct-2512-q4_K_M}
+
+services:
+  qdrant:
+    image: docker.io/qdrant/qdrant:v1.19.1-unprivileged@sha256:801777072776dc81b2a9dd2007b2ed487571f21ecd30efffd15ddb1671f2193d
+    <<: *hardening
+    environment:
+      QDRANT__SERVICE__API_KEY: ${VIGIE_QDRANT_API_KEY:?run python tasks.py up once, or set VIGIE_QDRANT_API_KEY in .env}
+      QDRANT__STORAGE__STORAGE_PATH: /qdrant/storage
+      QDRANT__STORAGE__SNAPSHOTS_PATH: /qdrant/snapshots
+      QDRANT__TELEMETRY_DISABLED: "true"
+      QDRANT_INIT_FILE_PATH: /qdrant/storage/.qdrant-initialized
+    volumes:
+      - qdrant-storage:/qdrant/storage
+      - qdrant-snapshots:/qdrant/snapshots
+    tmpfs: [/tmp]
+    ports:
+      - 127.0.0.1:6733:6333
+      - 127.0.0.1:6734:6334
+    healthcheck:
+      # The image has bash but no curl; /readyz needs no API key.
+      test: [CMD, bash, -c, "exec 3<>/dev/tcp/127.0.0.1/6333 && printf 'GET /readyz HTTP/1.0\\r\\n\\r\\n' >&3 && grep -q ' 200 ' <&3"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # One-shot job: downloads the four regulations (checked against data/corpus.lock), splits
+  # them, indexes them into Qdrant, then builds the drift reference once. Every step is
+  # idempotent, so a second `up` only re-reads the cache and exits 0.
+  ingest:
+    image: vigie-api:dev
+    build:
+      context: .
+      dockerfile: deploy/docker/api.Dockerfile
+    <<: *hardening
+    command:
+      - sh
+      - -c
+      - >-
+        vigie-ingest && vigie-index &&
+        if [ -f /data/drift/reference.npy ]; then echo "drift reference present";
+        else vigie-drift build-reference --corpus /data/corpus; fi
+    environment: *vigie-env
+    volumes:
+      - vigie-data:/data
+    tmpfs: [/tmp]
+    healthcheck:
+      disable: true
+    restart: "no"
+    depends_on:
+      qdrant:
+        condition: service_healthy
+
+  api:
+    image: vigie-api:dev
+    build:
+      context: .
+      dockerfile: deploy/docker/api.Dockerfile
+    <<: *hardening
+    environment:
+      <<: *vigie-env
+      # fake unless the local-llm profile is on (tasks.py up --local-llm sets ollama).
+      VIGIE_LLM_PROVIDER: ${VIGIE_COMPOSE_LLM_PROVIDER:-fake}
+      # The web container serves the interface under the same origin: no CORS needed.
+      VIGIE_CORS_ORIGINS: "[]"
+      VIGIE_AUDIT_POD_NAME: compose-api
+    volumes:
+      - vigie-data:/data
+    tmpfs: [/tmp]
+    ports:
+      - 127.0.0.1:8710:8710
+    depends_on:
+      qdrant:
+        condition: service_healthy
+      ingest:
+        condition: service_completed_successfully
+      ollama-pull:
+        condition: service_completed_successfully
+        required: false
+
+  web:
+    image: vigie-web:dev
+    build:
+      context: .
+      dockerfile: deploy/docker/web.Dockerfile
+    <<: *hardening
+    environment:
+      VIGIE_API_UPSTREAM: api:8710
+    tmpfs: [/tmp, /var/cache/nginx]
+    ports:
+      - 127.0.0.1:4710:8080
+    depends_on:
+      api:
+        condition: service_healthy
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v3.16.1@sha256:06058cc872276873e9759c635e773342aca4731e240f6d20d88ea43774083984
+    <<: *hardening
+    command:
+      - mlflow
+      - server
+      - --backend-store-uri=sqlite:////mlflow/mlflow.db
+      - --artifacts-destination=/mlflow/artifacts
+      - --serve-artifacts
+      - --host=0.0.0.0
+      - --port=5000
+      - --workers=1
+    environment:
+      HOME: /tmp
+      MLFLOW_SERVER_ENABLE_JOB_EXECUTION: "false"
+      MLFLOW_DISABLE_TELEMETRY: "true"
+    volumes:
+      - mlflow-data:/mlflow
+    tmpfs: [/tmp]
+    ports:
+      - 127.0.0.1:5710:5000
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:5000/health', timeout=4)"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  ollama:
+    image: docker.io/ollama/ollama:0.35.0@sha256:2a6e883b917fc543389599dae79918f5cac9e1438890506982f44aa4f5625d01
+    profiles: [local-llm]
+    <<: *hardening
+    environment:
+      OLLAMA_HOST: 0.0.0.0:11434
+      OLLAMA_MODELS: /models
+      HOME: /tmp
+      # One generation at a time and a short queue: past it the API answers 503 with
+      # Retry-After instead of letting the CPU drown (brief 11.7).
+      OLLAMA_NUM_PARALLEL: "1"
+      OLLAMA_MAX_QUEUE: "4"
+      OLLAMA_MAX_LOADED_MODELS: "1"
+      OLLAMA_KEEP_ALIVE: 24h
+    volumes:
+      - ollama-models:/models
+    tmpfs: [/tmp]
+    healthcheck:
+      test: [CMD, ollama, list]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  # One-shot: pulls the model named by VIGIE_OLLAMA_MODEL, a no-op once it is on the volume.
+  ollama-pull:
+    image: docker.io/curlimages/curl:8.16.0@sha256:463eaf6072688fe96ac64fa623fe73e1dbe25d8ad6c34404a669ad3ce1f104b6
+    profiles: [local-llm]
+    <<: *hardening
+    environment:
+      MODEL: ${VIGIE_OLLAMA_MODEL:-ministral-3:3b-instruct-2512-q4_K_M}
+    command:
+      - sh
+      - -c
+      - >-
+        curl --fail --silent --show-error --max-time 3600 http://ollama:11434/api/pull
+        -d "{\"model\": \"$${MODEL}\", \"stream\": false}"
+    restart: "no"
+    depends_on:
+      ollama:
+        condition: service_healthy
+
+volumes:
+  qdrant-storage:
+  qdrant-snapshots:
+  vigie-data:
+  mlflow-data:
+  ollama-models:

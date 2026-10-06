@@ -241,7 +241,8 @@ jobs:
     needs: [detect, quality]
     if: needs.detect.outputs.redteam == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    # The first build bakes the models and the ingestion downloads the four regulations.
+    timeout-minutes: 30
     env:
       VIGIE_LLM_PROVIDER: fake
       VIGIE_REDTEAM_BASE_URL: http://127.0.0.1:8710
@@ -252,7 +253,12 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Start the API with the fake LLM
+      - name: Random Qdrant key for this runner only
+        run: |
+          key="$(openssl rand -hex 24)"
+          echo "::add-mask::$key"
+          echo "VIGIE_QDRANT_API_KEY=$key" >> "$GITHUB_ENV"
+      - name: Start the API with the fake LLM (compose default)
         run: docker compose up --detach --wait --build api
       - name: Issue a throwaway test token
         # The token lives as long as this runner. It is masked before anything else can print it.
