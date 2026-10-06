@@ -1,0 +1,66 @@
+{
+  "milestone": "J0 framing",
+  "branch": "docs/framing",
+  "commit": "d0043cd30c99ce66150cbe409751e1307d2b711f",
+  "commit_note": "SHA of the checked commit: every output below was produced on this exact tree, the commit that adds this folder only adds the proof files.",
+  "date": "2026-10-02T13:02:00Z",
+  "proofs": [
+    {
+      "name": "typography check on the framing files",
+      "command": "python tasks.py typo docs/risk-map.md docs/adr/0001-zero-cost-hosting.md docs/adr/0002-oracle-cloud-always-free.md docs/adr/0003-local-open-weight-llm.md docs/architecture.md docs/threat-model.md CONTRIBUTING.md LICENSE NOTICE tasks.py tests/test_typo_task.py tests/test_config.py",
+      "output": "typo-framing-files.txt",
+      "result": "12 files scanned, 0 forbidden characters, exit 0"
+    },
+    {
+      "name": "typography check on the whole repository",
+      "command": "python tasks.py typo",
+      "output": "typo-whole-repo.txt",
+      "result": "36 files scanned, 0 forbidden characters, exit 0"
+    },
+    {
+      "name": "typography gate seen red on a degraded file",
+      "command": "python tasks.py typo degraded-sample.md (temporary file holding U+2014, U+2013, U+00B7, U+200B, deleted after the run)",
+      "output": "typo-gate-red.txt",
+      "result": "4 forbidden characters (U+2014, U+2013, U+00B7, U+200B), exit 1"
+    },
+    {
+      "name": "quality gates",
+      "command": "python tasks.py check",
+      "output": "check.txt",
+      "result": "ruff and ruff format clean, mypy strict clean on src, 13 tests passed, coverage 100 % on src, exit 0"
+    },
+    {
+      "name": "strict typing over the tests",
+      "command": "python -m mypy tests src",
+      "output": "mypy-tests.txt",
+      "result": "14 source files, no issue, exit 0"
+    },
+    {
+      "name": "mermaid diagrams render",
+      "command": "npx @mermaid-js/mermaid-cli@11 -i <block>.mmd -o <block>.svg",
+      "output": "mermaid.txt",
+      "result": "4 diagrams rendered, exit 0, no syntax error"
+    },
+    {
+      "name": "pair co-author on every commit",
+      "command": "git log --format='%h %an | %s | %(trailers:key=Co-authored-by,valueonly)' main..HEAD",
+      "output": "coauthors.txt",
+      "result": "9 commits by Emilien Morice, each co-authored by Adam Beloucif"
+    }
+  ],
+  "external_checks": {
+    "ollama_tag": "registry.ollama.ai manifest of ministral-3:3b-instruct-2512-q4_K_M answered HTTP 200, model layer 2953825504 bytes, license layer Apache License 2.0",
+    "inspiration_repos": "gh api repos/<owner>/<name> answered for RostislavDublin/eu-ai-act-rag (no license), HamzaG737/legal-code-rag (Apache-2.0), garutilorenzo/k3s-aws-terraform-cluster (GPL-3.0)",
+    "mitre_atlas_ids": "checked in mitre-atlas/atlas-data dist/ATLAS.yaml: AML.T0010, T0020, T0029, T0034, T0048, T0051, T0054, T0056, T0057, T0070"
+  },
+  "tools": {
+    "git": "2.53.0.windows.2",
+    "python": "3.12.13",
+    "ruff": "0.16.10",
+    "mypy": "2.4.0",
+    "pytest": "9.1.1",
+    "gh": "2.90.0",
+    "node": "24.14.1",
+    "mermaid-cli": "11.17.0"
+  }
+}

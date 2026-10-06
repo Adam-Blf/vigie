@@ -19,6 +19,7 @@ terraform.tfvars
 
 # Generated data and runs
 mlruns/
+mlflow.db
 mlartifacts/
 results/
 data/corpus/
