@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any, Protocol
 
 from vigie.config import Settings
+from vigie.retrieval.models import profile_for, register_custom_model
 
 
 @dataclass(frozen=True)
@@ -46,13 +47,18 @@ def _slug(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
 
 
-def embedding_id(dense_model: str, sparse_model: str, language: str) -> str:
+def embedding_id(
+    dense_model: str, sparse_model: str, language: str, passage_prefix: str = ""
+) -> str:
     """Readable model name plus a short hash of the whole embedding setup.
 
     The dense name alone would not do: switching BM25 to English changes every sparse
     vector without changing a single dense dimension, and Qdrant would happily mix both.
+    The passage prefix changes every stored vector too; it only enters the hash when set,
+    so the collections built before prefixes existed keep their names.
     """
-    setup = f"{dense_model}|{sparse_model}|{language}".encode()
+    parts = [dense_model, sparse_model, language] + ([passage_prefix] if passage_prefix else [])
+    setup = "|".join(parts).encode()
     return f"{_slug(dense_model.rsplit('/', 1)[-1])}-{hashlib.sha256(setup).hexdigest()[:6]}"
 
 
@@ -79,6 +85,7 @@ SparseFactory = Callable[[str, "str | None", str], _SparseModel]
 def _fastembed_dense(model: str, cache_dir: str | None) -> _DenseModel:
     from fastembed import TextEmbedding
 
+    register_custom_model(model)
     dense: _DenseModel = TextEmbedding(model_name=model, cache_dir=cache_dir)
     return dense
 
@@ -115,7 +122,10 @@ class FastEmbedEmbedder:
         sparse_factory: SparseFactory = _fastembed_sparse,
     ) -> None:
         cache = str(cache_dir) if cache_dir else None
-        self._id = embedding_id(dense_model, sparse_model, language)
+        profile = profile_for(dense_model)
+        self._query_prefix = profile.query_prefix
+        self._passage_prefix = profile.passage_prefix
+        self._id = embedding_id(dense_model, sparse_model, language, self._passage_prefix)
         self._dense = dense_factory(dense_model, cache)
         self._sparse = sparse_factory(sparse_model, cache, language)
 
@@ -137,13 +147,15 @@ class FastEmbedEmbedder:
         return self._dense.embedding_size
 
     def embed_documents(self, texts: Sequence[str]) -> list[Embedded]:
-        dense = [_to_dense(v) for v in self._dense.embed(texts)]
+        # The prefix is for the dense model only: BM25 would count "passage" as a word.
+        prefixed = [self._passage_prefix + t for t in texts]
+        dense = [_to_dense(v) for v in self._dense.embed(prefixed)]
         sparse = [_to_sparse(v) for v in self._sparse.embed(texts)]
         return [Embedded(d, s) for d, s in zip(dense, sparse, strict=True)]
 
     def embed_query(self, text: str) -> Embedded:
         # BM25 weighs a query differently from a document (no length normalisation, each
         # term counted once), which is why fastembed has a separate query_embed.
-        dense = _to_dense(next(iter(self._dense.query_embed(text))))
+        dense = _to_dense(next(iter(self._dense.query_embed(self._query_prefix + text))))
         sparse = _to_sparse(next(iter(self._sparse.query_embed(text))))
         return Embedded(dense, sparse)
