@@ -28,6 +28,8 @@ from vigie.quant.study import Encoder, StudySettings, measure_variant, top_passa
 from vigie.rag.prompt import PROMPT_VERSION, build_messages
 from vigie.rag.types import Passage
 
+WARMUP_QUESTION = "Question de préchauffage, hors mesure : que couvrent ces extraits ?"
+
 LogRun = Callable[[str, Mapping[str, str | int | float], Mapping[str, float]], str]
 
 
@@ -117,8 +119,10 @@ def run_llm_variant(
     ``on_answer`` receives the answers so far after each one: a CPU run takes minutes per
     answer, and an incident near the end must not throw away what was already measured.
     """
-    first_question, first_passages = items[0]
-    probe.chat(model, build_messages(first_question.question, first_passages))
+    # The warm-up loads the weights. It must not share its full prompt with a measured
+    # item, or Ollama's prompt cache would hand that item a near zero first token time.
+    _, first_passages = items[0]
+    probe.chat(model, build_messages(WARMUP_QUESTION, first_passages[::-1]))
     generations: list[Generation] = []
     qualities: list[AnswerQuality] = []
     answers: list[dict[str, Any]] = []
