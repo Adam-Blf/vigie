@@ -50,7 +50,8 @@ def export_fp32(model_id: str, revision: str, out_dir: Path) -> ExportedModel:
     )
     model.eval()
 
-    class Encoder(torch.nn.Module):
+    # torch is an optional extra: where it is not installed (CI) mypy sees Module as Any.
+    class Encoder(torch.nn.Module):  # type: ignore[misc, unused-ignore]
         # Only the token vectors leave the graph; pooling stays in numpy so fp32 and int8
         # share the exact same post-processing.
         def __init__(self) -> None:
