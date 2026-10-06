@@ -12,7 +12,7 @@
 <!-- adam-badges:end -->
 </p>
 
-Version 0.9.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
+Version 0.10.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
 
 Copilote de conformité pour les banques. Vigie répond aux questions sur DORA, l'AI Act, le
 RGPD et le règlement anti-blanchiment en citant l'article exact, dit quand il ne trouve
@@ -113,6 +113,10 @@ VIGIE_QDRANT_PATH=.qdrant vigie-index
 VIGIE_QDRANT_PATH=.qdrant python -m scripts.retrieval_demo
 VIGIE_QDRANT_PATH=.qdrant vigie-eval retrieval --split dev
 ```
+
+Mesure réelle du 6 octobre 2026 sur les 47 questions `dev` : recall@5 0,638 et MRR 0,486,
+sous le seuil de `eval/thresholds.yaml` (0,80 et 0,60). Jalon J2 marqué `PARTIEL`, essais
+et pistes dans [docs/retrieval.md](docs/retrieval.md).
 
 Une question passe alors par la recherche Qdrant, ou par un jeu de passages fixe avec
 `--passages` pour mesurer le modèle seul :
