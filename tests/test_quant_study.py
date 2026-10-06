@@ -84,13 +84,14 @@ def test_embedding_study_needs_exactly_the_two_variants() -> None:
         run_embedding_study({"fp32": (KeywordEncoder(), 1)}, CHUNKS, QUESTIONS, THRESHOLD, SETTINGS)
 
 
-def test_write_json_is_stable_and_utf8(tmp_path: Path) -> None:
+def test_write_json_is_stable_and_escapes_non_ascii(tmp_path: Path) -> None:
     path = tmp_path / "out" / "r.json"
-    write_json(path, {"b": 1, "a": "é"})
+    write_json(path, {"b": 1, "a": "é" + chr(0x2013)})
     text = path.read_text(encoding="utf-8")
     assert text.endswith("\n")
     assert text.index('"a"') < text.index('"b"')
-    assert json.loads(text) == {"a": "é", "b": 1}
+    assert text.isascii()
+    assert json.loads(text) == {"a": "é" + chr(0x2013), "b": 1}
 
 
 class FakeMlflow:

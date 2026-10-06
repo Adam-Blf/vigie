@@ -35,8 +35,10 @@ LogRun = Callable[[str, Mapping[str, str | int | float], Mapping[str, float]], s
 
 def write_json(path: Path, payload: Mapping[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    text = json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True)
-    path.write_text(text + "\n", encoding="utf-8")
+    # ASCII escapes: model answers are kept verbatim, including characters the repository
+    # bans in its own text (an en dash from the LLM), and the escape keeps both promises.
+    text = json.dumps(payload, ensure_ascii=True, indent=2, sort_keys=True)
+    path.write_text(text + "\n", encoding="utf-8", newline="\n")
 
 
 def run_embedding_study(
