@@ -83,8 +83,9 @@ def build_bundle(report: Mapping[str, Any], settings: Settings, version: str) ->
         "prompt_version": config["prompt_version"],
         "llm": {"provider": "ollama", "model": config["ollama_model"]},
         "guard": {
-            "enabled": settings.guard_enabled,
+            "classifier": settings.guard_classifier,
             "input_threshold": settings.guard_input_threshold,
+            "model_revision": settings.guard_model_revision,
         },
         "corpus_sha256": config["corpus_sha256"],
         "qdrant_collection": config["collection"],

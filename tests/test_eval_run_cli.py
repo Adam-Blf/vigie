@@ -65,10 +65,16 @@ def test_run_without_mlflow_or_llm(
     assert "llm=none" in capsys.readouterr().out
 
 
-def test_run_with_the_configured_llm(golden: Path, tmp_path: Path, mlflow: FakeMlflow) -> None:
+def test_run_with_the_configured_llm(
+    golden: Path, tmp_path: Path, mlflow: FakeMlflow, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # The configured provider is the fake one here, so no test ever reaches a real Ollama.
     settings = run_cli.get_settings().model_copy(update={"llm_provider": "fake"})
+    monkeypatch.setattr(run_cli, "get_settings", lambda: settings)
     assert run_cli._llm("configured", settings).model == "fake-llm"
-    assert run(golden, tmp_path / "x.json", "--no-mlflow", "--llm", "configured") == 0
+    out = tmp_path / "x.json"
+    assert run(golden, out, "--no-mlflow", "--llm", "configured") == 0
+    assert json.loads(out.read_text(encoding="utf-8"))["llm"] == "fake-llm"
 
 
 def test_gate_reads_a_baseline_file_or_the_champion(
