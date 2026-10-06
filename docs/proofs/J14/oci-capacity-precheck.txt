@@ -1,0 +1,15 @@
+$ oci iam availability-domain list --query 'data[].name'
+[
+  "<prefix>:EU-PARIS-1-AD-1"
+]
+
+$ oci limits resource-availability get --service-name compute --limit-name standard-a1-core-count
+{
+  "data": {
+    "available": 41,
+    "effective-quota-value": null,
+    "fractional-availability": 41.0,
+    "fractional-usage": 0.0,
+    "used": 0
+  }
+}

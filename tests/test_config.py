@@ -52,3 +52,17 @@ def test_corpus_rate_limit_cannot_go_below_one_request_per_second(
     monkeypatch.setenv("VIGIE_CORPUS_MIN_INTERVAL_S", "0.2")
     with pytest.raises(ValidationError):
         Settings(_env_file=None)
+
+
+def test_infra_state_stays_out_of_the_repository() -> None:
+    settings = Settings(_env_file=None)
+    assert settings.infra_state_dir.is_absolute()
+    assert settings.infra_state_dir.parts[-2:] == (".vigie", "terraform")
+    assert settings.infra_retry_interval_s == 600
+    assert settings.infra_retry_max_attempts == 1008
+
+
+def test_infra_retry_interval_has_a_floor(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("VIGIE_INFRA_RETRY_INTERVAL_S", "5")
+    with pytest.raises(ValidationError):
+        Settings(_env_file=None)

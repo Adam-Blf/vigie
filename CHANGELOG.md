@@ -6,6 +6,21 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-10-06
+
+### Added
+
+- Infrastructure Oracle Always Free du jalon J14 (`infra/terraform/`) : nœud A1 avec
+  cloud-init durci et k3s épinglé, réseau dédié, budget à zéro euro avec alerte au premier
+  centime, bucket de sauvegarde purgé après 30 jours.
+- Tests qui figent les invariants de sécurité et de coût du code Terraform.
+- Masquage des OCID, IP publiques, adresses e-mail, clé SSH, namespace et préfixe du
+  domaine de disponibilité dans les sorties d'infrastructure (`vigie.infra.redact`).
+- Tâche `python tasks.py infra-retry` qui relance la création du nœud A1 en cas de manque
+  de capacité, toutes les 10 minutes pendant sept jours avant le repli k3d.
+- Réglages `VIGIE_INFRA_*`, décrits dans `.env.example`, et preuves masquées du jalon dans
+  `docs/proofs/J14/`.
+
 ## [0.8.0] - 2026-10-06
 
 ### Added

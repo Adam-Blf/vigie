@@ -123,6 +123,14 @@ def redteam(args: Sequence[str]) -> int:
     return run([sys.executable, "redteam/score.py", results, *args])
 
 
+@task
+def infra_retry(_: Sequence[str]) -> int:
+    # Lazy import: the other tasks must keep working in an environment without the package.
+    from vigie.infra.retry import main as retry_main
+
+    return retry_main(ROOT)
+
+
 # The project bans these characters everywhere. The dashes and the middle dot are a house
 # style rule; the invisible ones are worse, they silently break grep, slugs and links.
 # Code points rather than literals: writing them in the source would make this file fail
