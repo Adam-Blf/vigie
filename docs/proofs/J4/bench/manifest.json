@@ -1,0 +1,44 @@
+{
+  "milestone": "J4",
+  "step": "guardrail benchmark",
+  "commit": "0287c647cf185b39bad64a424f0fcaf5743dd91b",
+  "branch": "feat/guardbench",
+  "date": "2026-10-02",
+  "command": "guardbench run --guards regex,deberta,gliguard,presidio,llamaguard,lakera --split test --deepset --out results/guardbench",
+  "environment_notes": [
+    "LAKERA_API_KEY loaded from ~/.vigie/secrets.env into the process environment, never printed",
+    "CPU only, Windows 11 laptop shared with other jobs during the run, torch pinned to 2 threads",
+    "Ollama local on 127.0.0.1:11434 with llama-guard3:1b",
+    "MLflow tracking sqlite:///mlflow.db, one run per guard and per dataset"
+  ],
+  "datasets": {
+    "seed": "data/seed.jsonl, split test, 68 samples (34 FR, 34 EN)",
+    "control": "deepset/prompt-injections, test parquet, 116 samples"
+  },
+  "outputs": [
+    "seed/results.csv",
+    "seed/report.md",
+    "seed/quality_latency.png",
+    "deepset/results.csv",
+    "deepset/report.md",
+    "run.log"
+  ],
+  "known_issues": [
+    "Lakera free tier quota reached during the deepset control run: 96 of 116 calls returned HTTP 429, its deepset figures cover 20 samples only"
+  ],
+  "tools": {
+    "python": "3.12.13",
+    "torch": "2.14.1",
+    "transformers": "4.57.6",
+    "gliner2": "2.0.0",
+    "presidio-analyzer": "2.2.362",
+    "spacy": "3.8.16",
+    "onnxruntime": "1.30.0",
+    "tokenizers": "0.22.2",
+    "mlflow": "3.16.1",
+    "httpx": "0.28.1",
+    "huggingface-hub": "0.36.2",
+    "matplotlib": "3.11.2",
+    "ollama": "0.35.0"
+  }
+}
