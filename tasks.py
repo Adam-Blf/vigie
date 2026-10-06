@@ -44,6 +44,18 @@ def test(args: Sequence[str]) -> int:
 
 
 @task
+def test_integration(args: Sequence[str]) -> int:
+    """Tests marked ``integration``: they download and run the real embedding model."""
+    return run(py("pytest", "-m", "integration", *args))
+
+
+@task
+def drift_reference(args: Sequence[str]) -> int:
+    """Build data/drift/reference.npy and anchors.npy, see docs/drift.md."""
+    return run(py("vigie.drift.cli", "build-reference", *args))
+
+
+@task
 def version_check(_: Sequence[str]) -> int:
     return run([sys.executable, "scripts/sync_version.py", "--check"])
 

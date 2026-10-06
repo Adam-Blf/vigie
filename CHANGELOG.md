@@ -6,6 +6,23 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-06
+
+### Added
+
+- Détection de drift du jalon J9 (`src/vigie/drift/`) : fenêtre glissante bornée qui ne
+  garde que des vecteurs, trois indicateurs (distance entre centroïdes, part de questions
+  hors périmètre, test de Kolmogorov-Smirnov écrit en numpy), jauges Prometheus et journal
+  des transitions d'alerte.
+- Commande `vigie-drift build-reference` et tâche `python tasks.py drift-reference` qui
+  construisent `data/drift/reference.npy` et `anchors.npy` depuis le jeu de référence et
+  le corpus, avec repli sur la fixture de test.
+- Tâche `python tasks.py test-integration` pour les tests marqués `integration`, exclus par
+  défaut, qui chargent le vrai modèle MiniLM.
+- Documentation `docs/drift.md` et preuves du jalon dans `docs/proofs/J9/` (rapport avant
+  et après un lot hors sujet, marge du test KS).
+- Réglages `VIGIE_DRIFT_*`, décrits dans `.env.example`.
+
 ## [0.5.0] - 2026-10-06
 
 ### Added

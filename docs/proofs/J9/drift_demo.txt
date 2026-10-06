@@ -1,0 +1,56 @@
+model=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 reference=34 questions
+
+== before: 30 DORA questions ==
+{
+  "alert": false,
+  "indicators": {
+    "centroid_distance": 0.07551154969062512,
+    "ks_pvalue": 0.08785005764956996,
+    "ks_statistic": 0.30196078431372547,
+    "out_of_scope_ratio": 0.0
+  },
+  "ready": true,
+  "reasons": [],
+  "thresholds": {
+    "centroid_distance": 0.3,
+    "ks_alpha": 0.01,
+    "min_window": 30,
+    "out_of_scope_ratio": 0.25,
+    "out_of_scope_similarity": 0.3
+  },
+  "window_size": 30
+}
+vigie_drift_centroid_distance{bundle_version="dev"} 0.07551154969062512
+vigie_drift_out_of_scope_ratio{bundle_version="dev"} 0.0
+vigie_drift_ks_pvalue{bundle_version="dev"} 0.08785005764956996
+vigie_drift_alert{bundle_version="dev"} 0.0
+
+== after: + 30 cooking questions ==
+LOG WARNING {"alert": true, "event": "drift_alert", "indicators": {"centroid_distance": 0.3521186133409192, "ks_pvalue": 7.397049879269003e-07, "ks_statistic": 0.5666666666666667, "out_of_scope_ratio": 0.5}, "ready": true, "reasons": ["centroid_distance", "out_of_scope_ratio", "ks_test"], "thresholds": {"centroid_distance": 0.3, "ks_alpha": 0.01, "min_window": 30, "out_of_scope_ratio": 0.25, "out_of_scope_similarity": 0.3}, "window_size": 60}
+{
+  "alert": true,
+  "indicators": {
+    "centroid_distance": 0.3521186133409192,
+    "ks_pvalue": 7.397049879269003e-07,
+    "ks_statistic": 0.5666666666666667,
+    "out_of_scope_ratio": 0.5
+  },
+  "ready": true,
+  "reasons": [
+    "centroid_distance",
+    "out_of_scope_ratio",
+    "ks_test"
+  ],
+  "thresholds": {
+    "centroid_distance": 0.3,
+    "ks_alpha": 0.01,
+    "min_window": 30,
+    "out_of_scope_ratio": 0.25,
+    "out_of_scope_similarity": 0.3
+  },
+  "window_size": 60
+}
+vigie_drift_centroid_distance{bundle_version="dev"} 0.3521186133409192
+vigie_drift_out_of_scope_ratio{bundle_version="dev"} 0.5
+vigie_drift_ks_pvalue{bundle_version="dev"} 7.397049879269003e-07
+vigie_drift_alert{bundle_version="dev"} 1.0

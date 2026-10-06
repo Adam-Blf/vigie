@@ -90,6 +90,19 @@ class Settings(BaseSettings):
     guard_input_threshold: float = 0.5
     guard_enabled: bool = True
 
+    # Drift. The defaults were calibrated on the multilingual MiniLM model: in-scope
+    # questions sit above 0.3 of similarity to the nearest corpus centroid, off-topic
+    # ones around 0, so 0.3 leaves room on both sides.
+    drift_reference_path: Path = Path("data/drift/reference.npy")
+    drift_anchors_path: Path = Path("data/drift/anchors.npy")
+    drift_window_size: int = Field(default=500, ge=10)
+    drift_min_window: int = Field(default=30, ge=5)
+    drift_evaluate_every: int = Field(default=10, ge=1)
+    drift_centroid_threshold: float = Field(default=0.3, gt=0.0, le=2.0)
+    drift_out_of_scope_similarity: float = Field(default=0.3, ge=-1.0, le=1.0)
+    drift_out_of_scope_ratio: float = Field(default=0.25, gt=0.0, le=1.0)
+    drift_ks_alpha: float = Field(default=0.01, gt=0.0, lt=1.0)
+
     # Guardrail benchmark (J4). Model ids are pinned here so a rerun months later compares
     # the same checkpoints, not whatever the hub serves that day.
     bench_seed_path: Path = Path("data/seed.jsonl")

@@ -1,0 +1,4 @@
++ python -m vigie.drift.cli build-reference
+questions: 40 from data/golden/questions.jsonl
+anchors: 4 from 13 passages in tests/fixtures/drift_questions.json
+wrote data/drift/reference.npy and data/drift/anchors.npy

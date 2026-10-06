@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "vigie"
-version = "0.5.0"
+version = "0.6.0"
 description = "Compliance copilot for banks: cited answers on DORA, the AI Act, GDPR and AMLR."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -56,6 +56,7 @@ dev = [
 vigie-ingest = "vigie.corpus.cli:main"
 vigie-eval = "vigie.evaluation.cli:main"
 guardbench = "guardbench.cli:main"
+vigie-drift = "vigie.drift.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/vigie", "src/guardbench"]
@@ -81,7 +82,8 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
-addopts = "-q"
+addopts = "-q -m 'not integration'"
+markers = ["integration: loads a real embedding model, slower than unit tests"]
 
 [tool.coverage.run]
 source = ["src"]

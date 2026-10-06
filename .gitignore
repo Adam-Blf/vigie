@@ -23,6 +23,7 @@ mlflow.db
 mlartifacts/
 results/
 data/corpus/
+data/drift/
 data/cache/
 .qdrant/
 
