@@ -15,6 +15,7 @@ import sys
 from pathlib import Path
 
 from prometheus_client import CollectorRegistry, generate_latest
+from pydantic_settings import SettingsConfigDict
 
 from vigie.config import Settings
 from vigie.drift import (
@@ -26,6 +27,11 @@ from vigie.drift import (
 )
 
 FIXTURE = Path(__file__).resolve().parents[1] / "tests" / "fixtures" / "drift_questions.json"
+
+
+class DemoSettings(Settings):
+    # The demo has to print the same report on any machine, so a local .env is ignored.
+    model_config = SettingsConfigDict(env_prefix="VIGIE_", env_file=None, extra="ignore")
 
 
 def _show(title: str, monitor: DriftMonitor, registry: CollectorRegistry) -> None:
@@ -40,7 +46,7 @@ def main() -> int:
     logging.basicConfig(
         level=logging.INFO, stream=sys.stdout, format="LOG %(levelname)s %(message)s"
     )
-    settings = Settings(_env_file=None)
+    settings = DemoSettings()
     data = json.loads(FIXTURE.read_text(encoding="utf-8"))
     embedder = FastEmbedEmbedder(settings.dense_model)
     reference = ReferenceSet.from_texts(
