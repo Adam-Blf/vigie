@@ -4,6 +4,8 @@ Subcommands:
   validate-golden  check the golden set against the corpus and its seal, exit 1 on any issue
   seal-golden      write data/golden/test.sha256 from the current test rows
   retrieval        recall@k and MRR of the configured retriever on one split (dev by default)
+  run, gate, register, alias
+                   the evaluation loop with MLflow and the registry, see run_cli.py
 """
 
 from __future__ import annotations
@@ -18,6 +20,7 @@ from vigie.config import get_settings
 from vigie.evaluation.corpus_text import load_corpus
 from vigie.evaluation.golden import load_golden, read_seal, sealed_digest, write_seal
 from vigie.evaluation.retrieval_eval import evaluate_retrieval
+from vigie.evaluation.run_cli import add_commands
 from vigie.evaluation.validate import Report, validate_golden
 from vigie.retrieval.factory import open_retriever
 
@@ -113,6 +116,7 @@ def build_parser() -> argparse.ArgumentParser:
     retrieval.add_argument("--depth", type=int, default=20, help="passages asked per question")
     retrieval.add_argument("--out", type=Path, help="also write the result as JSON")
     retrieval.set_defaults(handler=_retrieval)
+    add_commands(commands, settings)
     return parser
 
 
