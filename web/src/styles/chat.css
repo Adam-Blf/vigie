@@ -1,0 +1,517 @@
+/* Chat screen: welcome, conversation log, answer bubbles, composer dock, citation panel. */
+
+.chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mascot */
+
+.mascot {
+  position: relative;
+  flex: none;
+}
+
+.mascot-art,
+.mascot-art img,
+.mascot-art canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mascot-art img {
+  animation: settle var(--duration-slow) var(--ease-standard);
+}
+
+@keyframes settle {
+  from {
+    opacity: 0.4;
+    transform: translateY(4px);
+  }
+}
+
+/* Welcome */
+
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-bottom: var(--space-5);
+}
+
+.welcome h1 {
+  margin-top: var(--space-3);
+  font-size: var(--font-size-7);
+}
+
+.welcome-intro {
+  max-width: 56ch;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-4);
+}
+
+.welcome-privacy {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-citation-bg);
+  color: var(--color-citation-fg);
+  font-size: var(--font-size-2);
+  font-weight: 600;
+}
+
+.examples-title {
+  margin-top: var(--space-5);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-2);
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.examples {
+  display: grid;
+  gap: var(--space-3);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 600px) {
+  .examples {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.example {
+  width: 100%;
+  height: 100%;
+  min-height: var(--target-size);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-3);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--font-size-2);
+  text-align: left;
+  cursor: pointer;
+  box-shadow: var(--shadow-1);
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-base) var(--ease-standard);
+}
+
+.example:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+/* Conversation */
+
+.conversation-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.conversation-head h1 {
+  margin: 0;
+  font-size: var(--font-size-5);
+}
+
+.conversation-head .hint {
+  margin: 0;
+}
+
+.turns {
+  display: grid;
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0 0 var(--space-5);
+  list-style: none;
+}
+
+.turn {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.bubble {
+  max-width: var(--measure);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-4);
+  overflow-wrap: anywhere;
+  animation: rise var(--duration-base) var(--ease-standard);
+}
+
+.bubble-question {
+  justify-self: end;
+  border-bottom-right-radius: var(--radius-1);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  white-space: pre-wrap;
+}
+
+/* Answers read like a logbook entry: raised card, brass rule on the left. */
+.bubble-answer {
+  justify-self: start;
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  border-bottom-left-radius: var(--radius-1);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-2);
+}
+
+.bubble-blocked {
+  border-left-color: var(--color-danger);
+}
+
+.bubble-error {
+  border-left-color: var(--color-warning);
+}
+
+.answer-text {
+  white-space: pre-wrap;
+}
+
+.citation-chip {
+  display: inline;
+  margin: 0 2px;
+  padding: 1px var(--space-2);
+  border: 0;
+  border-radius: var(--radius-1);
+  background: var(--color-citation-bg);
+  color: var(--color-citation-fg);
+  font: inherit;
+  font-size: 0.92em;
+  font-weight: 650;
+  cursor: pointer;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.citation-chip:hover {
+  text-decoration: underline;
+}
+
+/* The chip is inline text, so its hit area grows invisibly to reach 44 px. */
+.citation-chip {
+  position: relative;
+}
+
+.citation-chip::after {
+  content: "";
+  position: absolute;
+  inset: -12px -2px;
+}
+
+.answer-note {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-warning);
+  font-size: var(--font-size-2);
+  font-weight: 600;
+}
+
+.answer-ai {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-2);
+  font-style: italic;
+}
+
+.answer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.answer-meta {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-1);
+}
+
+.turn-note {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-2);
+}
+
+.typing {
+  display: inline-block;
+  width: 36px;
+  height: 10px;
+  background: radial-gradient(circle, var(--color-text-muted) 3px, transparent 3.5px) 0 50% / 12px
+    10px repeat-x;
+  animation: typing 1s steps(3) infinite;
+}
+
+@keyframes typing {
+  from {
+    clip-path: inset(0 66% 0 0);
+  }
+  to {
+    clip-path: inset(0 -1% 0 0);
+  }
+}
+
+/* Composer dock: sticks to the bottom of the viewport, above the virtual keyboard. */
+
+.dock {
+  position: sticky;
+  bottom: 0;
+  z-index: var(--z-raised);
+  margin: auto calc(var(--space-4) * -1) 0;
+  padding: var(--space-3) var(--space-4) max(var(--space-3), env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--color-surface) 82%, transparent);
+}
+
+.token-prompt {
+  margin-bottom: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-4);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-2);
+}
+
+.composer {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.composer-box {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-4);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-2);
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.composer-box:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary), var(--shadow-2);
+}
+
+.composer-box.is-invalid {
+  border-color: var(--color-danger);
+}
+
+.composer textarea {
+  flex: 1;
+  min-height: var(--target-size);
+  max-height: 40dvh;
+  padding: 10px var(--space-2);
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  resize: none;
+}
+
+.composer textarea:focus-visible {
+  outline: none;
+}
+
+.composer textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+.send-button {
+  display: inline-grid;
+  place-items: center;
+  width: var(--target-size);
+  height: var(--target-size);
+  border: 0;
+  border-radius: var(--radius-3);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  cursor: pointer;
+}
+
+.send-button:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+.composer-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-1);
+}
+
+.composer-foot p {
+  margin: 0;
+}
+
+.composer-count.is-over,
+.composer-error {
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+.composer-error {
+  margin: 0;
+  font-size: var(--font-size-2);
+}
+
+.composer-error:empty {
+  display: none;
+}
+
+.composer-slow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-2);
+}
+
+.conversation-new {
+  margin-left: auto;
+}
+
+@media (max-width: 599px) {
+  .conversation-head {
+    flex-wrap: wrap;
+  }
+
+  .conversation-new {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 599px) {
+  .composer-hint {
+    display: none;
+  }
+}
+
+/* Citation panel: bottom sheet on small screens, side panel from 960 px. */
+
+.citation-dialog {
+  width: 100%;
+  max-width: none;
+  max-height: 85dvh;
+  margin: auto 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-4) var(--radius-4) 0 0;
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  box-shadow: var(--shadow-3);
+}
+
+.citation-dialog[open] {
+  animation: sheet-up var(--duration-slow) var(--ease-standard);
+}
+
+.citation-dialog::backdrop {
+  background: var(--color-scrim);
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+}
+
+@media (min-width: 960px) {
+  .citation-dialog {
+    width: var(--panel-width);
+    height: 100dvh;
+    max-height: none;
+    margin: 0 0 0 auto;
+    border-radius: var(--radius-4) 0 0 var(--radius-4);
+  }
+
+  .citation-dialog[open] {
+    animation-name: panel-in;
+  }
+
+  @keyframes panel-in {
+    from {
+      transform: translateX(32px);
+      opacity: 0;
+    }
+  }
+}
+
+.citation-panel {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  padding-bottom: max(var(--space-5), env(safe-area-inset-bottom));
+}
+
+.citation-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.citation-header h2 {
+  margin: var(--space-2) 0 0;
+  color: var(--color-citation-fg);
+}
+
+.citation-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  margin: 0;
+}
+
+.citation-facts dt {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-1);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.citation-facts dd {
+  margin: 0;
+  font-weight: 650;
+}
+
+.citation-excerpt-title {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-2);
+}
+
+.citation-excerpt {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 0 var(--radius-2) var(--radius-2) 0;
+  background: var(--color-citation-bg);
+  color: var(--color-citation-fg);
+  font-size: var(--font-size-3);
+}
+
+.citation-date {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-2);
+}
+
+.citation-panel .button-primary {
+  justify-self: start;
+}
