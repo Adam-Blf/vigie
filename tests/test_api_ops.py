@@ -1,12 +1,18 @@
 from pathlib import Path
+from typing import Any
 
 import httpx
 import pytest
+from fastapi.testclient import TestClient
 
 from api_fixtures import PASSAGES, api_settings, make_api
+from vigie.api import __main__ as api_main
 from vigie.api import probes
+from vigie.api.app import create_app
 from vigie.api.bundle import load_bundle
-from vigie.api.factory import ConfigurationError, build_retriever, build_state
+from vigie.api.factory import build_state
+from vigie.config import get_settings
+from vigie.guard.chain import InputChain
 from vigie.llm.fake import FakeLLM
 from vigie.rag.static_retriever import StaticRetriever
 
@@ -96,24 +102,38 @@ def test_retriever_probe_calls_qdrant_with_its_key(
     assert calls == [("http://qdrant:6333/readyz", {"api-key": "k"})]
 
 
-def test_build_retriever_needs_a_source(tmp_path: Path) -> None:
-    with pytest.raises(ConfigurationError, match="VIGIE_STATIC_PASSAGES_PATH"):
-        build_retriever(api_settings(tmp_path))
-    retriever = build_retriever(api_settings(tmp_path, static_passages_path=PASSAGES))
-    assert len(retriever.search("x", 2)) == 2
+def test_static_retriever_needs_no_qdrant_probe(tmp_path: Path) -> None:
+    settings = api_settings(tmp_path, retriever="static", qdrant_url="http://qdrant:6333")
+    assert probes.retriever_probe(settings)() is True
 
 
 def test_state_builds_its_own_llm_and_closes_it(tmp_path: Path) -> None:
-    from fastapi.testclient import TestClient
-
-    from vigie.api.app import create_app
-
     state = build_state(
-        api_settings(tmp_path),
-        input_guard=lambda: None,  # type: ignore[arg-type]
-        retriever=StaticRetriever([]),
+        api_settings(tmp_path), input_guard=InputChain(), retriever=StaticRetriever([])
     )
     assert isinstance(state.pipeline._llm, FakeLLM)
     with TestClient(create_app(state)):
         pass
     assert state.pipeline._llm.is_closed
+
+
+def test_main_serves_the_configured_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    env = {
+        "VIGIE_DB_PATH": str(tmp_path / "v.sqlite3"),
+        "VIGIE_AUDIT_DIR": str(tmp_path / "audit"),
+        "VIGIE_LLM_PROVIDER": "fake",
+        "VIGIE_RETRIEVER": "static",
+        "VIGIE_STATIC_PASSAGES_PATH": str(PASSAGES),
+        "VIGIE_GUARD_CLASSIFIER": "off",
+    }
+    for name, value in env.items():
+        monkeypatch.setenv(name, value)
+    served: dict[str, Any] = {}
+    monkeypatch.setattr(api_main.uvicorn, "run", lambda app, **kw: served.update(app=app, **kw))
+    get_settings.cache_clear()
+    try:
+        assert api_main.main() == 0
+    finally:
+        get_settings.cache_clear()
+    assert served["host"] == "127.0.0.1" and served["server_header"] is False
+    assert TestClient(served["app"]).get("/healthz").status_code == 200

@@ -14,7 +14,7 @@ from vigie.api.app import create_app
 from vigie.api.factory import build_state
 from vigie.api.state import AppState
 from vigie.config import Settings
-from vigie.guard.base import BlockReason, GuardDecision
+from vigie.guard.base import BlockReason, GuardDecision, InputGuard
 from vigie.llm.base import ChatMessage, LLMClient, LLMError, LLMErrorKind, Usage
 from vigie.llm.fake import FakeLLM
 from vigie.rag.pipeline import Retriever
@@ -88,7 +88,7 @@ def make_api(
     tmp_path: Path,
     *,
     llm: LLMClient | None = None,
-    guard: PhraseGuard | None = None,
+    guard: InputGuard | None = None,
     retriever: Retriever | None = None,
     **overrides: Any,
 ) -> Api:

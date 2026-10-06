@@ -19,7 +19,7 @@ from vigie.api.schemas import ErrorOut, FieldError, ValidationErrorOut
 
 log = logging.getLogger("vigie.api")
 
-_HTTP_CODES = {404: "not_found", 405: "method_not_allowed"}
+_HTTP_CODES = {400: "bad_request", 404: "not_found", 405: "method_not_allowed"}
 
 
 class ApiError(Exception):

@@ -38,7 +38,7 @@ def llm_probe(settings: Settings, bundle: Bundle) -> Probe:
 
 
 def retriever_probe(settings: Settings) -> Probe:
-    if settings.qdrant_url is None:
+    if settings.retriever == "static" or settings.qdrant_url is None:
         # Static passages or an embedded Qdrant live in the process: nothing to reach.
         return lambda: True
     url = settings.qdrant_url.rstrip("/") + "/readyz"

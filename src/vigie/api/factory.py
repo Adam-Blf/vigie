@@ -20,19 +20,6 @@ from vigie.guard.base import InputGuard
 from vigie.llm.base import LLMClient
 from vigie.llm.factory import build_llm
 from vigie.rag.pipeline import RagPipeline, Retriever
-from vigie.rag.static_retriever import StaticRetriever
-
-
-class ConfigurationError(RuntimeError):
-    """A required component is not configured; the API refuses to start half-built."""
-
-
-def build_retriever(settings: Settings) -> Retriever:
-    if settings.static_passages_path is not None:
-        return StaticRetriever.from_json(settings.static_passages_path)
-    raise ConfigurationError(
-        "no retriever configured: set VIGIE_STATIC_PASSAGES_PATH to a passages JSON file"
-    )
 
 
 def build_state(

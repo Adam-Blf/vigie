@@ -120,9 +120,9 @@ class Settings(BaseSettings):
     # The local model costs nothing per token. A reference price lets the usage page
     # show what the same traffic would cost on a hosted API.
     usage_cost_per_1k_tokens_eur: float = Field(default=0.0, ge=0.0)
-    # Passages served by the static retriever until the Qdrant retriever is wired in.
-    static_passages_path: Path | None = None
-    readiness_timeout_s: float = Field(default=2.0, gt=0.0)
+    # Ollama answers /api/tags slowly right after a long generation; 2 s once marked a
+    # healthy pod not ready during the J5 proof run, so the probe waits a little longer.
+    readiness_timeout_s: float = Field(default=5.0, gt=0.0)
 
     # Guardrails. The input chain is the reference regex plus the ProtectAI DeBERTa
     # classifier, exported to ONNX int8 so the API image carries no torch. Revision pinned:
