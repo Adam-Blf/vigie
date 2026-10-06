@@ -15,7 +15,8 @@ n'est pas `DONE`. Statuts possibles : `DONE`, `PARTIEL`, `BLOQUÉ`.
 
 | # | Décision | Valeur retenue | Origine |
 |---|---|---|---|
-| 4 | Visibilité du dépôt | privé, fusion par PR uniquement, `main` protégée | défaut confirmé par la demande de passer par des PR |
+| 4 | Visibilité du dépôt | public depuis le 2026-10-06 (historique scanné par gitleaks, aucun secret, OCID ni IP), fusion par PR uniquement, `main` protégée | Adam, 2026-10-06 |
+| 12 | Publication avec le nom de l'école | dépôt public, accord de l'enseignant obtenu, mention « projet de cours, sujet rédigé par le binôme » | Adam, 2026-10-06 |
 | 14 | Clé Lakera | fournie par Adam, stockée hors dépôt | Adam, 2026-10-02 |
 
 ## Reste à faire

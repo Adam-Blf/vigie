@@ -20,7 +20,9 @@ rien dans les textes, et bloque les tentatives de manipulation. Une nouvelle ver
 part en production que si elle passe l'évaluation.
 
 Projet réalisé dans le cadre du cours MLOps, M2 Data Engineering et IA, EFREI Paris.
-Projet pédagogique, non affilié officiellement à l'EFREI.
+Le sujet a été proposé et rédigé par nous-mêmes, Adam Beloucif et Emilien Morice, puis
+validé par l'enseignant le 2 octobre 2026. Projet pédagogique, publié avec l'accord de
+l'enseignant, non affilié officiellement à l'EFREI.
 
 ## Architecture
 
