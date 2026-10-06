@@ -45,3 +45,19 @@ bootstrap:
   draws: 1000
   seed: 20261002
   confidence: 0.95
+
+# Load test thresholds (J11), written before the first real measurement. They come from
+# the local load targets of the project brief, not from a run. The runtime reads them
+# through Settings (VIGIE_LOAD_*), whose defaults must stay equal to the values below:
+# tests/loadtest/test_load_thresholds_file.py fails the build when they drift.
+load:
+  # p95 of POST /v1/ask on the answering path, attacks excluded. Strictly below.
+  p95_ms: 500
+  # Failed requests over all requests, attacks included. Strictly below.
+  max_error_ratio: 0.01
+  # Injections the input guard let through, over judged attacks. At most. Complement of
+  # the 0.90 guard recall floor.
+  max_attack_leak_ratio: 0.10
+  # Users allowed against any host that is not this machine. A code constant, not a
+  # setting: see src/vigie/loadtest/guard.py.
+  remote_max_users: 8

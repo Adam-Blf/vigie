@@ -1,0 +1,25 @@
+[2026-10-02 15:40:15,433] PC/INFO/locust.main: Starting Locust 2.46.6
+[2026-10-02 15:40:15,449] PC/INFO/vigie.load: load guard ok: 5 users against http://127.0.0.1:8799
+[2026-10-02 15:40:15,449] PC/INFO/locust.main: Run time limit set to 15 seconds
+[2026-10-02 15:40:15,451] PC/INFO/locust.runners: Ramping to 5 users at a rate of 5.00 per second
+[2026-10-02 15:40:15,454] PC/INFO/locust.runners: All users spawned: {"AttackerUser": 1, "BurstUser": 1, "NormalUser": 3} (5 total users)
+[2026-10-02 15:40:30,451] PC/INFO/locust.main: --run-time limit reached, shutting down
+[2026-10-02 15:40:31,345] PC/INFO/vigie.load: verdict input: requests=37 failures=0 p95_ms=310 attacks=5 leaks=0
+[2026-10-02 15:40:31,345] PC/ERROR/vigie.load: threshold missed: p95 310 ms, limit 10 ms
+[2026-10-02 15:40:31,345] PC/INFO/locust.main: Shutting down (exit code 1)
+Type     Name                                                                          # reqs      # fails |    Avg     Min     Max    Med |   req/s  failures/s
+--------|----------------------------------------------------------------------------|-------|-------------|-------|-------|-------|-------|--------|-----------
+POST     /v1/ask                                                                           32     0(0.00%) |    111      15     402     75 |    2.18        0.00
+POST     /v1/ask [attack]                                                                   5     0(0.00%) |    113      24     293     79 |    0.34        0.00
+--------|----------------------------------------------------------------------------|-------|-------------|-------|-------|-------|-------|--------|-----------
+         Aggregated                                                                        37     0(0.00%) |    111      15     402     75 |    2.52        0.00
+
+Response time percentiles (approximated)
+Type     Name                                                                                  50%    66%    75%    80%    90%    95%    98%    99%  99.9% 99.99%   100% # reqs
+--------|--------------------------------------------------------------------------------|--------|------|------|------|------|------|------|------|------|------|------|------
+POST     /v1/ask                                                                                75    120    160    210    280    310    400    400    400    400    400     32
+POST     /v1/ask [attack]                                                                       79    140    140    290    290    290    290    290    290    290    290      5
+--------|--------------------------------------------------------------------------------|--------|------|------|------|------|------|------|------|------|------|------|------
+         Aggregated                                                                             75    120    160    210    280    310    400    400    400    400    400     37
+
+exit=1

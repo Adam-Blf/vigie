@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "vigie"
-version = "0.4.0"
+version = "0.8.0"
 description = "Compliance copilot for banks: cited answers on DORA, the AI Act, GDPR and AMLR."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -30,7 +30,15 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-bench = []
+bench = [
+  "gliner2[local]>=2.0",
+  "transformers>=4.44,<5",
+  "torch>=2.3",
+  "presidio-analyzer>=2.2",
+  "matplotlib>=3.8",
+  "huggingface-hub>=0.24",
+  "pyarrow>=15",
+]
 tracking = ["mlflow>=2.16"]
 quant = [
   "onnx>=1.16",
@@ -48,14 +56,18 @@ dev = [
   "mypy>=1.11",
   "pre-commit>=3.8",
   "types-requests",
-  "types-PyYAML",
   "tomli>=2.0; python_version < '3.11'",
+  "matplotlib>=3.8",
+  "pyyaml>=6.0",
+  "types-PyYAML",
 ]
 
 [project.scripts]
 vigie-ingest = "vigie.corpus.cli:main"
 vigie-eval = "vigie.evaluation.cli:main"
 vigie-quant = "vigie.quant.cli:main"
+guardbench = "guardbench.cli:main"
+vigie-drift = "vigie.drift.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/vigie", "src/guardbench"]
@@ -71,6 +83,10 @@ select = ["E", "F", "I", "B", "UP", "SIM", "N", "S"]
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101"]
 
+[tool.ruff.lint.isort]
+# The red teaming scripts sit at the repo root next to their promptfoo config.
+known-first-party = ["vigie", "guardbench", "redteam"]
+
 [tool.mypy]
 python_version = "3.10"
 mypy_path = "src"
@@ -81,7 +97,8 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
-addopts = "-q"
+addopts = "-q -m 'not integration'"
+markers = ["integration: loads a real embedding model, slower than unit tests"]
 
 [tool.coverage.run]
 source = ["src"]

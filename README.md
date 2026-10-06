@@ -12,7 +12,7 @@
 <!-- adam-badges:end -->
 </p>
 
-Version 0.4.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
+Version 0.8.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
 
 Copilote de conformité pour les banques. Vigie répond aux questions sur DORA, l'AI Act, le
 RGPD et le règlement anti-blanchiment en citant l'article exact, dit quand il ne trouve
@@ -20,7 +20,9 @@ rien dans les textes, et bloque les tentatives de manipulation. Une nouvelle ver
 part en production que si elle passe l'évaluation.
 
 Projet réalisé dans le cadre du cours MLOps, M2 Data Engineering et IA, EFREI Paris.
-Projet pédagogique, non affilié officiellement à l'EFREI.
+Le sujet a été proposé et rédigé par nous-mêmes, Adam Beloucif et Emilien Morice, puis
+validé par l'enseignant le 2 octobre 2026. Projet pédagogique, publié avec l'accord de
+l'enseignant, non affilié officiellement à l'EFREI.
 
 ## Architecture
 

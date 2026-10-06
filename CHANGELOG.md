@@ -6,13 +6,86 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
-### Changed
-
-- Bandeau de badges du README réduit à sept badges cohérents et centrés.
+## [0.8.0] - 2026-10-06
 
 ### Added
 
+- Red teaming automatisé du jalon J10 (`redteam/`) : 360 attaques générées par promptfoo
+  0.123.1 avec le Ministral local, 60 par famille, puis triées par `curate.py` en un
+  fichier de rejeu déterministe `redteam/attacks.generated.yaml`.
+- Rejeu `redteam/replay.yaml` contre l'API désignée par `VIGIE_REDTEAM_BASE_URL`, et
+  `redteam/score.py` qui juge le taux d'attaques réussies contre le seuil de 5 % et
+  indique ce qui a arrêté chaque attaque défendue.
+- Tâche `python tasks.py redteam` et réglage `VIGIE_REDTEAM_MAX_ATTACK_SUCCESS_RATE`,
+  décrits dans `.env.example`.
+- Documentation `docs/redteam.md` et preuves du jalon dans `docs/proofs/J10/` (barrière
+  verte sur un bouchon protégé, vue rouge sur un bouchon qui fuit et sur un jeton faux).
+
+### Changed
+
+- `types-PyYAML` ajouté aux dépendances de développement, `redteam` déclaré comme paquet
+  interne pour le tri des imports.
+
+## [0.7.0] - 2026-10-06
+
+### Added
+
+- Préparation du test de charge du jalon J11 : scénario Locust `load/locustfile.py` avec
+  trois profils (usage normal, attaquant, rafale), questions tirées du jeu de référence
+  avec repli intégré, et verdict calculé en fin de run contre le p95, le taux d'erreur et
+  la part d'injections non bloquées.
+- Garde-fou de charge : run refusé sans `VIGIE_LOAD_TOKEN`, refusé au-delà de 8
+  utilisateurs vers un hôte qui n'est pas la machine locale, interface web de Locust
+  refusée.
+- Tâche `python tasks.py load-local` pour le protocole local (20 utilisateurs, 5 minutes,
+  rapport dans `results/load/`).
+- Seuils de charge écrits avant mesure dans la section `load` de `eval/thresholds.yaml`,
+  avec un test qui fait échouer la construction si les valeurs par défaut de `Settings`
+  s'en écartent.
+- Documentation `docs/load-test.md` et preuves du câblage sur un bouchon local dans
+  `docs/proofs/J11/`.
+- Réglages `VIGIE_LOAD_*`, décrits dans `.env.example`.
+
+### Changed
+
+- `pyyaml` déclaré dans les dépendances de développement, dont le test du fichier de seuils
+  a besoin.
+
+## [0.6.0] - 2026-10-06
+
+### Added
+
+- Détection de drift du jalon J9 (`src/vigie/drift/`) : fenêtre glissante bornée qui ne
+  garde que des vecteurs, trois indicateurs (distance entre centroïdes, part de questions
+  hors périmètre, test de Kolmogorov-Smirnov écrit en numpy), jauges Prometheus et journal
+  des transitions d'alerte.
+- Commande `vigie-drift build-reference` et tâche `python tasks.py drift-reference` qui
+  construisent `data/drift/reference.npy` et `anchors.npy` depuis le jeu de référence et
+  le corpus, avec repli sur la fixture de test.
+- Tâche `python tasks.py test-integration` pour les tests marqués `integration`, exclus par
+  défaut, qui chargent le vrai modèle MiniLM.
+- Documentation `docs/drift.md` et preuves du jalon dans `docs/proofs/J9/` (rapport avant
+  et après un lot hors sujet, marge du test KS).
+- Réglages `VIGIE_DRIFT_*`, décrits dans `.env.example`.
+
+## [0.5.0] - 2026-10-06
+
+### Added
+
+- Banc d'essai des garde-fous du jalon J4 (`src/guardbench`, commande `guardbench`) : jeu
+  maison bilingue de 174 exemples en neuf catégories, découpage `dev` et `test` figé par
+  paire, adaptateurs regex de référence, DeBERTa v3 ProtectAI, GLiGuard 300M, Presidio,
+  Llama Guard 3 1B via Ollama et Lakera Guard, mesure chronométrée avec échauffement,
+  rapports CSV, Markdown et graphique qualité contre latence, suivi MLflow en SQLite.
+- Rapport `docs/guardrails-benchmark.md` et preuves du jalon dans `docs/proofs/J4/bench/`
+  (jeu maison `test` et contrôle `deepset/prompt-injections`).
+- Réglages `VIGIE_BENCH_*`, `VIGIE_LAKERA_URL` et `VIGIE_MLFLOW_TRACKING_URI`, décrits dans
+  `.env.example`.
 - Licence propriétaire, tous droits réservés, dépôt public en consultation seule.
+
+### Changed
+
+- Bandeau de badges du README réduit à sept badges cohérents et centrés.
 
 ## [0.4.0] - 2026-10-02
 

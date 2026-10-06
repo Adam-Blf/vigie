@@ -1,0 +1,51 @@
+{
+  "milestone": "J9",
+  "title": "Détection de drift, rapport avant et après un lot hors sujet",
+  "commit": "ed82cba018f1d89147e60057e08788e878d4f9ec",
+  "branch": "feat/drift",
+  "date_utc": "2026-10-02T15:09:22Z",
+  "runs": [
+    {
+      "command": "python scripts/drift_demo.py",
+      "output": "drift_demo.txt",
+      "exit_code": 0,
+      "result": "30 questions DORA : aucune alerte (distance 0,076, hors périmètre 0, p KS 0,088). Après 30 questions de cuisine : alerte sur les trois indicateurs (distance 0,352, hors périmètre 0,5, p KS 7,4e-07), log drift_alert et vigie_drift_alert à 1."
+    },
+    {
+      "command": "python tasks.py check",
+      "output": "check.txt",
+      "exit_code": 0,
+      "result": "ruff, ruff format, mypy strict verts ; 61 tests unitaires passés, 2 tests d'intégration exclus par défaut ; couverture de src/vigie/drift à 100 %."
+    },
+    {
+      "command": "python tasks.py test-integration",
+      "output": "integration.txt",
+      "exit_code": 0,
+      "result": "2 tests d'intégration passés avec le vrai MiniLM : le lot de cuisine déclenche les trois indicateurs, le lot DORA reste sans alerte."
+    },
+    {
+      "command": "python tasks.py drift-reference",
+      "output": "drift-reference.txt",
+      "exit_code": 0,
+      "result": "Sans jeu de référence ni corpus, la commande retombe sur la fixture : 34 questions, 4 ancres sur 13 passages."
+    },
+    {
+      "command": "git show feat/golden:data/golden/questions.jsonl > data/golden/questions.jsonl && python tasks.py drift-reference",
+      "output": "drift-reference-golden.txt",
+      "exit_code": 0,
+      "result": "Avec le jeu de référence de la branche feat/golden : 40 questions retenues (in_scope, verified, hors split test), matrices 40 x 384 et 4 x 384."
+    }
+  ],
+  "tools": {
+    "python": "3.12.13",
+    "ruff": "0.16.10",
+    "mypy": "2.4.0",
+    "pytest": "9.1.1",
+    "fastembed": "0.8.1",
+    "onnxruntime": "1.30.0",
+    "numpy": "2.5.3",
+    "prometheus-client": "0.26.0",
+    "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+  },
+  "notes": "La sortie reproduit le corps de GET /v1/admin/drift (DriftReport.to_dict) et les lignes Prometheus ; l'endpoint lui-même arrive avec l'API (J5). La démonstration utilise les questions de tests/fixtures/drift_questions.json ; vigie-drift build-reference construit data/drift/ depuis data/golden/questions.jsonl et data/corpus/ dès qu'ils existent. Marge du test KS sur le lot DORA (p 0,088 pour alpha 0,01) documentée dans docs/drift.md."
+}

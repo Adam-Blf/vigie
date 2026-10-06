@@ -1,0 +1,57 @@
+{
+  "milestone": "J10",
+  "title": "Red teaming, preparation without the running API",
+  "date": "2026-10-02",
+  "commit": "07be401b68bc4450da316e31714cb2b2ae8ef2ae",
+  "branch": "feat/redteam",
+  "tools": {
+    "promptfoo": "0.123.1",
+    "node": "v24.14.1",
+    "ollama": "0.35.0",
+    "generator_model": "ministral-3:3b-instruct-2512-q4_K_M (f04aa1c738f6)",
+    "python": "3.12.13",
+    "ruff": "0.16.10"
+  },
+  "attacks_file": {
+    "path": "redteam/attacks.generated.yaml",
+    "sha256": "73ffff47aaff5da8688c3d68f34ab3354c8253b2cb31cfdab0c0efe23d1e6169",
+    "attacks": 360
+  },
+  "steps": [
+    {
+      "name": "generation",
+      "command": "cd redteam && PROMPTFOO_DISABLE_REMOTE_GENERATION=true PROMPTFOO_DISABLE_TELEMETRY=1 ./node_modules/.bin/promptfoo redteam generate -c promptfooconfig.yaml -o attacks.raw.yaml --no-cache --force",
+      "output": "generation.txt",
+      "result": "360 test cases, 17 model requests, 20 776 tokens, all plugins Success"
+    },
+    {
+      "name": "curation",
+      "command": "python redteam/curate.py redteam/attacks.raw.yaml redteam/attacks.generated.yaml",
+      "result": "360 attacks written, 60 per plugin"
+    },
+    {
+      "name": "replay against the guarded stub",
+      "setup": "python docs/proofs/J10/stub_api.py 8797 guarded",
+      "command": "VIGIE_REDTEAM_BASE_URL=http://127.0.0.1:8797 VIGIE_REDTEAM_TOKEN=<stub token> python tasks.py redteam --summary docs/proofs/J10/summary-guarded.json",
+      "output": ["replay-guarded.txt", "summary-guarded.json"],
+      "exit_code": 0,
+      "result": "PASS, attack success rate 0 %, 167 blocked, 184 refused, 9 answered without leak"
+    },
+    {
+      "name": "replay against the leaky stub (gate seen red)",
+      "setup": "python docs/proofs/J10/stub_api.py 8798 leaky",
+      "command": "VIGIE_REDTEAM_BASE_URL=http://127.0.0.1:8798 VIGIE_REDTEAM_TOKEN=<stub token> python tasks.py redteam --summary docs/proofs/J10/summary-leaky.json",
+      "output": ["replay-leaky.txt", "summary-leaky.json"],
+      "exit_code": 1,
+      "result": "FAIL, attack success rate 100 %, 360 breached"
+    },
+    {
+      "name": "replay with a wrong token (gate seen red on errors)",
+      "command": "VIGIE_REDTEAM_BASE_URL=http://127.0.0.1:8797 VIGIE_REDTEAM_TOKEN=wrong-token python tasks.py redteam --summary docs/proofs/J10/summary-unauthorized.json",
+      "output": ["replay-unauthorized.txt", "summary-unauthorized.json"],
+      "exit_code": 1,
+      "result": "FAIL, 360 errors (HTTP 401), nothing judged"
+    }
+  ],
+  "not_done_here": "Replay against the real API with the fake LLM in CI, and the manual run against Ministral: both need J5."
+}

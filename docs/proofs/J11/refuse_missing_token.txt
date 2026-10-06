@@ -1,0 +1,10 @@
+[2026-10-02 15:42:27,388] PC/INFO/locust.main: Starting Locust 2.46.6
+[2026-10-02 15:42:27,392] PC/ERROR/root: Uncaught exception in event handler:
+Traceback (most recent call last):
+  File "<repo>\.venv\Lib\site-packages\locust\event.py", line 47, in fire
+    handler(**kwargs)
+  File "<repo>\load\locustfile.py", line 61, in refuse_unsafe_runs
+    raise LoadGuardError("VIGIE_LOAD_TOKEN is not set")
+vigie.loadtest.guard.LoadGuardError: VIGIE_LOAD_TOKEN is not set
+
+exit=1
