@@ -90,6 +90,10 @@ class Settings(BaseSettings):
     guard_input_threshold: float = 0.5
     guard_enabled: bool = True
 
+    # Evaluation
+    golden_path: Path = Path("data/golden/questions.jsonl")
+    golden_seal_path: Path = Path("data/golden/test.sha256")
+
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
