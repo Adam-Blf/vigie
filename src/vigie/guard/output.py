@@ -1,0 +1,39 @@
+"""The output chain: what leaves the API is checked once more after the model.
+
+Two checks. Every citation left in the text must be backed by a passage that was really
+retrieved; the RAG layer already removes invented ones, and this second pass makes sure a
+later change of that layer cannot quietly let one through. Then any personal data the
+model copied into its answer is masked, the same way as in the audit log.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, replace
+
+from vigie.guard.pii import mask_pii
+from vigie.rag.citations import validate_citations
+from vigie.rag.types import Answer
+
+
+@dataclass(frozen=True)
+class OutputReview:
+    answer: Answer
+    # Every citation removed on the way, by the RAG layer or by this second pass.
+    removed_citations: tuple[str, ...]
+    masked: tuple[str, ...]
+
+
+def review_answer(answer: Answer) -> OutputReview:
+    if answer.refused:
+        return OutputReview(answer, tuple(answer.removed_citations), ())
+    report = validate_citations(answer.text, answer.sources)
+    masked = mask_pii(report.text)
+    removed = (*answer.removed_citations, *report.removed)
+    kept = {citation.label for citation in report.citations}
+    checked = replace(
+        answer,
+        text=masked.text,
+        citations=[c for c in answer.citations if c.label in kept],
+        removed_citations=list(removed),
+    )
+    return OutputReview(checked, removed, masked.kinds)
