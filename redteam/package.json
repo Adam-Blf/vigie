@@ -12,6 +12,12 @@
     "replay:local": "promptfoo eval -c replay.yaml -o results.json --no-cache --no-share --max-concurrency 1"
   },
   "devDependencies": {
-    "promptfoo": "0.123.1"
+    "promptfoo": "0.124.0"
+  },
+  "overrides": {
+    "simple-git": "^4.0.2",
+    "@simple-git/argv-parser": "^2.0.1",
+    "basic-ftp": "^6.2.2",
+    "smol-toml": "^1.8.1"
   }
 }

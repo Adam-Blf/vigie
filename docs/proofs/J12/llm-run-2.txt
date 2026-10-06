@@ -1,0 +1,5 @@
+2026/10/06 11:40:22 INFO mlflow.store.db.utils: Creating initial MLflow database tables...
+2026/10/06 11:40:22 INFO mlflow.store.db.utils: Updating database tables
+2026/10/06 11:40:25 INFO mlflow.tracking.fluent: Experiment with name 'vigie-quantization' does not exist. Creating a new experiment.
+ministral-3:3b-instruct-2512-q4_K_M: model=ministral-3:3b-instruct-2512-q4_K_M, questions=10, first_token_p50_ms=60234.046, first_token_p95_ms=74777.371, tokens_per_s=4.37, memory_bytes=2730250730, raw_citation_validity=1.0, expected_coverage=0.1, refusals=2
+ministral-3:3b-instruct-2512-q8_0: model=ministral-3:3b-instruct-2512-q8_0, questions=10, first_token_p50_ms=127846.225, first_token_p95_ms=159059.989, tokens_per_s=3.23, memory_bytes=4236247039, raw_citation_validity=1.0, expected_coverage=0.1, refusals=2

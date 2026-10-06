@@ -6,6 +6,49 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-10-06
+
+### Added
+
+- Interface PWA du jalon J6 (`web/`) : TypeScript strict avec Vite et Preact, écran de
+  conversation avec réponses en flux et panneau de citations, écrans réglages, usage,
+  mentions légales, confidentialité et statut, dictionnaires français et anglais à clés
+  identiques, chouette de repli en SVG et contrat d'animation Rive.
+- Service worker en mode invite, coquille hors ligne, aucune réponse de l'API mise en
+  cache, politique CSP de production avec Trusted Types, icônes Phosphor et ressources
+  servies localement, sans CDN.
+- Jetons de design avec barrière de contraste (`python tasks.py contrast`), suite
+  Playwright (conversation, PWA, accessibilité axe, origines, captures visuelles) et
+  configuration Lighthouse CI.
+- Description de chaque écran dans `docs/design/screens.md` et preuves du jalon dans
+  `docs/proofs/J6/`.
+
+## [0.15.0] - 2026-10-06
+
+### Added
+
+- Étude de quantization du jalon J12 (`src/vigie/quant/`, commande `vigie-quant`) : export
+  ONNX fp32 du modèle d'embedding à révision épinglée, quantization dynamique int8 par
+  onnxruntime, contrôle de parité avec PyTorch, puis mesure de la taille, de la latence
+  p50 et p95 par requête, du rappel@5 et du MRR sur la partie `dev` du jeu de référence,
+  chaque variante journalisée comme un run MLflow.
+- Seuil de décision écrit avant la mesure dans `eval/thresholds.yaml` (section
+  `quantization`) : int8 retenu si le rappel@5 perd au plus 2 points et si le fichier est
+  au moins divisé par 2.
+- Étude LLM Ministral 3B Q4_K_M contre Q8_0 par Ollama, sur CPU seul : premier token,
+  débit, mémoire et validité des citations sur 10 questions `dev` fixes.
+- Documentation `docs/quantization.md` avec tableau et graphique, preuves dans
+  `docs/proofs/J12/`, réglages `VIGIE_DENSE_VARIANT`, `VIGIE_DENSE_MODEL_REVISION` et
+  `VIGIE_QUANT_*` décrits dans `.env.example`.
+
+### Changed
+
+- Le modèle d'embedding déployé est la version int8 (`dense_variant = "int8"`) : taille
+  divisée par 4, rappel@5 sans perte sur la partie `dev`. Ministral 3B reste en Q4_K_M :
+  Q8_0 double l'attente du premier token et ajoute 1,5 Go pour une qualité identique.
+- `pyyaml` passe dans les dépendances d'exécution, l'extra `quant` gagne torch,
+  transformers, onnxscript et matplotlib.
+
 ## [0.14.0] - 2026-10-06
 
 ### Added

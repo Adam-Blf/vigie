@@ -1,0 +1,18 @@
+[WebServer] <script src="/theme-init.js"> in "/index.html" can't be bundled without type="module" attribute
+
+Running 54 tests using 2 workers
+
+  ✓   2 [chromium] › e2e\chat.spec.ts:8:1 › answers a question from the mocked API with streamed text and citations (2.3s)
+  ✓   3 [chromium] › e2e\chat.spec.ts:29:1 › opens a citation in a dialog that traps focus, closes on Escape and returns focus (3.2s)
+  ✓   1 [chromium] › e2e\origins.spec.ts:9:1 › no request ever leaves the app origin (5.8s)
+  ✓   4 [chromium] › e2e\chat.spec.ts:55:1 › shows the blocked badge and the blocked owl for an injection (2.0s)
+  ✓   5 [chromium] › e2e\origins.spec.ts:35:1 › the app runs under the production CSP without a single violation (2.6s)
+  ✓   6 [chromium] › e2e\chat.spec.ts:68:1 › refusal without source shows the unknown owl (1.8s)
+  ✓   7 [chromium] › e2e\pwa.spec.ts:8:1 › the manifest is complete and Chrome reports no installability error (1.3s)
+  ✓   8 [chromium] › e2e\chat.spec.ts:77:1 › says when the citation filter removed a reference (1.0s)
+  ✓  10 [chromium] › e2e\chat.spec.ts:85:1 › asks for a token when none is stored, then sends (1.3s)
+  ✓   9 [chromium] › e2e\pwa.spec.ts:33:1 › the app shell works offline and shows the offline owl (2.0s)
+  ✓  11 [chromium] › e2e\chat.spec.ts:102:1 › a 401 clears the token and opens the token prompt (1.3s)
+  ✓  12 [chromium] › e2e\pwa.spec.ts:49:1 › API answers never reach a cache, and requests with a token are never stored (2.0s)
+  ✓  13 [chromium] › e2e\chat.spec.ts:112:1 › 422 goes under the field, 429 shows the delay, 5xx shows a copyable trace id (2.7s)
+  ✓  15 [chromium] › e2e\chat.spec.ts:138:1 › a network failure shows the error owl and a retry (2.2s)

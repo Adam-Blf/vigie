@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "vigie"
-version = "0.14.0"
+version = "0.16.0"
 description = "Compliance copilot for banks: cited answers on DORA, the AI Act, GDPR and AMLR."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -26,6 +26,7 @@ dependencies = [
   "prometheus-client>=0.20",
   "numpy>=1.26",
   "requests>=2.32",
+  "pyyaml>=6.0",
   "onnxruntime>=1.18",
   "tokenizers>=0.19",
 ]
@@ -33,7 +34,7 @@ dependencies = [
 [project.optional-dependencies]
 bench = [
   "gliner2[local]>=2.0",
-  "transformers>=4.44,<5",
+  "transformers>=4.44,<6",
   "torch>=2.3",
   "presidio-analyzer>=2.2",
   "matplotlib>=3.8",
@@ -43,7 +44,14 @@ bench = [
 tracking = ["mlflow>=2.16"]
 # Build-time only: fetch the guard classifier and quantize it (python -m vigie.guard.prepare).
 guard-model = ["huggingface-hub>=0.24", "onnx>=1.16"]
-quant = ["onnx>=1.16", "onnxruntime>=1.18"]
+quant = [
+  "onnx>=1.16",
+  "onnxruntime>=1.18",
+  "onnxscript>=0.5",
+  "torch>=2.9",
+  "transformers>=4.46",
+  "matplotlib>=3.9",
+]
 load = ["locust>=2.31"]
 dev = [
   "pytest>=8.2",
@@ -61,6 +69,7 @@ dev = [
 [project.scripts]
 vigie-ingest = "vigie.corpus.cli:main"
 vigie-eval = "vigie.evaluation.cli:main"
+vigie-quant = "vigie.quant.cli:main"
 guardbench = "guardbench.cli:main"
 vigie-drift = "vigie.drift.cli:main"
 vigie-index = "vigie.retrieval.cli:main"

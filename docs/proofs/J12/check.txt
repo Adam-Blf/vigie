@@ -1,0 +1,159 @@
++ C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe -m ruff check .
+All checks passed!
++ C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe -m ruff format --check .
+272 files already formatted
++ C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe scripts/sync_version.py --check
++ C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe -m mypy
+Success: no issues found in 133 source files
++ C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe -m pytest --cov=src --cov-report=term-missing --cov-report=json
+........................................................................ [  8%]
+........................................................................ [ 16%]
+........................................................................ [ 25%]
+........................................................................ [ 33%]
+........................................................................ [ 42%]
+........................................................................ [ 50%]
+........................................................................ [ 59%]
+........................................................................ [ 67%]
+........................................................................ [ 76%]
+........................................................................ [ 84%]
+........................................................................ [ 93%]
+........................................................                 [100%]
+============================== warnings summary ===============================
+..\..\..\.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\adamb\Documents\Projets\school\vigie\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== tests coverage ================================
+______________ coverage: platform win32, python 3.12.13-final-0 _______________
+
+Name                                     Stmts   Miss Branch BrPart  Cover   Missing
+------------------------------------------------------------------------------------
+src\guardbench\__init__.py                   1      0      0      0   100%
+src\guardbench\cli.py                       66      0     12      2    97%   65->exit, 84->87
+src\guardbench\datasets.py                  57      0     10      0   100%
+src\guardbench\guards\__init__.py           20      0      2      0   100%
+src\guardbench\guards\base.py               15      0      0      0   100%
+src\guardbench\guards\deberta.py            24      0      0      0   100%
+src\guardbench\guards\gliguard.py           40      0      8      0   100%
+src\guardbench\guards\lakera.py             25      0      4      0   100%
+src\guardbench\guards\llamaguard.py         28      0      4      0   100%
+src\guardbench\guards\presidio.py           39      0      8      0   100%
+src\guardbench\guards\regex.py              36      0      8      0   100%
+src\guardbench\metrics.py                   46      0      4      0   100%
+src\guardbench\report.py                    66      0     16      0   100%
+src\guardbench\runner.py                    53      0      4      0   100%
+src\guardbench\tracking.py                  27      0     10      0   100%
+src\guardbench\validation.py                63      0     38      0   100%
+src\vigie\__init__.py                        1      0      0      0   100%
+src\vigie\api\__main__.py                   22      1      2      1    92%   44
+src\vigie\api\app.py                        29      0      2      0   100%
+src\vigie\api\audit.py                      88      0     18      1    99%   73->71
+src\vigie\api\audit_cli.py                  25      1      6      1    94%   43
+src\vigie\api\auth.py                       76      0      8      0   100%
+src\vigie\api\bundle.py                     38      0      6      0   100%
+src\vigie\api\contract.py                   26      1      6      1    94%   46
+src\vigie\api\db.py                         20      0      0      0   100%
+src\vigie\api\deps.py                       32      0     10      0   100%
+src\vigie\api\errors.py                     45      0      0      0   100%
+src\vigie\api\factory.py                    19      0      0      0   100%
+src\vigie\api\metrics.py                    19      0      0      0   100%
+src\vigie\api\middleware.py                 85      1     22      2    97%   106, 112->103
+src\vigie\api\probes.py                     26      0      6      0   100%
+src\vigie\api\ratelimit.py                  23      0      4      0   100%
+src\vigie\api\redaction.py                  26      0     10      0   100%
+src\vigie\api\routes.py                     62      0      6      0   100%
+src\vigie\api\schemas.py                    54      0      0      0   100%
+src\vigie\api\service.py                   105      0     12      0   100%
+src\vigie\api\state.py                      33      0      0      0   100%
+src\vigie\api\tokens.py                     45      1     12      1    96%   71
+src\vigie\api\usage.py                      56      0      0      0   100%
+src\vigie\config.py                        135      0      0      0   100%
+src\vigie\corpus\cli.py                     94      0     18      0   100%
+src\vigie\corpus\fetch.py                   75      0     22      0   100%
+src\vigie\corpus\jsonl.py                   21      0      4      0   100%
+src\vigie\corpus\lock.py                    37      0     10      0   100%
+src\vigie\corpus\models.py                  17      0      0      0   100%
+src\vigie\corpus\parse.py                  105      0     34      0   100%
+src\vigie\corpus\remote.py                  24      0      6      0   100%
+src\vigie\corpus\render.py                  66      0     32      0   100%
+src\vigie\corpus\sources.py                 21      0      4      0   100%
+src\vigie\deploy\__main__.py                 2      0      0      0   100%
+src\vigie\deploy\budget.py                  79      0     12      0   100%
+src\vigie\deploy\cli.py                     40      0      4      0   100%
+src\vigie\deploy\manifests.py               61      0     20      0   100%
+src\vigie\deploy\policy.py                  48      0     24      0   100%
+src\vigie\deploy\quantity.py                26      0     10      0   100%
+src\vigie\drift\__init__.py                  6      0      0      0   100%
+src\vigie\drift\cli.py                      39      0      0      0   100%
+src\vigie\drift\detectors.py                42      0     10      0   100%
+src\vigie\drift\embedder.py                 26      0      8      0   100%
+src\vigie\drift\metrics.py                  20      0      2      0   100%
+src\vigie\drift\monitor.py                 102      0     18      0   100%
+src\vigie\drift\reference.py                46      0      8      0   100%
+src\vigie\drift\sources.py                  52      0     16      0   100%
+src\vigie\drift\window.py                   25      0      8      0   100%
+src\vigie\evaluation\cli.py                 80      0     14      0   100%
+src\vigie\evaluation\corpus_text.py         57      0     20      0   100%
+src\vigie\evaluation\golden.py              72      0     10      0   100%
+src\vigie\evaluation\metrics.py             86      0     30      0   100%
+src\vigie\evaluation\regulations.py         11      0      2      0   100%
+src\vigie\evaluation\retrieval_eval.py      37      0      8      0   100%
+src\vigie\evaluation\validate.py            79      0     40      0   100%
+src\vigie\guard\base.py                     17      0      4      0   100%
+src\vigie\guard\chain.py                    25      0      6      0   100%
+src\vigie\guard\classifier.py               50      0      6      0   100%
+src\vigie\guard\factory.py                   9      0      2      0   100%
+src\vigie\guard\lang.py                     14      0      0      0   100%
+src\vigie\guard\measure.py                  85      1      4      1    98%   153
+src\vigie\guard\normalize.py                56      1     10      1    97%   60
+src\vigie\guard\output.py                   19      0      2      0   100%
+src\vigie\guard\pii.py                      32      0      8      0   100%
+src\vigie\guard\prepare.py                  47      1      4      1    96%   91
+src\vigie\infra\redact.py                   23      0      0      0   100%
+src\vigie\infra\retry.py                    78      0     14      0   100%
+src\vigie\llm\base.py                       68      0      6      0   100%
+src\vigie\llm\factory.py                    12      0      4      0   100%
+src\vigie\llm\fake.py                       32      0      6      0   100%
+src\vigie\llm\mistral.py                    50      0     16      0   100%
+src\vigie\llm\ollama.py                     45      0     12      0   100%
+src\vigie\loadtest\guard.py                 23      0     10      0   100%
+src\vigie\loadtest\questions.py             20      0     10      0   100%
+src\vigie\loadtest\verdict.py               29      0      8      0   100%
+src\vigie\quant\cli.py                     111     16     12      1    85%   40-42, 48, 52-56, 69-72, 135-139
+src\vigie\quant\decision.py                 54      0     10      0   100%
+src\vigie\quant\dense.py                    47      0      6      0   100%
+src\vigie\quant\encoder.py                  42      9      6      0    81%   51-62
+src\vigie\quant\export.py                   59     42      0      0    29%   36-92, 96-101, 110-128
+src\vigie\quant\llm_bench.py                97      0     20      0   100%
+src\vigie\quant\report.py                   36     25      6      0    31%   32-58
+src\vigie\quant\runner.py                   60      0     12      0   100%
+src\vigie\quant\stats.py                    24      0      6      0   100%
+src\vigie\quant\study.py                    47      0      8      0   100%
+src\vigie\quant\tracking.py                 18      0      2      0   100%
+src\vigie\rag\citations.py                  77      0     18      0   100%
+src\vigie\rag\cli.py                        32      1      4      1    94%   67
+src\vigie\rag\labels.py                     10      0      0      0   100%
+src\vigie\rag\pipeline.py                   75      0     14      0   100%
+src\vigie\rag\prompt.py                     30      0      2      0   100%
+src\vigie\rag\static_retriever.py           13      0      0      0   100%
+src\vigie\rag\types.py                      46      0      0      0   100%
+src\vigie\retrieval\cli.py                  44      0      2      0   100%
+src\vigie\retrieval\client.py               13      0      6      0   100%
+src\vigie\retrieval\embeddings.py           61      0      0      0   100%
+src\vigie\retrieval\factory.py              33      0      8      0   100%
+src\vigie\retrieval\index.py                70      0     14      0   100%
+src\vigie\retrieval\search.py               34      0      4      0   100%
+------------------------------------------------------------------------------------
+TOTAL                                     5059    101    944     14    98%
+
+11 empty files skipped.
+Coverage JSON written to file coverage.json
+848 passed, 2 deselected, 1 warning in 163.48s (0:02:43)
++ C:\Users\adamb\Documents\Projets\school\vigie\.venv\Scripts\python.exe scripts/coverage_gate.py coverage.json --total 80 --path src/vigie/guard=95 --path src/vigie/rag/citations.py=95 --path src/vigie/api/auth=95 --path src/vigie/api/usage=95 --path src/vigie/drift=95
+ok   total 98.0% (floor 80.0%)
+ok   src/vigie/guard 98.5% (floor 95.0%)
+ok   src/vigie/rag/citations.py 100.0% (floor 95.0%)
+ok   src/vigie/api/auth 100.0% (floor 95.0%)
+ok   src/vigie/api/usage 100.0% (floor 95.0%)
+ok   src/vigie/drift 100.0% (floor 95.0%)

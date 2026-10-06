@@ -81,6 +81,12 @@ def version_check(_: Sequence[str]) -> int:
 
 
 @task
+def contrast(_: Sequence[str]) -> int:
+    # The design token gate lives with the web app; this keeps one entry point for checks.
+    return run(["node", "web/scripts/check-contrast.ts"])
+
+
+@task
 def check(args: Sequence[str]) -> int:
     for step in (lint, version_check, typecheck, test, coverage_gate):
         code = step(args if step is test else [])

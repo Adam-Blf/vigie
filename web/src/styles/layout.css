@@ -1,0 +1,350 @@
+/* Page frame: header, disclosure banner, main area, footer, toasts, document screens. */
+
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+.skip-link {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: var(--z-toast);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-2);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  padding-top: max(var(--space-2), env(safe-area-inset-top));
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* The brass hairline is the lookout's horizon. */
+.site-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-accent) 0 72px, transparent 72px);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--target-size);
+  color: var(--color-text);
+  font-size: var(--font-size-5);
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.brand img {
+  border-radius: var(--radius-2);
+}
+
+.site-header nav {
+  margin-left: auto;
+}
+
+.nav {
+  display: flex;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--target-size);
+  min-width: var(--target-size);
+  justify-content: center;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-pill);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-2);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  color: var(--color-text);
+  background: var(--color-surface-sunken);
+}
+
+.nav-link[aria-current="page"] {
+  color: var(--color-text);
+  background: var(--color-surface-sunken);
+}
+
+@media (max-width: 599px) {
+  .site-header {
+    gap: var(--space-1);
+    padding-left: var(--space-3);
+    padding-right: var(--space-2);
+  }
+
+  .brand-name {
+    font-size: var(--font-size-4);
+  }
+
+  .nav-link {
+    padding: 0;
+  }
+
+  .nav-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+.ai-banner,
+.demo-banner {
+  margin: 0;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-2);
+  text-align: center;
+}
+
+.ai-banner {
+  background: var(--color-surface-sunken);
+  color: var(--color-text-muted);
+}
+
+.demo-banner {
+  background: var(--color-citation-bg);
+  color: var(--color-citation-fg);
+  font-weight: 600;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-4) 0;
+}
+
+.main:focus {
+  outline: none;
+}
+
+.site-footer {
+  padding: var(--space-5) var(--space-4) max(var(--space-5), env(safe-area-inset-bottom));
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-2);
+  text-align: center;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-1) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-size);
+  color: var(--color-text-muted);
+}
+
+/* Documents */
+
+.doc {
+  width: 100%;
+  max-width: var(--measure);
+  margin: 0 auto var(--space-6);
+}
+
+.doc section {
+  margin-top: var(--space-5);
+}
+
+.doc-version {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-2);
+}
+
+.settings section {
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-4);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-1);
+}
+
+.settings section > :last-child {
+  margin-bottom: 0;
+}
+
+.segmented {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.segmented label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--target-size);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.segmented label:has(input:checked) {
+  border-color: var(--color-primary);
+  box-shadow: inset 0 0 0 1px var(--color-primary);
+}
+
+.token-form {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 420px;
+}
+
+.token-form .button {
+  justify-self: start;
+}
+
+.token-form .hint {
+  margin: 0;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--target-size);
+}
+
+.usage-grid {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.usage-grid > div {
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-3);
+  background: var(--color-surface-raised);
+}
+
+.usage-grid dt {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-2);
+}
+
+.usage-grid dd {
+  margin: 0;
+  font-size: var(--font-size-6);
+  font-weight: 700;
+}
+
+/* Offline, 404, server error */
+
+.status-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 480px;
+  margin: var(--space-6) auto;
+  text-align: center;
+}
+
+.status-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.trace {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  overflow-wrap: anywhere;
+}
+
+/* Toasts */
+
+.banners {
+  position: fixed;
+  left: var(--space-3);
+  right: var(--space-3);
+  bottom: max(var(--space-3), env(safe-area-inset-bottom));
+  z-index: var(--z-toast);
+  display: grid;
+  gap: var(--space-2);
+  justify-items: center;
+  pointer-events: none;
+}
+
+.banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  max-width: 560px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-4);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-3);
+  pointer-events: auto;
+  animation: rise var(--duration-slow) var(--ease-standard);
+}
+
+.banner p {
+  flex: 1 1 200px;
+  margin: 0;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}

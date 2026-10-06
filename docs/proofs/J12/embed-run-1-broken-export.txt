@@ -1,0 +1,6 @@
+2026/10/06 10:24:32 INFO mlflow.store.db.utils: Creating initial MLflow database tables...
+2026/10/06 10:24:33 INFO mlflow.store.db.utils: Updating database tables
+2026/10/06 10:24:38 INFO mlflow.tracking.fluent: Experiment with name 'vigie-quantization' does not exist. Creating a new experiment.
+fp32: name=fp32, size_bytes=471578830, recall_at_k=0.02127659574468085, mrr=0.016031096563011455, latency_p50_ms=16.472, latency_p95_ms=35.623, questions=47
+int8: name=int8, size_bytes=119100829, recall_at_k=0.0425531914893617, mrr=0.018507087868789997, latency_p50_ms=22.252, latency_p95_ms=68.48, questions=47
+decision: deploy int8

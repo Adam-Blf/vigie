@@ -26,6 +26,9 @@ results/
 data/corpus/
 data/drift/
 data/cache/
+data/quant/
+*.onnx
+*.onnx.data
 .qdrant/
 
 # Terraform
@@ -38,7 +41,10 @@ node_modules/
 web/dist/
 web/test-results/
 web/playwright-report/
+web/coverage/
 .lighthouseci/
+# Local state of the design review tool, not project content
+.impeccable/
 
 # Guard classifier, fetched and quantized by python -m vigie.guard.prepare
 models/
