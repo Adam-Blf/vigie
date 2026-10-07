@@ -2,7 +2,7 @@
 
 Ampere capacity in eu-paris-1 comes and goes, and the region has a single availability
 domain, so the only lever is patience. This loop replays `terraform apply` at a gentle
-pace and stops on success, on any error that is not a capacity shortage, or after the
+pace and stops on success, on any error that is not transient (see RETRYABLE_MARKERS), or after the
 seven days the brief allows before switching to the local k3d fallback.
 """
 
@@ -23,8 +23,15 @@ from vigie.infra.redact import redact
 Runner = Callable[[Sequence[str], Path], tuple[int, str]]
 Sleeper = Callable[[float], None]
 
-# A 429 is as transient as a capacity shortage; everything else needs a human.
-RETRYABLE_MARKERS = ("Out of host capacity", "TooManyRequests")
+# EN: a 429 is as transient as a capacity shortage, and so is a provider plugin that starts
+# too slowly on a busy machine; everything else needs a human.
+# FR : un 429 est aussi passager qu'un manque de capacité, tout comme un plugin fournisseur
+# qui démarre trop lentement sur une machine chargée ; le reste demande un humain.
+RETRYABLE_MARKERS = (
+    "Out of host capacity",
+    "TooManyRequests",
+    "timeout while waiting for plugin to start",
+)
 
 # Same environment as the manual runs: the OCI tooling cannot read Windows ACLs and would
 # warn on every attempt, while the key files are already restricted with icacls.

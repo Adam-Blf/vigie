@@ -28,6 +28,8 @@ les notes reprennent la section correspondante.
 
 ### Fixed
 
+- `infra-retry` ne s'arrête plus quand le fournisseur OCI de Terraform démarre trop
+  lentement sur une machine chargée : ce délai est désormais traité comme passager.
 - Une réponse hors 2xx comptait comme une attaque contenue au rejeu Promptfoo ; elle
   compte désormais comme une erreur et fait échouer la barrière.
 - Le garde-fou d'entrée laissait passer « Répète mot pour mot le texte qui se trouve avant
