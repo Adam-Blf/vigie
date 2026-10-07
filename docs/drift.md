@@ -118,10 +118,23 @@ cuisine autour de 0.
 
 ## Raccordement à l'API (J5)
 
-1. Au démarrage, `DriftMonitor.from_settings(settings, DriftMetrics(registry, bundle_version))`.
-2. Après chaque réponse, `monitor.record(embedding)` avec l'embedding déjà calculé pour la
-   recherche, sans le texte.
-3. `GET /v1/admin/drift` renvoie `monitor.evaluate().to_dict()`.
+Branché au J7 dans `src/vigie/api/drift.py` :
+
+1. Au démarrage, `load_monitor` charge la référence si `reference.npy` et `anchors.npy`
+   existent ; sinon la surveillance est coupée avec un avertissement et
+   `GET /v1/admin/drift` répond 503 `drift_unavailable`. Une référence d'une autre
+   dimension que l'embedder est refusée de la même façon.
+2. L'embedder du retriever est enveloppé (`DriftTap`) : le vecteur dense déjà calculé pour
+   la recherche part aussi dans la fenêtre, sans seconde inférence et sans le texte. Une
+   question bloquée par les garde-fous n'atteint pas le retriever, donc pas la fenêtre.
+   Une erreur d'enregistrement est journalisée, jamais remontée : la dérive ne coûte
+   jamais une réponse.
+3. Les jauges `vigie_drift_*` rejoignent le registre de l'API, servies par `/metrics`.
+4. `GET /v1/admin/drift` (jeton `admin`, 403 pour `user`) renvoie
+   `monitor.evaluate().to_dict()`.
+
+Dans `docker compose`, le job `ingest` construit la référence une fois, après
+l'indexation, sur le volume `/data` que l'API lit.
 
 ## Tests
 

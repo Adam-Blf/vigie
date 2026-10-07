@@ -1,0 +1,30 @@
+Same question with the local-llm profile. With the default VIGIE_LLM_TIMEOUT_S=120 the API
+answers 504 llm_timeout even with the model loaded (07a, and a second run, warm); with
+VIGIE_LLM_TIMEOUT_S=900 the answer below comes back after 271 s on this CPU-only Docker
+Desktop VM (8 cores, 15 GiB). Model load alone took 67 s. ollama memory 3.5 GiB.
+
++ POST http://127.0.0.1:8710/v1/ask (--local-llm, ollama)
+status 200
+{
+  "answer": "L’organe de direction de l’entité financière porte la responsabilité ultime du risque lié aux TIC, conformément à l’article 5, paragraphe 2a [DORA art. 5 §2a].",
+  "citations": [
+    {
+      "label": "[DORA art. 5 §2a]",
+      "regulation": "DORA",
+      "article": "5",
+      "paragraph": "2a",
+      "excerpt": "1. Les entités financières disposent d’un cadre de gouvernance et de contrôle interne qui garantit une gestion efficace et prudente du risque lié aux TIC, conformément à l’article 6, paragraphe 4, en vue d’atteindre un niveau élevé de...",
+      "url": "https://eur-lex.europa.eu/legal-content/FR/TXT/?uri=CELEX:32022R2554#art_5"
+    }
+  ],
+  "blocked": false,
+  "block_reason": null,
+  "refused": false,
+  "citations_removed": 0,
+  "trace_id": "0c8278f74b8a4942966c9242bd6c6e5e",
+  "app_version": "0.17.0",
+  "bundle_version": "dev",
+  "prompt_version": "v2",
+  "model": "ministral-3:3b-instruct-2512-q4_K_M",
+  "latency_ms": 271136.5
+}

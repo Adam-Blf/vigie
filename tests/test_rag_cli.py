@@ -52,6 +52,9 @@ def test_cli_without_passages_retrieves_from_qdrant(
 ) -> None:
     settings = indexed_settings(tmp_path)
     monkeypatch.setenv("VIGIE_LLM_PROVIDER", "fake")
+    # A .env written by `tasks.py up` sets VIGIE_QDRANT_URL, and a server URL wins over the
+    # local path: blank it so this test never depends on whether the stack was started.
+    monkeypatch.setenv("VIGIE_QDRANT_URL", "")
     monkeypatch.setenv("VIGIE_QDRANT_PATH", str(settings.qdrant_path))
     monkeypatch.setenv("VIGIE_CORPUS_DIR", str(settings.corpus_dir))
     monkeypatch.setattr(factory.FastEmbedEmbedder, "from_settings", lambda s: FakeEmbedder())

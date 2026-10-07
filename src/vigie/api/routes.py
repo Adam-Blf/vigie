@@ -14,11 +14,12 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from vigie.api.deps import Admin, State, User, admit
-from vigie.api.errors import trace_id_of
+from vigie.api.errors import ApiError, trace_id_of
 from vigie.api.schemas import (
     AdminUsageOut,
     AskRequest,
     AskResponse,
+    DriftOut,
     ErrorOut,
     HealthOut,
     ReadyOut,
@@ -104,6 +105,19 @@ def usage_me(state: State, principal: User) -> UsageOut:
 def admin_usage(state: State, principal: Admin) -> AdminUsageOut:
     quota = state.settings.daily_quota
     return AdminUsageOut(users=[_usage(s, quota) for s in state.usage.summaries()])
+
+
+@router.get(
+    "/v1/admin/drift",
+    response_model=DriftOut,
+    responses={**_ERRORS, 403: {"model": ErrorOut, "description": "Jeton sans portée admin"}},
+    tags=["admin"],
+)
+def admin_drift(state: State, principal: Admin) -> DriftOut:
+    if state.drift is None:
+        # The reference was never built, so there is nothing to compare traffic against.
+        raise ApiError(503, "drift_unavailable")
+    return DriftOut.model_validate(state.drift.evaluate().to_dict())
 
 
 @router.get("/healthz", response_model=HealthOut, tags=["ops"])

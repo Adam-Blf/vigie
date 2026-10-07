@@ -163,6 +163,119 @@
         "title": "CitationOut",
         "type": "object"
       },
+      "DriftIndicatorsOut": {
+        "properties": {
+          "centroid_distance": {
+            "title": "Centroid Distance",
+            "type": "number"
+          },
+          "ks_pvalue": {
+            "title": "Ks Pvalue",
+            "type": "number"
+          },
+          "ks_statistic": {
+            "title": "Ks Statistic",
+            "type": "number"
+          },
+          "out_of_scope_ratio": {
+            "title": "Out Of Scope Ratio",
+            "type": "number"
+          }
+        },
+        "required": [
+          "centroid_distance",
+          "out_of_scope_ratio",
+          "ks_statistic",
+          "ks_pvalue"
+        ],
+        "title": "DriftIndicatorsOut",
+        "type": "object"
+      },
+      "DriftOut": {
+        "properties": {
+          "alert": {
+            "title": "Alert",
+            "type": "boolean"
+          },
+          "indicators": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DriftIndicatorsOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ready": {
+            "description": "Faux tant que la fenêtre est trop petite pour juger",
+            "title": "Ready",
+            "type": "boolean"
+          },
+          "reasons": {
+            "items": {
+              "enum": [
+                "centroid_distance",
+                "out_of_scope_ratio",
+                "ks_test"
+              ],
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "thresholds": {
+            "$ref": "#/components/schemas/DriftThresholdsOut"
+          },
+          "window_size": {
+            "title": "Window Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "ready",
+          "window_size",
+          "alert",
+          "reasons",
+          "indicators",
+          "thresholds"
+        ],
+        "title": "DriftOut",
+        "type": "object"
+      },
+      "DriftThresholdsOut": {
+        "properties": {
+          "centroid_distance": {
+            "title": "Centroid Distance",
+            "type": "number"
+          },
+          "ks_alpha": {
+            "title": "Ks Alpha",
+            "type": "number"
+          },
+          "min_window": {
+            "title": "Min Window",
+            "type": "integer"
+          },
+          "out_of_scope_ratio": {
+            "title": "Out Of Scope Ratio",
+            "type": "number"
+          },
+          "out_of_scope_similarity": {
+            "title": "Out Of Scope Similarity",
+            "type": "number"
+          }
+        },
+        "required": [
+          "centroid_distance",
+          "out_of_scope_similarity",
+          "out_of_scope_ratio",
+          "ks_alpha",
+          "min_window"
+        ],
+        "title": "DriftThresholdsOut",
+        "type": "object"
+      },
       "ErrorOut": {
         "properties": {
           "error": {
@@ -397,6 +510,92 @@
         "summary": "Readyz",
         "tags": [
           "ops"
+        ]
+      }
+    },
+    "/v1/admin/drift": {
+      "get": {
+        "operationId": "admin_drift_v1_admin_drift_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriftOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Jeton absent, inconnu, expiré ou révoqué"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Jeton sans portée admin"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Corps de requête au-delà de 16 Ko"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorOut"
+                }
+              }
+            },
+            "description": "Question vide ou trop longue"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Limite de débit ou quota quotidien atteint"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorOut"
+                }
+              }
+            },
+            "description": "Maintenance ou modèle saturé, voir Retry-After"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Admin Drift",
+        "tags": [
+          "admin"
         ]
       }
     },

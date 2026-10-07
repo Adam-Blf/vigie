@@ -1,0 +1,19 @@
+# Allow-list: the build context holds only what the two images need. Anything else,
+# .env and local data first, never reaches the Docker daemon.
+*
+!pyproject.toml
+!uv.lock
+!README.md
+!src/
+!data/corpus.lock
+!data/golden/questions.jsonl
+!deploy/docker/
+!web/
+web/node_modules
+web/dist
+web/test-results
+web/playwright-report
+web/.lighthouseci
+web/e2e/**/*-snapshots
+**/__pycache__
+**/*.pyc

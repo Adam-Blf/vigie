@@ -1,0 +1,6 @@
++ docker volume ls --filter name=vigie
+k3d-vigie-dev-images
++ docker rmi vigie-api:dev vigie-web:dev
+3
++ docker builder prune -af
+Total:	8.277GB

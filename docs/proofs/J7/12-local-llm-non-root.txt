@@ -1,0 +1,24 @@
++ COMPOSE_PROFILES=local-llm VIGIE_COMPOSE_LLM_PROVIDER=ollama docker compose up -d (after down -v: the model is pulled into a fresh volume)
+ Container vigie-api-1 Started
+ Container vigie-api-1 Waiting
+ Container vigie-api-1 Healthy
++ docker compose ps -a
+SERVICE        STATUS
+api            Up About a minute (healthy)
+ingest         Exited (0) About a minute ago
+mlflow         Up 25 minutes (healthy)
+ollama         Up 20 minutes (healthy)
+ollama-pull    Exited (0) About a minute ago
+qdrant         Up 25 minutes (healthy)
+volumes-init   Exited (0) About a minute ago
+web            Up 22 minutes (healthy)
++ ollama-pull logs
+
++ user and models of ollama
+1000
+NAME                                   ID              SIZE      MODIFIED
+ministral-3:3b-instruct-2512-q4_K_M    f04aa1c738f6    3.0 GB    2 minutes ago
++ GET /readyz (LLM ollama)
+{"status":"ready","checks":{"retriever":true,"llm":true}} 200
++ docker stats --no-stream ollama (model not loaded yet)
+vigie-ollama-1 202.9MiB / 15.32GiB

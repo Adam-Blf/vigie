@@ -1,0 +1,39 @@
+{
+  "milestone": "J7 (Docker, niveau 0 : toute la pile en une commande)",
+  "branch": "feat/docker",
+  "commit_measured": "5cd81b2 plus les corrections du commit de clôture (étape models sur la plateforme du builder, uv copié depuis son image épinglée, job volumes-init) ; les preuves 00-down-v à 06, 10, 11 et 12 portent sur ce code-là",
+  "date_utc": "2026-10-07T14:45:00Z",
+  "host": "portable Windows 11, Docker Desktop (VM WSL 2, 8 coeurs, 15 Gio), processeur seul, d'autres piles Docker actives en parallèle",
+  "commands": {
+    "clean_state": "python tasks.py down -v (00-down-v.txt) ; la première construction à froid, après docker builder prune -af et docker rmi, est dans 00-clean-state.txt et 01-tasks-up.txt (6 octobre)",
+    "one_command": "python tasks.py up (01-tasks-up-volumes-clean.txt) : clé Qdrant aléatoire écrite dans .env, docker compose up -d --build, attente de l'API saine, jeton de démonstration créé dans le conteneur api par python -m vigie.api.tokens create demo et affiché une seule fois",
+    "health": "docker compose ps -a, curl /healthz et /readyz (02-health.txt)",
+    "ask": "curl -X POST /v1/ask avec le jeton de démonstration, LLM factice (03-ask-e2e.txt), puis la même question à travers nginx sur 4710 (05-web-headers.txt)",
+    "drift": "GET /v1/admin/drift avec un jeton user (403) puis admin (200), jauges vigie_drift_* de /metrics (04-drift.txt)",
+    "memory": "docker stats --no-stream $(docker compose ps -q), docker image inspect, du dans l'image, recherche de torch, uid de chaque conteneur (06-memory-and-images.txt)",
+    "local_llm": "COMPOSE_PROFILES=local-llm VIGIE_COMPOSE_LLM_PROVIDER=ollama docker compose up -d (12-local-llm-non-root.txt, modèle tiré dans un volume neuf, Ollama sous l'uid 1000) ; réponse de Ministral 3B dans 07-ask-local-llm.txt (6 octobre, 271 s, VIGIE_LLM_TIMEOUT_S=900) et délai dépassé à 120 s dans 07a",
+    "arm64": "docker buildx build --platform linux/arm64 -f deploy/docker/api.Dockerfile --load (QEMU), puis --no-cache-filter runtime pour rejouer le chargement des modèles sans réseau sous l'uid 10001 en arm64 (11-arm64-build.txt)",
+    "lint": "hadolint sur les deux Dockerfile (10-hadolint.txt)",
+    "check": "PYTHONPATH=src python tasks.py check : 866 tests verts, couverture 98 %, aucun skip ni xfail"
+  },
+  "redaction": "Les jetons n'ont vécu que dans des variables du shell ; chaque sortie enregistrée passe par sed -E 's/vig_[A-Za-z0-9_-]{8,}/vig_[REDACTED]/g'. La clé Qdrant reste dans .env, jamais affichée ni enregistrée.",
+  "tools": {
+    "docker": "29.8.2",
+    "docker_compose": "5.5.1",
+    "buildx": "v0.37.2",
+    "hadolint": "hadolint/hadolint@sha256:32dac94127fd60b7b7e3fbfc65e1383b9b5e25c9bfd7b8536de7a539fe68a12d",
+    "python_image": "python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf",
+    "uv": "0.11.32",
+    "ollama_model": "ministral-3:3b-instruct-2512-q4_K_M (f04aa1c738f6)"
+  },
+  "results": {
+    "stack": "qdrant, mlflow, api, web sains ; ingest et volumes-init terminés en 0 ; tous les ports liés à 127.0.0.1 (api 8710, web 4710, mlflow 5710, qdrant 6733 et 6734)",
+    "ask": "200, réponse citée [DORA art. 30], [DORA art. 31 §2], [DORA art. 31 §8], app_version 0.17.0",
+    "memory_mib": {"api": 975, "mlflow": 426, "qdrant": 51, "web": 3, "ollama_loaded": 3584},
+    "budget_11_7": "API au-dessus des 0,7 Go par pod (975 Mio), Ollama au-dessus des 3,0 Go (3,5 Gio) ; écart expliqué dans docs/architecture.md et 08-api-memory-by-model.txt",
+    "images_bytes": {"vigie-api amd64": 1512548089, "vigie-api arm64 (docker images, arrondi)": "1.53GB","vigie-api arm64 compressed": 558929373, "vigie-web amd64": 85459275, "vigie-web arm64 compressed": 24216483},
+    "torch_in_runtime": false,
+    "arm64": "image construite, modèles rechargés sans réseau en aarch64 sous QEMU en 355 s",
+    "hadolint": "0 avertissement sur les deux Dockerfile"
+  }
+}

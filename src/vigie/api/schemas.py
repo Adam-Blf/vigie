@@ -91,3 +91,28 @@ class HealthOut(BaseModel):
 class ReadyOut(BaseModel):
     status: Literal["ready", "not_ready"]
     checks: dict[str, bool]
+
+
+class DriftIndicatorsOut(BaseModel):
+    centroid_distance: float
+    out_of_scope_ratio: float
+    ks_statistic: float
+    ks_pvalue: float
+
+
+class DriftThresholdsOut(BaseModel):
+    centroid_distance: float
+    out_of_scope_similarity: float
+    out_of_scope_ratio: float
+    ks_alpha: float
+    min_window: int
+
+
+class DriftOut(BaseModel):
+    # Computed on embeddings only: the drift window never holds a question's text.
+    ready: bool = Field(description="Faux tant que la fenêtre est trop petite pour juger")
+    window_size: int
+    alert: bool
+    reasons: list[Literal["centroid_distance", "out_of_scope_ratio", "ks_test"]]
+    indicators: DriftIndicatorsOut | None
+    thresholds: DriftThresholdsOut

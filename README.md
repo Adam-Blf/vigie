@@ -12,7 +12,7 @@
 <!-- adam-badges:end -->
 </p>
 
-Version 0.17.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
+Version 0.18.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
 
 Copilote de conformité pour les banques. Vigie répond aux questions sur DORA, l'AI Act, le
 RGPD et le règlement anti-blanchiment en citant l'article exact, dit quand il ne trouve
@@ -85,6 +85,28 @@ module. Le détail des composants, du budget mémoire et du chemin de livraison 
 `docs/architecture.md`. Les risques OWASP LLM sont cartographiés dans
 `docs/risk-map.md`, les menaces dans `docs/threat-model.md` et les choix structurants dans
 `docs/adr/`.
+
+## Démarrage en une commande
+
+Avec Docker (Compose 2.20 ou plus) et Python 3 :
+
+```sh
+python tasks.py up               # LLM factice, rapide, sans GPU
+python tasks.py up --local-llm   # avec Ollama et Ministral 3B Q4 (environ 3 Go à télécharger)
+python tasks.py down             # arrête tout, garde les volumes ; -v les supprime
+```
+
+Le premier `up` écrit une clé Qdrant aléatoire dans `.env` (jamais affichée), construit
+les images, télécharge et indexe les quatre règlements, construit la référence de
+dérive, attend que l'API soit saine, puis affiche une seule fois un jeton de démonstration
+`vig_...`. Interface sur http://127.0.0.1:4710, API sur http://127.0.0.1:8710, MLflow
+sur http://127.0.0.1:5710, Qdrant sur 127.0.0.1:6733 ; tous les ports sont liés à
+`127.0.0.1`. Ensuite `docker compose up -d` suffit aussi ; pour le LLM local sans
+`tasks.py` : `VIGIE_COMPOSE_LLM_PROVIDER=ollama docker compose --profile local-llm up -d`.
+Avec le LLM local sur un processeur sans GPU, une réponse prend plusieurs minutes (271 s
+mesurées, modèle chargé) : mettre `VIGIE_LLM_TIMEOUT_S=900` dans `.env`, sinon l'API répond 504.
+Détail des images, des volumes et de la mémoire mesurée dans
+[docs/architecture.md](docs/architecture.md#conteneurs-docker-j7).
 
 ## Démarrage local
 

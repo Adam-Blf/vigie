@@ -149,6 +149,24 @@ def redteam(args: Sequence[str]) -> int:
 
 
 @task
+def up(args: Sequence[str]) -> int:
+    """The whole stack in Docker, see docker-compose.yml. --local-llm adds Ollama."""
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import stack  # lazy: plain scripts, importable once scripts/ is on the path
+
+    return stack.up(args)
+
+
+@task
+def down(args: Sequence[str]) -> int:
+    """Stop the stack; -v also deletes its volumes (corpus, index, tokens, MLflow)."""
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import stack
+
+    return stack.down(args)
+
+
+@task
 def infra_retry(_: Sequence[str]) -> int:
     # Lazy import: the other tasks must keep working in an environment without the package.
     from vigie.infra.retry import main as retry_main

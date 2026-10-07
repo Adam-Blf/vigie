@@ -1,0 +1,12 @@
++ docker compose ps -a
+SERVICE        STATUS                      PORTS
+api            Up 49 seconds (healthy)     127.0.0.1:8710->8710/tcp
+ingest         Exited (0) 49 seconds ago
+mlflow         Up 3 minutes (healthy)      127.0.0.1:5710->5000/tcp
+qdrant         Up 3 minutes (healthy)      127.0.0.1:6733->6333/tcp, 127.0.0.1:6734->6334/tcp
+volumes-init   Exited (0) 3 minutes ago
+web            Up 12 seconds (healthy)     127.0.0.1:4710->8080/tcp
++ GET http://127.0.0.1:8710/healthz
+{"status":"ok"} 200
++ GET http://127.0.0.1:8710/readyz
+{"status":"ready","checks":{"retriever":true,"llm":true}} 200

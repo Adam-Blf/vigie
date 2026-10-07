@@ -16,6 +16,8 @@ from vigie.api.ratelimit import SlidingWindowLimiter
 from vigie.api.state import AppState
 from vigie.api.usage import UsageStore
 from vigie.config import Settings
+from vigie.drift.metrics import DriftMetrics
+from vigie.drift.monitor import DriftMonitor
 from vigie.guard.base import InputGuard
 from vigie.llm.base import LLMClient
 from vigie.llm.factory import build_llm
@@ -28,6 +30,7 @@ def build_state(
     input_guard: InputGuard,
     retriever: Retriever,
     llm: LLMClient | None = None,
+    drift: DriftMonitor | None = None,
 ) -> AppState:
     bundle = load_bundle(settings)
     client = llm if llm is not None else build_llm(llm_settings(settings, bundle))
@@ -38,6 +41,10 @@ def build_state(
         min_score=settings.rag_min_score,
         require_citation=settings.rag_require_citation,
     )
+    metrics = ApiMetrics(bundle.bundle_version)
+    if drift is not None:
+        # The drift gauges join the API registry, so one scrape of /metrics carries both.
+        drift.metrics = DriftMetrics(metrics.registry, bundle.bundle_version)
     return AppState(
         settings=settings,
         bundle=bundle,
@@ -48,7 +55,8 @@ def build_state(
         usage=UsageStore(settings.db_path, settings.usage_cost_per_1k_tokens_eur),
         audit=AuditLog(settings.audit_dir, settings.audit_pod_name, settings.audit_retention_days),
         limiter=SlidingWindowLimiter(settings.rate_limit_per_minute),
-        metrics=ApiMetrics(bundle.bundle_version),
+        metrics=metrics,
         probes={"retriever": retriever_probe(settings), "llm": llm_probe(settings, bundle)},
         on_close=[client.close],
+        drift=drift,
     )
