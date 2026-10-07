@@ -36,6 +36,9 @@ bundle, jamais par une requête.
 
 Chaque réponse porte `trace_id`, `app_version`, `bundle_version`, `prompt_version` et
 `model`, en corps et en en-têtes `X-*`, ce qui rend le canary visible depuis l'interface.
+Toute réponse produite par le modèle porte en plus `X-AI-Generated: true`, marquage lisible
+par machine de l'article 50.2 de l'AI Act ; une question bloquée, qui reçoit un texte fixe,
+ne le porte pas ([`compliance/ai-act.md`](compliance/ai-act.md)).
 Le flux SSE envoie le texte brut du modèle ; l'événement final `answer` contient la
 réponse vérifiée (citations inventées retirées, données personnelles masquées) que
 l'interface affiche à la place.
@@ -73,6 +76,9 @@ python -m vigie.api.tokens rotate-admin <utilisateur>
 
 - **Usage** : une ligne par requête traitée dans SQLite en mode WAL (utilisateur, jeton,
   horodatage, statut, latence, jetons, coût, bloqué, refusé), sans texte de question.
+  Les lignes de plus de 12 mois (`VIGIE_USAGE_RETENTION_DAYS`, 365 par défaut) sont
+  effacées à la première écriture de chaque jour, comme l'empreinte d'un jeton révoqué ou
+  expiré depuis plus longtemps.
 - **Journal d'audit** : `data/audit/<pod>/<jour>.jsonl`, question et réponse avec les
   données personnelles évidentes masquées, citations, décision des garde-fous, versions
   du modèle, du prompt et du bundle. Ni IP ni User-Agent. Chaque ligne porte le hash de

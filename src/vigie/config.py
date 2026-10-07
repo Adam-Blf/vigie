@@ -108,6 +108,9 @@ class Settings(BaseSettings):
     token_ttl_days: int = Field(default=30, ge=1, le=365)
     audit_dir: Path = Path("data/audit")
     audit_retention_days: int = Field(default=30, ge=1)
+    # EN: usage counters, and the hash of a revoked or expired token, are kept 12 months.
+    # FR : compteurs d'usage et empreinte d'un jeton mort gardés 12 mois (page Confidentialité).
+    usage_retention_days: int = Field(default=365, ge=1)
     # One audit file per pod: two replicas appending to one chained file would fork it.
     audit_pod_name: str = Field(default_factory=gethostname)
     rate_limit_per_minute: int = Field(default=20, ge=1)

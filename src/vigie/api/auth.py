@@ -13,7 +13,7 @@ import hmac
 import secrets
 from collections.abc import Callable
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Literal
 
@@ -74,11 +74,28 @@ class IssuedToken:
 
 
 class TokenStore:
-    def __init__(self, path: Path, ttl_days: int, clock: Callable[[], datetime] = utcnow) -> None:
+    def __init__(
+        self,
+        path: Path,
+        ttl_days: int,
+        retention_days: int = 365,
+        clock: Callable[[], datetime] = utcnow,
+    ) -> None:
         self._path = path
         self._ttl = timedelta(days=ttl_days)
+        self._retention = timedelta(days=retention_days)
         self._clock = clock
+        self._purged_on: date | None = None
         init_db(path, SCHEMA)
+
+    def purge(self) -> int:
+        """Forget the tokens revoked or expired for longer than the retention period."""
+        cutoff = (self._clock() - self._retention).isoformat()
+        with connect(self._path) as conn:
+            cursor = conn.execute(
+                "DELETE FROM tokens WHERE COALESCE(revoked_at, expires_at) < ?", (cutoff,)
+            )
+        return cursor.rowcount
 
     def create(self, user: str, scope: Scope = "user") -> IssuedToken:
         if not user.strip():
@@ -106,6 +123,12 @@ class TokenStore:
         """Return the caller behind a token, or None if it is unknown, expired or revoked."""
         if not presented.startswith(PREFIX) or not _MIN_LEN <= len(presented) <= _MAX_LEN:
             return None
+        now = self._clock()
+        if self._purged_on != now.date():
+            # EN: a dead token is kept as long as its usage rows, then its hash goes too.
+            # FR : un jeton mort reste aussi longtemps que son usage, puis son empreinte part.
+            self.purge()
+            self._purged_on = now.date()
         digest = hash_token(presented)
         with connect(self._path) as conn:
             row = conn.execute(
@@ -117,7 +140,6 @@ class TokenStore:
             # constant-time comparison still guards the final equality.
             if row is None or not hmac.compare_digest(row["token_hash"], digest):
                 return None
-            now = self._clock()
             if row["revoked_at"] is not None or datetime.fromisoformat(row["expires_at"]) <= now:
                 return None
             conn.execute(
