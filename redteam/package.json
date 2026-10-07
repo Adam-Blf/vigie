@@ -9,7 +9,8 @@
   "scripts": {
     "generate": "promptfoo redteam generate -c promptfooconfig.yaml -o attacks.raw.yaml --no-cache --force",
     "replay": "promptfoo eval -c replay.yaml -o results.json --no-cache --no-share",
-    "replay:local": "promptfoo eval -c replay.yaml -o results.json --no-cache --no-share --max-concurrency 1"
+    "replay:local": "promptfoo eval -c replay.yaml -o results.json --no-cache --no-share --max-concurrency 1",
+    "replay:sample": "promptfoo eval -c replay.yaml -t attacks.sample.yaml -o results.json --no-cache --no-share --max-concurrency 1"
   },
   "devDependencies": {
     "promptfoo": "0.124.0"

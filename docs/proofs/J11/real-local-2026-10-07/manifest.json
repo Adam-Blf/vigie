@@ -1,0 +1,36 @@
+{
+  "milestone": "J11",
+  "title": "Load test against the real local API, Qdrant served like production",
+  "date": "2026-10-07",
+  "branch": "feat/close-j6-j10-j11",
+  "status": "PARTIEL",
+  "platform": "Windows 11, 8 logical CPUs at 100 % load during every run (file sync client and two other build and embedding jobs on the same machine). Locust, the API and Qdrant shared the machine.",
+  "tools": {
+    "python": "3.12.13",
+    "locust": "2.46.7",
+    "qdrant": "v1.19.1, the version pinned in deploy/versions.env",
+    "guard_model": "protectai/deberta-v3-base-prompt-injection-v2 at 90c9989b, int8 ONNX"
+  },
+  "thresholds": "eval/thresholds.yaml, section load, unchanged: p95 of /v1/ask under 500 ms, errors under 1 %, injections let through at most 10 %",
+  "api_setup": "python -m vigie.api on 127.0.0.1:8741, VIGIE_LLM_PROVIDER=fake, VIGIE_QDRANT_URL on a local Qdrant server holding a point for point copy of the .qdrant collection (511 points, same vectors), VIGIE_RATE_LIMIT_PER_MINUTE=100000, VIGIE_DAILY_QUOTA=1000000, VIGIE_LLM_MAX_INFLIGHT=20, token store and audit log in a throwaway folder outside the repository. Token passed through VIGIE_LOAD_TOKEN, never written here.",
+  "runs": [
+    {
+      "name": "profile of one request",
+      "output": "profile.txt",
+      "result": "with the embedded Qdrant of the 2026-10-06 runs, 138 ms of a 193 ms request is BM25 scored in pure Python under the GIL by qdrant_client local mode, so 20 users queue behind it. A Qdrant server does that work in Rust and doubles the throughput of 8 threads (8.1 to 15.7 requests per second)."
+    },
+    {
+      "name": "run 3, Qdrant server in Docker",
+      "command": "VIGIE_PORT=8741 VIGIE_LOAD_TOKEN=<test token> python tasks.py load-local",
+      "output": ["run3-console.txt", "run3-report.html", "run3-load_stats.csv", "run3-load_stats_history.csv", "run3-load_failures.csv"],
+      "result": "exit 1. 2368 requests, 0 failures, 0 of 343 injections let through, p50 290 ms, p95 820 ms, 7.9 requests per second. Error and leak thresholds met, p95 missed."
+    },
+    {
+      "name": "run 4, Qdrant server, native Windows build",
+      "setup": "Docker Desktop port forwarding cost 17 to 43 ms per call on this host, the native build 3 to 5 ms",
+      "command": "VIGIE_PORT=8741 VIGIE_LOAD_TOKEN=<test token> python tasks.py load-local",
+      "output": ["run4-console.txt", "run4-load_stats.csv", "run4-load_stats_history.csv", "run4-load_failures.csv"],
+      "result": "exit 1. 2251 requests, 2 failures (0.09 %, two attack connections cut), 0 of 309 injections let through, p50 270 ms, p95 1600 ms. Error and leak thresholds met, p95 missed, worse than run 3 with a faster store: the host load, not the stack, sets the tail."
+    }
+  ]
+}

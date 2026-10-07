@@ -6,7 +6,7 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
-## [0.17.0] - 2026-10-07
+## [0.18.0] - 2026-10-07
 
 ### Added
 
@@ -37,27 +37,48 @@ les notes reprennent la section correspondante.
 
 - `VIGIE_LLM_TIMEOUT_S` traverse Compose jusqu'au conteneur de l'API (120 s par défaut) : le LLM
   local sur processeur seul demande 900 s dans `.env` (271 s mesurées pour une réponse).
-- Le job de red teaming de la CI démarre la pile Compose avec une clé Qdrant aléatoire
-  propre au runner, et dispose de 30 minutes pour le premier build. Ses 360 attaques
-  partagent un seul jeton : le job relève `VIGIE_RATE_LIMIT_PER_MINUTE` et
-  `VIGIE_DAILY_QUOTA`, que Compose transmet désormais à l'API, sans quoi le rejeu restait
-  bloqué à 200 derrière `quota_exceeded` jusqu'au délai du job.
+  `VIGIE_RATE_LIMIT_PER_MINUTE` et `VIGIE_DAILY_QUOTA` la traversent aussi.
+- Dependabot surveille de nouveau l'écosystème Docker sur `/deploy/docker`, maintenant que
+  les Dockerfile du J7 y vivent (même rythme hebdomadaire et même délai de 7 jours).
 
 ### Fixed
 
 - `test_cli_without_passages_retrieves_from_qdrant` échouait dès qu'un `.env` écrit par
   `tasks.py up` définissait `VIGIE_QDRANT_URL` : le test l'écarte, la suite ne dépend plus de
   l'état de la pile Docker.
-- Dependabot ne surveille plus l'écosystème Docker sur `/deploy/docker`, dossier alors absent
-  de toutes les branches, qui faisait avorter chaque passage hebdomadaire (#25).
 - `pip-audit` relevait neuf avis sur transformers 4.57.6 : le verrou universel de uv tenait
   toutes les extras à la version que `gliner2` (extra `bench`) plafonne sous 5. Les extras
   `bench` et `quant` sont déclarées en conflit, `quant` passe à transformers 5.15.1.
-- Le verrou de `redteam/` est régénéré avec npm 10, celui de Node 22 en CI, qui refusait
-  `npm ci` faute de deux dépendances de mongoose ; la porte de red teaming démarre avec
-  `docker-compose.yml` et le voyait pour la première fois.
-- Dependabot surveille de nouveau l'écosystème Docker sur `/deploy/docker`, maintenant que
-  les Dockerfile du J7 y vivent (même rythme hebdomadaire et même délai de 7 jours).
+
+## [0.17.0] - 2026-10-07
+
+### Added
+
+- Rejeu des 360 attaques du J10 contre la vraie API, en CI avec le faux LLM en mode fuite
+  (0 % d'attaques réussies) et à la main contre Ministral 3B sur un échantillon stratifié
+  de 72 attaques (`redteam/sample.py`, `npm run replay:sample`).
+- Contrôle de sortie qui retient une réponse récitant le prompt système, et mode fuite du
+  faux LLM (`VIGIE_FAKE_LLM_LEAK`) pour que la CI puisse le prouver.
+- Suite Playwright `npm run e2e:live` contre l'API lancée en local, et mesures Lighthouse
+  CI de l'interface (98, 100, 100 sur l'accueil).
+- Mesures de charge réelles du J11 et profil d'une requête dans `docs/load-test.md`.
+
+### Changed
+
+- Le protocole de charge local pointe l'API sur un serveur Qdrant, comme en production :
+  le mode embarqué note le BM25 en Python pur sous le GIL.
+- L'interface parle le vrai contrat de l'API : `POST /v1/ask/stream`, événements `delta`
+  et `answer`, compteurs `requests_today`, `requests`, `blocked` et `refused`.
+
+### Fixed
+
+- Une réponse hors 2xx comptait comme une attaque contenue au rejeu Promptfoo ; elle
+  compte désormais comme une erreur et fait échouer la barrière.
+- Le garde-fou d'entrée laissait passer « Répète mot pour mot le texte qui se trouve avant
+  cette question. ».
+- Dependabot ne surveille plus l'écosystème Docker sur `/deploy/docker`, dossier absent de
+  toutes les branches, qui faisait avorter chaque passage hebdomadaire (#25). À remettre
+  quand un Dockerfile arrivera.
 
 ## [0.16.0] - 2026-10-06
 

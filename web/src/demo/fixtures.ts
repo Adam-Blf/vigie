@@ -170,10 +170,11 @@ export const DEMO_FIXTURES: readonly DemoFixture[] = [
 ];
 
 export const DEMO_USAGE: UsageResponse = {
-  questions_today: 7,
+  requests_today: 7,
   daily_quota: 50,
-  questions_total: 42,
-  last_used_at: "2026-10-02T09:30:00Z",
+  requests: 42,
+  blocked: 3,
+  refused: 5,
 };
 
 // Word-prefix match, so "tic" never fires inside "article". Anything unmatched gets the

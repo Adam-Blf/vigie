@@ -82,6 +82,7 @@ RULES: tuple[tuple[str, str], ...] = (
         r"|(the )?(text|instructions) above|prompt systeme|prompt initial"
         r"|instructions? (systeme|initiales|cachees)|(tes|vos) (instructions|consignes|regles)"
         r"|(ta|votre) (\w+ )?configuration|texte ci-dessus"
+        r"|texte (qui se trouve |situe |place )?avant (cette|ce) (question|message)"
         r"|(everything|all|tout ce qui) (that )?(was |a ete |est )?(written|ecrit)"
         r" (before|above|avant|au-dessus))",
     ),

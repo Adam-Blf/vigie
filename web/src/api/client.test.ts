@@ -26,8 +26,8 @@ describe("ask", () => {
   it("streams tokens then returns the final answer", async () => {
     const fetchImpl = vi.fn<FetchLike>().mockResolvedValue(
       sseResponse([
-        'event: token\ndata: {"text":"Les "}\n\n',
-        `event: token\ndata: {"text":"entités"}\n\nevent: final\ndata: ${JSON.stringify(answer)}\n\n`,
+        'event: delta\ndata: {"text":"Les "}\n\n',
+        `event: delta\ndata: {"text":"entités"}\n\nevent: answer\ndata: ${JSON.stringify(answer)}\n\n`,
       ]),
     );
     const tokens: string[] = [];
@@ -44,7 +44,7 @@ describe("ask", () => {
     const fetchImpl = vi.fn<FetchLike>().mockResolvedValue(Response.json(answer));
     await client(fetchImpl).ask("q", noop, new AbortController().signal);
     const [url, init] = fetchImpl.mock.calls[0]!;
-    expect(url).toBe("/api/v1/ask");
+    expect(url).toBe("/api/v1/ask/stream");
     expect(url).not.toContain("vig_test");
     expect((init.headers as Record<string, string>).Authorization).toBe("Bearer vig_test");
     expect(init.method).toBe("POST");
@@ -88,7 +88,7 @@ describe("ask", () => {
   });
 
   it("fails clearly when the stream ends without a final answer", async () => {
-    const fetchImpl = vi.fn<FetchLike>().mockResolvedValue(sseResponse(['event: token\ndata: {"text":"a"}\n\n']));
+    const fetchImpl = vi.fn<FetchLike>().mockResolvedValue(sseResponse(['event: delta\ndata: {"text":"a"}\n\n']));
     const error = await client(fetchImpl).ask("q", noop, new AbortController().signal).catch((e: unknown) => e);
     expect(error).toMatchObject({ kind: "protocol" });
   });
@@ -123,7 +123,7 @@ describe("usage", () => {
     await expect(client(denied).usage(new AbortController().signal)).rejects.toMatchObject({
       kind: "unauthorized",
     });
-    const broken = vi.fn<FetchLike>().mockResolvedValue(Response.json({ questions_today: "7" }));
+    const broken = vi.fn<FetchLike>().mockResolvedValue(Response.json({ requests_today: "7" }));
     await expect(client(broken).usage(new AbortController().signal)).rejects.toMatchObject({
       kind: "protocol",
     });

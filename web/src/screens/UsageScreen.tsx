@@ -56,27 +56,25 @@ export function UsageScreen() {
             <dt>{t("usage.today")}</dt>
             <dd>
               {t("usage.quota", {
-                used: number.format(load.usage.questions_today),
+                used: number.format(load.usage.requests_today),
                 quota: number.format(load.usage.daily_quota),
               })}
-              <progress max={load.usage.daily_quota} value={load.usage.questions_today}>
-                {number.format(load.usage.questions_today)}
+              <progress max={load.usage.daily_quota} value={load.usage.requests_today}>
+                {number.format(load.usage.requests_today)}
               </progress>
             </dd>
           </div>
           <div>
             <dt>{t("usage.total")}</dt>
-            <dd>{number.format(load.usage.questions_total)}</dd>
+            <dd>{number.format(load.usage.requests)}</dd>
           </div>
           <div>
-            <dt>{t("usage.last")}</dt>
-            <dd>
-              {load.usage.last_used_at
-                ? new Intl.DateTimeFormat(locale, { dateStyle: "long", timeStyle: "short" }).format(
-                    new Date(load.usage.last_used_at),
-                  )
-                : t("usage.never")}
-            </dd>
+            <dt>{t("usage.blocked")}</dt>
+            <dd>{number.format(load.usage.blocked)}</dd>
+          </div>
+          <div>
+            <dt>{t("usage.refused")}</dt>
+            <dd>{number.format(load.usage.refused)}</dd>
           </div>
         </dl>
       )}

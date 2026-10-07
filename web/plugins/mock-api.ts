@@ -1,5 +1,5 @@
 // Development-only mock of the Vigie API, mounted on the Vite dev server. It speaks the
-// same contract as the real API (SSE on /v1/ask, JSON on /v1/usage/me) from the demo
+// same contract as the real API (SSE on /v1/ask/stream, JSON on /v1/usage/me) from the demo
 // fixtures, so the interface can be built before the backend exists.
 
 import type { IncomingMessage, ServerResponse } from "node:http";
@@ -55,10 +55,10 @@ async function ask(req: IncomingMessage, res: ServerResponse): Promise<void> {
   res.setHeader("Cache-Control", "no-store");
   await sleep(500);
   for (const word of response.answer.split(/(?<=\s)/)) {
-    res.write(`event: token\ndata: ${JSON.stringify({ text: word })}\n\n`);
+    res.write(`event: delta\ndata: ${JSON.stringify({ text: word })}\n\n`);
     await sleep(25);
   }
-  res.end(`event: final\ndata: ${JSON.stringify({ ...response, bundle_version: "mock" })}\n\n`);
+  res.end(`event: answer\ndata: ${JSON.stringify({ ...response, bundle_version: "mock" })}\n\n`);
 }
 
 export function mockApi(): Plugin {
@@ -67,7 +67,7 @@ export function mockApi(): Plugin {
     apply: "serve",
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
-        if (req.method === "POST" && req.url === "/v1/ask") {
+        if (req.method === "POST" && req.url === "/v1/ask/stream") {
           ask(req, res).catch((error: unknown) => next(error));
           return;
         }

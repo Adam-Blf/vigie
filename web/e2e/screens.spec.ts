@@ -122,12 +122,12 @@ test("usage screen reads /v1/usage/me with the token", async ({ page }) => {
   await page.route("**/v1/usage/me", (route) => {
     auth = route.request().headers().authorization;
     return route.fulfill({
-      json: { questions_today: 4, daily_quota: 50, questions_total: 31, last_used_at: null },
+      json: { requests_today: 4, daily_quota: 50, requests: 31, blocked: 2, refused: 0 },
     });
   });
   await page.goto("/usage");
   await expect(page.getByText("4 sur 50")).toBeVisible();
-  await expect(page.getByText("Aucune pour le moment")).toBeVisible();
+  await expect(page.locator(".usage-grid")).toContainText("Questions bloquées par Vigie2");
   expect(auth).toBe("Bearer vig_e2e_token");
 });
 

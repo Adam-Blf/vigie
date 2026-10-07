@@ -34,10 +34,11 @@ export interface AskResponse {
 }
 
 export interface UsageResponse {
-  questions_today: number;
+  requests_today: number;
   daily_quota: number;
-  questions_total: number;
-  last_used_at: string | null;
+  requests: number;
+  blocked: number;
+  refused: number;
 }
 
 export interface RuntimeConfig {

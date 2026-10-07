@@ -12,7 +12,7 @@
 <!-- adam-badges:end -->
 </p>
 
-Version 0.17.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
+Version 0.18.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
 
 Copilote de conformité pour les banques. Vigie répond aux questions sur DORA, l'AI Act, le
 RGPD et le règlement anti-blanchiment en citant l'article exact, dit quand il ne trouve
@@ -23,6 +23,17 @@ Projet réalisé dans le cadre du cours MLOps, M2 Data Engineering et IA, EFREI 
 Le sujet a été proposé et rédigé par nous-mêmes, Adam Beloucif et Emilien Morice, puis
 validé par l'enseignant le 2 octobre 2026. Projet pédagogique, publié avec l'accord de
 l'enseignant, non affilié officiellement à l'EFREI.
+
+## Aperçu
+
+Captures de l'interface en mode démo, réponses figées, prises par `web/scripts/capture-proofs.ts`.
+
+![Une question, sa réponse citée et le panneau des sources](docs/assets/web/parcours.gif)
+
+| Clair, panneau des citations | Sombre, attaque bloquée |
+|---|---|
+| ![Réponse et panneau des citations en thème clair](docs/assets/web/desktop-light-panel.png) | ![Tentative d'injection bloquée en thème sombre](docs/assets/web/desktop-dark-blocked.png) |
+| ![Écran d'accueil mobile en thème clair](docs/assets/web/mobile-light-empty.png) | ![Réponse sur mobile en thème sombre](docs/assets/web/mobile-dark-answer.png) |
 
 ## Architecture
 
