@@ -47,6 +47,12 @@ les notes reprennent la section correspondante.
   l'état de la pile Docker.
 - Dependabot ne surveille plus l'écosystème Docker sur `/deploy/docker`, dossier alors absent
   de toutes les branches, qui faisait avorter chaque passage hebdomadaire (#25).
+- `pip-audit` relevait neuf avis sur transformers 4.57.6 : le verrou universel de uv tenait
+  toutes les extras à la version que `gliner2` (extra `bench`) plafonne sous 5. Les extras
+  `bench` et `quant` sont déclarées en conflit, `quant` passe à transformers 5.15.1.
+- Le verrou de `redteam/` est régénéré avec npm 10, celui de Node 22 en CI, qui refusait
+  `npm ci` faute de deux dépendances de mongoose ; la porte de red teaming démarre avec
+  `docker-compose.yml` et le voyait pour la première fois.
 - Dependabot surveille de nouveau l'écosystème Docker sur `/deploy/docker`, maintenant que
   les Dockerfile du J7 y vivent (même rythme hebdomadaire et même délai de 7 jours).
 

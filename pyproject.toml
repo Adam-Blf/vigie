@@ -49,7 +49,7 @@ quant = [
   "onnxruntime>=1.18",
   "onnxscript>=0.5",
   "torch>=2.9",
-  "transformers>=4.46",
+  "transformers>=5.10",
   "matplotlib>=3.9",
 ]
 load = ["locust>=2.31"]
@@ -73,6 +73,12 @@ vigie-quant = "vigie.quant.cli:main"
 guardbench = "guardbench.cli:main"
 vigie-drift = "vigie.drift.cli:main"
 vigie-index = "vigie.retrieval.cli:main"
+
+[tool.uv]
+# gliner2 (bench) caps transformers below 5, and one universal lock would hold every extra
+# to that version, including quant, which pip-audit checks. The two extras are never
+# installed together, so uv resolves them apart and quant gets a patched transformers.
+conflicts = [[{ extra = "bench" }, { extra = "quant" }]]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/vigie", "src/guardbench"]
