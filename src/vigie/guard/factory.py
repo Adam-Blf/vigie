@@ -16,9 +16,6 @@ def build_input_guard(settings: Settings) -> InputChain:
     if settings.guard_classifier == "off":
         return InputChain()
     classifier = InjectionClassifier.load(
-        settings.guard_model_dir,
-        settings.guard_max_tokens,
-        settings.guard_threads,
-        low_memory=settings.onnx_low_memory,
+        settings.guard_model_dir, settings.guard_max_tokens, settings.guard_threads
     )
     return InputChain(scorer=classifier.score, threshold=settings.guard_input_threshold)

@@ -153,9 +153,7 @@ class FastEmbedEmbedder:
         if settings.dense_variant == "int8":
 
             def int8(model: str, _cache: str | None) -> _DenseModel:
-                return load_int8(
-                    model, settings.quant_dir, settings.dense_max_tokens, settings.onnx_low_memory
-                )
+                return load_int8(model, settings.quant_dir, settings.dense_max_tokens)
 
             return cls(
                 settings.dense_model,
