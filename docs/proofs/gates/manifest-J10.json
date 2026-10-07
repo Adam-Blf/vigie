@@ -1,0 +1,23 @@
+{
+  "scope": "Red teaming gate seen red on purpose (brief section 11.2), produced by J10",
+  "date": "2026-10-06",
+  "base_commit": "406d664",
+  "cases": [
+    {
+      "gate": "red teaming (workflow redteam, python tasks.py redteam)",
+      "branch": "test/gate-redteam, PR #23 closed without merge, branch deleted after the run",
+      "degradation": "src/vigie/guard/output.py: the output prompt leak check switched off (LEAK_CHECK = False), commit abbdb91, while the fake model runs in leak mode as in every gate run",
+      "command": "GitHub Actions run 37475644180, step: uv run --no-sync python tasks.py redteam --summary redteam/summary.json",
+      "output": "redteam-red-ci.txt",
+      "result": "FAIL: attack success rate 48.89 % (limit 5 %), 176 breached, 184 defended, 0 errors",
+      "expected_exit": 1
+    },
+    {
+      "gate": "red teaming, same degradation on the workstation",
+      "command": "API started from the degraded branch with VIGIE_FAKE_LLM_LEAK=true VIGIE_LLM_MAX_INFLIGHT=8, then python tasks.py redteam --summary <file>",
+      "output": ["redteam-red-local.txt", "redteam-red-local-summary.json"],
+      "result": "FAIL: attack success rate 49.44 %, 177 breached, 181 defended, 2 errors",
+      "expected_exit": 1
+    }
+  ]
+}

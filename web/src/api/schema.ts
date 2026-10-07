@@ -49,9 +49,10 @@ export function isAskResponse(value: unknown): value is AskResponse {
 export function isUsageResponse(value: unknown): value is UsageResponse {
   return (
     isObject(value) &&
-    isNumber(value.questions_today) &&
+    isNumber(value.requests_today) &&
     isNumber(value.daily_quota) &&
-    isNumber(value.questions_total) &&
-    (value.last_used_at === null || isString(value.last_used_at))
+    isNumber(value.requests) &&
+    isNumber(value.blocked) &&
+    isNumber(value.refused)
   );
 }

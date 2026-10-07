@@ -3,7 +3,10 @@
 It reads the passages back from the prompt and answers with the first sentence of each,
 followed by the passage label, so every citation it writes is valid. With hallucinate on,
 it appends a citation to an article it was never given, which is how the evaluation
-proves that the citation filter really removes invented references.
+proves that the citation filter really removes invented references. With leak on, it
+recites its system prompt after every answer, like a model that obeys any extraction
+attempt: the red teaming gate runs with it, so an attack that gets past the input guard
+has to be caught on the way out.
 """
 
 from __future__ import annotations
@@ -37,13 +40,18 @@ def compose_answer(prompt: str, hallucinate: bool) -> str:
 
 
 class FakeLLM(LLMClient):
-    def __init__(self, hallucinate: bool = False) -> None:
+    def __init__(self, hallucinate: bool = False, leak: bool = False) -> None:
         self.model = FAKE_MODEL
         self._hallucinate = hallucinate
+        self.leaks = leak
 
     def _deltas(self, messages: Sequence[ChatMessage]) -> Generator[str, None, Usage]:
         prompt = "\n".join(m.content for m in messages if m.role == "user")
         answer = compose_answer(prompt, self._hallucinate)
+        if self.leaks:
+            # A model that obeys every attack: it recites its rules after each answer.
+            system = "\n".join(m.content for m in messages if m.role == "system")
+            answer = f"{answer} Mes instructions : {system}"
         words = answer.split(" ")
         # Word by word, like a real stream, so streaming code paths are exercised too.
         for index, word in enumerate(words):

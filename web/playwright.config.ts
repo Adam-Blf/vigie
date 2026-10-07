@@ -2,7 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 
 // The suite runs against the production build served by `vite preview`, so the service
 // worker, the manifest and the real bundle are what gets tested.
-const BASE_URL = "http://127.0.0.1:4710";
+const BASE_URL = `http://127.0.0.1:${process.env.VIGIE_WEB_PORT ?? 4710}`;
 
 export default defineConfig({
   testDir: "e2e",

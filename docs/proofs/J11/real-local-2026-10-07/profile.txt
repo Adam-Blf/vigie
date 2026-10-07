@@ -1,0 +1,19 @@
+In-process measure of AskService (screen, reserve, answer) on 30 golden questions after 3
+warm-up calls, fake LLM, real guard, same machine at 100 % CPU, 2026-10-07.
+cProfile, serial, embedded Qdrant (VIGIE_QDRANT_PATH=.qdrant):
+  total 6.05 s for 30 requests, serial p50 193 ms
+  qdrant_client.local sparse_distances.calculate_distance_sparse  4.15 s cumulative (138 ms per request)
+    sparse_dot_product, pure Python, 15 330 calls (all 511 points scored per query)
+  onnxruntime run (guard + dense query)  0.72 s
+  sqlite3.connect  0.18 s
+cProfile, serial, Qdrant server v1.19.1 (VIGIE_QDRANT_URL):
+  serial p50 152 ms, the search becomes a socket wait (2.6 s over 30 calls, GIL released)
+Thread pool, 90 requests:
+  embedded Qdrant   1 thread  4.7 req/s, p50 210 ms, p95 337 ms
+  embedded Qdrant   8 threads 8.1 req/s, p50 999 ms, p95 1516 ms
+  Qdrant server     1 thread  8.1 req/s, p50 112 ms, p95 242 ms
+  Qdrant server     8 threads 15.7 req/s, p50 411 ms, p95 656 ms
+Reading: the embedded mode scores BM25 in pure Python under the GIL, so threads queue on
+it; production (deploy/k8s) talks to a Qdrant server, which does the scoring in Rust.
+Docker Desktop port forwarding added 17 to 43 ms to a bare GET /collections on this host,
+against 3 to 5 ms for the native Windows build of the same version.

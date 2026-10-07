@@ -25,8 +25,8 @@ export async function withToken(target: Target, token = "vig_e2e_token"): Promis
 
 export function sseBody(response: AskResponse): string {
   const words = response.answer.split(/(?<=\s)/);
-  const tokens = words.map((text) => `event: token\ndata: ${JSON.stringify({ text })}\n\n`).join("");
-  return `${tokens}event: final\ndata: ${JSON.stringify(response)}\n\n`;
+  const tokens = words.map((text) => `event: delta\ndata: ${JSON.stringify({ text })}\n\n`).join("");
+  return `${tokens}event: answer\ndata: ${JSON.stringify(response)}\n\n`;
 }
 
 export interface AskCall {
@@ -35,13 +35,13 @@ export interface AskCall {
   url: string;
 }
 
-// Answers /v1/ask with the given payload and records what the page sent.
+// Answers /v1/ask/stream with the given payload and records what the page sent.
 export async function mockAsk(
   target: Target,
   respond: (route: Route) => Promise<void> | void,
 ): Promise<AskCall[]> {
   const calls: AskCall[] = [];
-  await target.route("**/v1/ask", async (route) => {
+  await target.route("**/v1/ask/stream", async (route) => {
     const request = route.request();
     calls.push({
       authorization: request.headers().authorization ?? null,

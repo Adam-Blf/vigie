@@ -69,8 +69,9 @@ L'écran principal, le seul que la plupart des gens verront.
 
 ## Mon usage (`/usage`)
 
-Données de `GET /v1/usage/me` : questions du jour, quota quotidien, total, date du
-dernier appel. Barre de progression avec texte. Sans jeton, renvoi vers les réglages.
+Données de `GET /v1/usage/me` : questions du jour sur le quota quotidien, total, questions
+bloquées par Vigie et questions restées sans réponse dans les textes. Barre de progression
+avec texte. Sans jeton, renvoi vers les réglages.
 
 ## À propos (`/about`)
 
@@ -115,16 +116,32 @@ le chat.
 
 ## Contrat d'API vu par l'interface
 
-- `POST /v1/ask`, corps `{ "question": string }` (1 à 2 000 caractères), en-tête
+Contrat vérifié contre l'API du J5 le 6 octobre 2026 par la suite `npm run e2e:live`.
+
+- `POST /v1/ask/stream`, corps `{ "question": string }` (1 à 2 000 caractères), en-tête
   `Authorization: Bearer <jeton>`, `Accept: text/event-stream`.
-- Flux SSE : des événements `token` (`{"text": "..."}`) portent le texte au fil de l'eau,
-  un événement `final` porte la réponse complète, un événement `error` porte
-  `{status, detail, trace_id}`. Si le serveur répond en `application/json`, la réponse
-  complète est lue d'un bloc.
+- Flux SSE : des événements `delta` (`{"text": "..."}`) portent le texte brut du modèle au
+  fil de l'eau, un événement `answer` porte la réponse vérifiée, affichée à la place des
+  deltas, un événement `error` porte `{error, trace_id}`. Si le serveur répond en
+  `application/json`, la réponse complète est lue d'un bloc.
 - Réponse complète : `answer`, `citations[{label, regulation, article, paragraph,
   excerpt, url}]`, `blocked`, `block_reason`, `refused`, `trace_id`, `app_version`,
   `bundle_version`, `model`, `latency_ms`, et en option `citations_removed` (nombre de
   références retirées par le filtre) et `corpus_date`.
-- `GET /v1/usage/me` : `questions_today`, `daily_quota`, `questions_total`,
-  `last_used_at`.
+- `GET /v1/usage/me` : `requests_today`, `daily_quota`, `requests`, `blocked`, `refused`
+  (l'API renvoie aussi `user`, les jetons et le coût, que l'écran n'affiche pas).
 - L'URL de base vient de `config.json`, chargé au démarrage, jamais figée au build.
+
+## Mesures
+
+Lighthouse CI (`npm run --prefix web lhci`, profil mobile, médiane de trois runs) le
+6 octobre 2026 : accueil à 98 en performance, 100 en accessibilité et 100 en bonnes
+pratiques, LCP 1 841 ms, CLS 0,001, TBT 137 ms ; page À propos à 99, 100 et 100, LCP
+1 656 ms. Toutes les assertions de `web/lighthouserc.json` passent. Lighthouse 12.6.1,
+celui que livre `@lhci/cli` 0.15.1, ne sait pas lire la trace de Chrome 154 (erreur
+`NO_NAVSTART`) : on lui donne le Chrome de Playwright par `CHROME_PATH`.
+
+La suite `npm run --prefix web e2e:live` rejoue six parcours contre l'API lancée en local
+(`VIGIE_API_PROXY`, `VIGIE_E2E_TOKEN`) : réponse en flux SSE avec article cité, attaque bloquée,
+jeton inconnu, question trop longue, écran d'usage, axe sans violation grave. Vue rouge sur l'écran d'usage avant la
+correction du contrat, verte après. Pièces dans `docs/proofs/J6/`.

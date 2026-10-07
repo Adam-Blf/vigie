@@ -1,0 +1,12 @@
+[WebServer] <script src="/theme-init.js"> in "/index.html" can't be bundled without type="module" attribute
+
+Running 6 tests using 1 worker
+
+  ✓  1 [chromium] › e2e-live\live.spec.ts:21:1 › streams a cited answer from the real API and opens the cited article (4.6s)
+  ✓  2 [chromium] › e2e-live\live.spec.ts:48:1 › the real input guard blocks an injection and the page says so (2.9s)
+  ✓  3 [chromium] › e2e-live\live.spec.ts:56:1 › a token the API does not know opens the token prompt (2.2s)
+  ✓  4 [chromium] › e2e-live\live.spec.ts:64:1 › an over-long question is rejected by the API under the field (1.7s)
+  ✓  5 [chromium] › e2e-live\live.spec.ts:71:1 › usage screen shows the counters of the real token (2.6s)
+  ✓  6 [chromium] › e2e-live\live.spec.ts:81:1 › an answered conversation has no serious or critical axe violation (4.2s)
+
+  6 passed (1.2m)
