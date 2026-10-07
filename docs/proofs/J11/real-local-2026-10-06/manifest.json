@@ -1,0 +1,52 @@
+{
+  "milestone": "J11",
+  "title": "Load test against the real local API",
+  "date": "2026-10-06",
+  "branch": "feat/close-j6-j10-j11",
+  "base_commit": "406d664",
+  "base_commit_note": "Run 1 used 406d664 as is. Run 2 and the guard measure used 406d664 plus the regex extension and tests committed afterwards on the same branch.",
+  "status": "PARTIEL",
+  "platform": "Windows 11, 8 logical CPUs at 100 % load from other local jobs (file sync, Docker builds) during every run. Locust and the API shared the machine.",
+  "tools": {
+    "python": "3.12.13",
+    "locust": "2.46.7",
+    "fastapi": "0.142.2",
+    "uvicorn": "single process",
+    "guard_model": "protectai/deberta-v3-base-prompt-injection-v2 at 90c9989b, int8 ONNX"
+  },
+  "api_setup": "python -m vigie.api on 127.0.0.1:8741, VIGIE_LLM_PROVIDER=fake, embedded Qdrant on the hybrid index of the corpus (VIGIE_QDRANT_PATH=.qdrant), VIGIE_RATE_LIMIT_PER_MINUTE=100000, VIGIE_DAILY_QUOTA=1000000, token store and audit log in a throwaway folder outside the repository. Token made with python -m vigie.api.tokens create load-local and passed through VIGIE_LOAD_TOKEN, never written to these files.",
+  "thresholds": "eval/thresholds.yaml, section load: p95 of /v1/ask under 500 ms, errors under 1 %, injections let through at most 10 %",
+  "runs": [
+    {
+      "name": "run 1, default settings",
+      "setup": "VIGIE_LLM_MAX_INFLIGHT left at its default of 2",
+      "command": "VIGIE_PORT=8741 VIGIE_LOAD_TOKEN=<test token> python tasks.py load-local",
+      "output": "run1-console.txt",
+      "result": "exit 1. 2191 requests, 311 failures (14.19 %, 301 of them HTTP 503 llm_busy), p95 1400 ms, 46 of 288 injections not blocked (15.97 %). All three thresholds missed. The HTML report of this run was overwritten by run 2, the console output is kept."
+    },
+    {
+      "name": "tests written before the guard fix, seen red",
+      "command": "python -m pytest -q tests/test_guardbench_regex.py",
+      "result": "the two new French extraction phrasings failed before src/guardbench/guards/regex.py was extended, then passed"
+    },
+    {
+      "name": "guard measure after the regex extension",
+      "command": "PYTHONPATH=src python -m vigie.guard.measure --split test|dev --out docs/proofs/J11/real-local-2026-10-06/guard",
+      "output": ["guard/measure-test.txt", "guard/measure-dev.txt", "guard/guard-test.json", "guard/guard-dev.json"],
+      "result": "recall 100 % in French and in English, 0 % false positives, on test and dev. The p95 of the chain reads 203 ms on test (limit 200 ms, marked missed) and 190 ms on dev while the machine ran at 100 % and the API was up: the J4 proof (96 ms on test, quiet machine) stays the reference for latency, this run only proves that quality did not move."
+    },
+    {
+      "name": "run 2, generation cap raised, guard fixed",
+      "setup": "VIGIE_LLM_MAX_INFLIGHT=20",
+      "command": "VIGIE_PORT=8741 VIGIE_LOAD_TOKEN=<test token> python tasks.py load-local",
+      "output": ["run2-console.txt", "run2-report.html", "run2-load_stats.csv", "run2-load_stats_history.csv"],
+      "result": "exit 1. 743 requests, 4 failures (0.54 %, connections cut on the attack row), 0 of 139 injections not blocked, p50 3800 ms, p95 21000 ms, 2.4 requests per second. Error and leak thresholds met, p95 missed."
+    },
+    {
+      "name": "single user probe",
+      "command": "30 sequential POST /v1/ask with golden questions through httpx against the same API",
+      "result": "p50 409 ms, p95 625 ms. Per stage, in process: hybrid search p50 133 ms (max 331), input guard p50 1 ms on French text (max 145 ms on the first English call)."
+    }
+  ],
+  "verdict": "The measure is real and complete but the p95 threshold is missed by a wide margin on a saturated workstation: one process serves 2 to 3 requests per second there, while 20 users offer about 7. Not a pass, so the milestone stays PARTIEL. Next measure: quiet machine or the Oracle VM (J14), and after the int8 dense embedding is wired into the retriever."
+}

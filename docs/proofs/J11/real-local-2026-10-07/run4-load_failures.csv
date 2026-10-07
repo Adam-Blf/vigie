@@ -1,0 +1,2 @@
+Method,Name,Error,Occurrences,First Seen,Last Seen
+POST,/v1/ask [attack],CatchResponseError('HTTP 0 or body not a JSON object'),2,2026-10-07T13:01:31Z,2026-10-07T13:02:36Z
