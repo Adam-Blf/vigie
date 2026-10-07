@@ -1,0 +1,10 @@
+# node scripts/third-party-licenses.ts after npm run build
+ok   MIT            @phosphor-icons/web
+ok   MIT            @rive-app/canvas
+ok   MIT            preact
+ok   MIT            workbox-core
+ok   MIT            workbox-precaching
+ok   MIT            workbox-routing
+ok   MIT            workbox-strategies
+ok   MIT            workbox-window
+exit code: 0

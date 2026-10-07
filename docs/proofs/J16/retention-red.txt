@@ -1,0 +1,6 @@
+# Mutation: both DELETE statements neutralised with 'WHERE 0 AND', purge disabled
+FAILED tests/test_api_retention.py::test_usage_rows_older_than_the_retention_are_deleted
+FAILED tests/test_api_retention.py::test_usage_purge_runs_once_a_day - assert...
+FAILED tests/test_api_retention.py::test_dead_tokens_are_forgotten_after_the_retention
+FAILED tests/test_api_retention.py::test_verify_triggers_the_daily_token_purge
+4 failed, 1 passed in 0.96s

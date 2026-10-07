@@ -1,0 +1,24 @@
+# docker run ghcr.io/adam-blf/vigie-web:SHA, then curl -sI http://127.0.0.1:4797/ (image de main, avant ce jalon)
+HTTP/1.1 200 OK
+Server: nginx
+Date: Wed, 07 Oct 2026 18:11:45 GMT
+Content-Type: text/html
+Content-Length: 1323
+Last-Modified: Wed, 07 Oct 2026 17:23:10 GMT
+Connection: keep-alive
+ETag: "6ac67ffe-52b"
+Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; require-trusted-types-for 'script'
+X-Content-Type-Options: nosniff
+Referrer-Policy: no-referrer
+Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+Cross-Origin-Opener-Policy: same-origin
+Cache-Control: no-cache
+Accept-Ranges: bytes
+
+# curl -sI http://127.0.0.1:4797/legal (route de l'application)
+HTTP/1.1 200 OK
+Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; require-trusted-types-for 'script'
+X-Content-Type-Options: nosniff
+Referrer-Policy: no-referrer
+Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+Cross-Origin-Opener-Policy: same-origin

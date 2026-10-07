@@ -9,6 +9,12 @@ aux jalons J13 (Kubernetes), J14 (infrastructure) et J15 (CI/CD), puis validé p
 avant tout passage en public. État au 2 octobre 2026 : toutes les mesures sont
 **prévues**, aucune n'est encore prouvée.
 
+État au 7 octobre 2026 (J16) : les preuves des jalons J1 à J15 sont rangées dans
+`docs/proofs/` ; le J16 ajoute l'en-tête de sécurité relevé sur l'image publiée (F2.1),
+l'historique scanné par gitleaks (F6.5), Trivy sur les deux images (F6.2) et la purge des
+compteurs d'usage et des jetons morts (F5.2), détaillés dans `docs/security.md`. Les
+mesures qui demandent la VM (F1.7, F3.2, F7.x) restent à prouver au J14.
+
 ## Actifs
 
 | Id | Actif | Pourquoi il compte |

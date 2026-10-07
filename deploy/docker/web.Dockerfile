@@ -17,7 +17,8 @@ ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
 COPY web/package.json web/package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm npm ci --no-audit
 COPY web/ ./
-# The project script: typecheck, vite build, then the bundle size check.
+# The project script: typecheck, vite build, the bundle size check, then the licence
+# notices and policy of the bundled packages (served as /third-party-licenses.txt).
 RUN npm run build
 
 FROM ${NGINX_IMAGE} AS runtime

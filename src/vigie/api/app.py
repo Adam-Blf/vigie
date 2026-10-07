@@ -19,7 +19,13 @@ from vigie.api.routes import router
 from vigie.api.schemas import CONTRACT_VERSION
 from vigie.api.state import AppState
 
-EXPOSED_HEADERS = ["Retry-After", "X-Trace-Id", "X-App-Version", "X-Bundle-Version"]
+EXPOSED_HEADERS = [
+    "Retry-After",
+    "X-Trace-Id",
+    "X-App-Version",
+    "X-Bundle-Version",
+    "X-AI-Generated",
+]
 
 Lifespan = Callable[[FastAPI], AbstractAsyncContextManager[None]]
 

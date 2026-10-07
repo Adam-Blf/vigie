@@ -141,6 +141,43 @@ jobs:
           uvx pip-audit==2.10.1 --requirement "$RUNNER_TEMP/requirements-audit.txt" \
             --no-deps --disable-pip --progress-spinner off
 
+  licenses:
+    # Third party licence inventory (brief 11.12). Rebuilt from tools on every PR: pip-licenses
+    # on the runtime environment of the API image, the package list of the real web build.
+    # A strong copyleft or unknown licence fails the job, and so does a stale
+    # THIRD_PARTY_LICENSES.md.
+    needs: detect
+    if: needs.detect.outputs.web == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version: "0.11.32"
+          python-version: "3.12"
+      # No extra: exactly the packages the API image installs.
+      - name: Runtime environment
+        run: uv sync --frozen
+      - name: Python licences (pip-licenses)
+        run: |
+          uvx pip-licenses==5.5.5 --python .venv/bin/python --format=json --with-urls \
+            --ignore-packages vigie > "$RUNNER_TEMP/python-licenses.json"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Web build, notices and npm licence policy
+        working-directory: web
+        run: npm ci && npm run build
+      - name: Inventory is up to date and every licence is allowed
+        run: |
+          uv run --no-sync python scripts/third_party_licenses.py --check \
+            --python "$RUNNER_TEMP/python-licenses.json" --web web/dist/third-party-licenses.json
+
   web:
     needs: detect
     if: needs.detect.outputs.web == 'true'

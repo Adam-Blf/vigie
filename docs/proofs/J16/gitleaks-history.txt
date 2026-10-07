@@ -1,0 +1,5 @@
+# docker run -v <dépôt>:/repo:ro zricethezav/gitleaks:v8.30.0 git /repo --log-opts=--all --redact --no-banner
+6:14PM INF 270 commits scanned.
+6:14PM INF scanned ~10722022 bytes (10.72 MB) in 3m12s
+6:14PM INF no leaks found
+exit code: 0

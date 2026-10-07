@@ -22,7 +22,7 @@ from vigie.config import get_settings
 
 def _store() -> TokenStore:
     settings = get_settings()
-    return TokenStore(settings.db_path, settings.token_ttl_days)
+    return TokenStore(settings.db_path, settings.token_ttl_days, settings.usage_retention_days)
 
 
 def _print_issued(issued: IssuedToken, out: TextIO) -> None:

@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 from vigie.api.db import connect, init_db
@@ -73,15 +73,30 @@ class UsageStore:
         self,
         path: Path,
         cost_per_1k_tokens_eur: float,
+        retention_days: int = 365,
         clock: Callable[[], datetime] = utcnow,
     ) -> None:
         self._path = path
         self._price = cost_per_1k_tokens_eur
+        self._retention = timedelta(days=retention_days)
         self._clock = clock
+        self._purged_on: date | None = None
         init_db(path, SCHEMA)
+
+    def purge(self) -> int:
+        """Delete the rows older than the retention period and return how many went."""
+        cutoff = (self._clock() - self._retention).date().isoformat()
+        with connect(self._path) as conn:
+            cursor = conn.execute("DELETE FROM usage WHERE day < ?", (cutoff,))
+        return cursor.rowcount
 
     def record(self, event: UsageEvent) -> None:
         now = self._clock()
+        if self._purged_on != now.date():
+            # EN: the privacy page promises 12 months; the first write of each day enforces it.
+            # FR : la page Confidentialité annonce 12 mois, la première écriture du jour l'applique.
+            self.purge()
+            self._purged_on = now.date()
         cost = (event.tokens_in + event.tokens_out) / 1000 * self._price
         with connect(self._path) as conn:
             conn.execute(

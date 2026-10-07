@@ -137,12 +137,12 @@ export const en: Dictionary = {
     "When no text answers, Vigie says so instead of making things up. Manipulation attempts are blocked before they reach the language model.",
   "about.ai.title": "Transparency",
   "about.ai":
-    "Vigie is a generative AI system, as required by Article 50 of the EU AI Act. Its answers are not legal advice. The language model runs on our own server, no third-party provider receives your questions.",
+    "You are interacting with a generative AI system (transparency required by Article 50 of Regulation (EU) 2024/1689 on AI). Its answers are generated automatically, may contain errors and are not legal advice. The language model runs on our own server, no third-party provider receives your questions.",
   "about.school":
-    "Project built for the MLOps course, M2 Data Engineering and AI, EFREI Paris. Educational project, not officially affiliated with EFREI.",
+    "Course project for the MLOps module, M2 Data Engineering and AI, EFREI Paris. The topic was chosen and written by the two students themselves. Educational project, not officially affiliated with EFREI, which is neither its publisher nor responsible for it.",
   "about.sources.title": "Sources",
   "about.sources":
-    "© European Union, https://eur-lex.europa.eu/, reuse authorised provided the source is acknowledged (Decision 2011/833/EU). Texts unaltered. Only the version published in the Official Journal is authentic.",
+    "© European Union, https://eur-lex.europa.eu/, reuse authorised provided the source is acknowledged (Decision 2011/833/EU). Texts split by article and reformatted, without any change to their content. Only the version published in the Official Journal of the European Union is authentic.",
 
   "legal.title": "Legal notice",
   "legal.editor.title": "Publishers",
@@ -154,32 +154,33 @@ export const en: Dictionary = {
   "legal.contact": "adam.beloucif@efrei.net, emilien.morice@efrei.net",
   "legal.host.title": "Host",
   "legal.host":
-    "Oracle Cloud Infrastructure, Always Free tier, Paris region. The contracting entity's details are given in Oracle's terms.",
+    "Oracle France SAS, 15 boulevard Charles de Gaulle, 92715 Colombes Cedex, France, phone +33 1 57 60 83 02. Oracle Cloud Infrastructure service, Always Free tier, Paris region.",
   "legal.ip.title": "Intellectual property",
   "legal.ip":
-    "Regulatory texts come from EUR-Lex, © European Union, reuse authorised provided the source is acknowledged (Decision 2011/833/EU).",
+    "Vigie code and interface: © 2026 Adam Beloucif and Emilien Morice, all rights reserved. Regulatory texts: EUR-Lex, © European Union, reuse authorised provided the source is acknowledged (Decision 2011/833/EU). Third-party components and their licences: /third-party-licenses.txt.",
 
   "privacy.title": "Privacy",
   "privacy.controllers.title": "Data controllers",
   "privacy.controllers":
-    "Adam Beloucif and Emilien Morice, joint controllers within the meaning of Article 26 GDPR.",
+    "Adam Beloucif and Emilien Morice, joint controllers within the meaning of Article 26 GDPR. You may exercise your rights with either of them, at the addresses in the legal notice.",
   "privacy.purposes.title": "Purposes and legal bases",
   "privacy.purposes":
-    "Answering your questions (performance of the service you request, Article 6(1)(b) GDPR). Keeping an audit log and protecting the service against abuse (legitimate interest, Article 6(1)(f)).",
+    "Answering your questions and applying your token's quota (performance of the service you request, Article 6(1)(b) GDPR). Keeping an audit log and protecting the service against abuse (legitimate interest in securing the service and tracing its answers, Article 6(1)(f)).",
   "privacy.data.title": "Data processed",
   "privacy.data":
-    "The text of your questions, the access token in hashed form and usage counters. No IP address or browser fingerprint is written to the audit log, and obvious personal data is masked there.",
+    "The name or pseudonym tied to your token, the token's hash (never the token itself), the text of your questions and of the answers, timestamps and usage counters. The audit log holds no IP address or browser fingerprint, and obvious personal data (e-mail, IBAN, card, phone) is masked before it is written. This data is needed to use the service.",
   "privacy.retention.title": "Retention",
-  "privacy.retention": "Audit log: 30 days. Usage counters: 12 months. Token: until revoked.",
+  "privacy.retention":
+    "Audit log: 30 days. Usage counters: 12 months. Token hash: until it is revoked or expires, then 12 months.",
   "privacy.recipients.title": "Recipients",
   "privacy.recipients":
-    "Oracle for hosting. No third-party language model provider: the model runs on our server.",
+    "The two controllers, and Oracle as host, in the Paris region (France). No third-party language model provider: the model runs on our server. No transfer outside the European Union is organised.",
   "privacy.storage.title": "Storage on your device",
   "privacy.storage":
     "No cookies and no audience measurement. Only strictly necessary technical storage is used: the token (for the tab, or on the device if you tick \"Stay signed in\"), your language and theme preferences, and the history shown.",
   "privacy.rights.title": "Your rights",
   "privacy.rights":
-    "You may request access to, correction or erasure of your data by writing to the contacts in the legal notice, and lodge a complaint with the CNIL (cnil.fr). No automated decision producing legal effects is made about you.",
+    "You may request access to your data, its correction, erasure, restriction of processing or portability, and object to processing based on legitimate interest, by writing to the contacts in the legal notice. We answer within one month. You may also lodge a complaint with the CNIL (cnil.fr). No automated decision producing legal effects is made about you.",
 
   "offline.title": "You are offline",
   "offline.body": "Vigie needs the network to search the texts. Your history comes back with the connection.",

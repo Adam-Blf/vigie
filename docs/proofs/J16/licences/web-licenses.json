@@ -1,0 +1,50 @@
+[
+  {
+    "name": "@phosphor-icons/web",
+    "version": "2.1.2",
+    "license": "MIT",
+    "repository": "git+https://github.com/phosphor-icons/web.git"
+  },
+  {
+    "name": "@rive-app/canvas",
+    "version": "2.44.0",
+    "license": "MIT",
+    "repository": "https://github.com/rive-app/rive-wasm/tree/master/js"
+  },
+  {
+    "name": "preact",
+    "version": "11.0.0",
+    "license": "MIT",
+    "repository": "preactjs/preact"
+  },
+  {
+    "name": "workbox-core",
+    "version": "7.4.1",
+    "license": "MIT",
+    "repository": "git+https://github.com/googlechrome/workbox.git"
+  },
+  {
+    "name": "workbox-precaching",
+    "version": "7.4.1",
+    "license": "MIT",
+    "repository": "git+https://github.com/googlechrome/workbox.git"
+  },
+  {
+    "name": "workbox-routing",
+    "version": "7.4.1",
+    "license": "MIT",
+    "repository": "git+https://github.com/googlechrome/workbox.git"
+  },
+  {
+    "name": "workbox-strategies",
+    "version": "7.4.1",
+    "license": "MIT",
+    "repository": "git+https://github.com/googlechrome/workbox.git"
+  },
+  {
+    "name": "workbox-window",
+    "version": "7.4.1",
+    "license": "MIT",
+    "repository": "git+https://github.com/googlechrome/workbox.git"
+  }
+]
