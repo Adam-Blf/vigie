@@ -24,6 +24,17 @@ Le sujet a été proposé et rédigé par nous-mêmes, Adam Beloucif et Emilien 
 validé par l'enseignant le 2 octobre 2026. Projet pédagogique, publié avec l'accord de
 l'enseignant, non affilié officiellement à l'EFREI.
 
+## Aperçu
+
+Captures de l'interface en mode démo, réponses figées, prises par `web/scripts/capture-proofs.ts`.
+
+![Une question, sa réponse citée et le panneau des sources](docs/assets/web/parcours.gif)
+
+| Clair, panneau des citations | Sombre, attaque bloquée |
+|---|---|
+| ![Réponse et panneau des citations en thème clair](docs/assets/web/desktop-light-panel.png) | ![Tentative d'injection bloquée en thème sombre](docs/assets/web/desktop-dark-blocked.png) |
+| ![Écran d'accueil mobile en thème clair](docs/assets/web/mobile-light-empty.png) | ![Réponse sur mobile en thème sombre](docs/assets/web/mobile-dark-answer.png) |
+
 ## Architecture
 
 ```mermaid
