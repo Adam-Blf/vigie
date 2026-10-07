@@ -31,6 +31,12 @@ from vigie.api.usage import UsageSummary
 
 router = APIRouter()
 
+# EN: machine-readable marker of generated text (AI Act, article 50(2)), set only when the
+# question reached the model; a blocked question gets a fixed message, not a generation.
+# FR : marqueur lisible par machine d'un texte généré (AI Act, article 50, paragraphe 2),
+# posé seulement quand la question atteint le modèle ; un blocage renvoie un texte fixe.
+AI_GENERATED_HEADER = "X-AI-Generated"
+
 _ERRORS: dict[int | str, dict[str, Any]] = {
     401: {"model": ErrorOut, "description": "Jeton absent, inconnu, expiré ou révoqué"},
     413: {"model": ErrorOut, "description": "Corps de requête au-delà de 16 Ko"},
@@ -57,13 +63,16 @@ def _screen(state: State, principal: User, body: AskRequest) -> Screened:
 
 
 @router.post("/v1/ask", response_model=AskResponse, responses=_ERRORS, tags=["questions"])
-def ask(body: AskRequest, state: State, principal: User, request: Request) -> AskResponse:
+def ask(
+    body: AskRequest, state: State, principal: User, request: Request, response: Response
+) -> AskResponse:
     service = AskService(state)
     screened = _screen(state, principal, body)
     trace_id = trace_id_of(request)
     if screened.decision.blocked:
         return service.blocked(principal, screened, trace_id)
     service.reserve(principal, screened, trace_id)
+    response.headers[AI_GENERATED_HEADER] = "true"
     return service.answer(principal, screened, trace_id)
 
 
@@ -88,7 +97,7 @@ def ask_stream(
     return StreamingResponse(
         service.stream(principal, screened, trace_id),
         media_type="text/event-stream",
-        headers=headers,
+        headers={**headers, AI_GENERATED_HEADER: "true"},
     )
 
 
