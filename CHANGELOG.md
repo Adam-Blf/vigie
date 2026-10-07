@@ -46,9 +46,9 @@ les notes reprennent la section correspondante.
   `tasks.py up` définissait `VIGIE_QDRANT_URL` : le test l'écarte, la suite ne dépend plus de
   l'état de la pile Docker.
 - Dependabot ne surveille plus l'écosystème Docker sur `/deploy/docker`, dossier alors absent
-  de toutes les branches, qui faisait avorter chaque passage hebdomadaire (#25). Les
-  Dockerfile arrivent avec le J7, mais la surveillance reste coupée pour l'instant : les
-  digests des images de base se relèvent à la main.
+  de toutes les branches, qui faisait avorter chaque passage hebdomadaire (#25).
+- Dependabot surveille de nouveau l'écosystème Docker sur `/deploy/docker`, maintenant que
+  les Dockerfile du J7 y vivent (même rythme hebdomadaire et même délai de 7 jours).
 
 ## [0.16.0] - 2026-10-06
 

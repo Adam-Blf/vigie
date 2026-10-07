@@ -46,6 +46,17 @@ updates:
       prefix: build
       include: scope
 
+  - package-ecosystem: docker
+    directory: /deploy/docker
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: build
+      include: scope
+
   - package-ecosystem: github-actions
     # The composite action under .github/actions pins setup-uv too.
     directories: [/, /.github/actions/python-env]
