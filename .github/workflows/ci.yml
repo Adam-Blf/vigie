@@ -259,6 +259,10 @@ jobs:
     env:
       VIGIE_LLM_PROVIDER: fake
       VIGIE_REDTEAM_BASE_URL: http://127.0.0.1:8710
+      # 360 attacks on one throwaway token: the default 20 per minute and 200 per day would
+      # stall the replay at 200 behind a quota_exceeded Retry-After until the job times out.
+      VIGIE_RATE_LIMIT_PER_MINUTE: "600"
+      VIGIE_DAILY_QUOTA: "2000"
       PROMPTFOO_DISABLE_TELEMETRY: "1"
       PROMPTFOO_DISABLE_UPDATE: "1"
       PROMPTFOO_DISABLE_REMOTE_GENERATION: "true"

@@ -38,7 +38,10 @@ les notes reprennent la section correspondante.
 - `VIGIE_LLM_TIMEOUT_S` traverse Compose jusqu'au conteneur de l'API (120 s par défaut) : le LLM
   local sur processeur seul demande 900 s dans `.env` (271 s mesurées pour une réponse).
 - Le job de red teaming de la CI démarre la pile Compose avec une clé Qdrant aléatoire
-  propre au runner, et dispose de 30 minutes pour le premier build.
+  propre au runner, et dispose de 30 minutes pour le premier build. Ses 360 attaques
+  partagent un seul jeton : le job relève `VIGIE_RATE_LIMIT_PER_MINUTE` et
+  `VIGIE_DAILY_QUOTA`, que Compose transmet désormais à l'API, sans quoi le rejeu restait
+  bloqué à 200 derrière `quota_exceeded` jusqu'au délai du job.
 
 ### Fixed
 

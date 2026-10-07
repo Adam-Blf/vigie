@@ -90,6 +90,10 @@ services:
       # A 3B model on a CPU inside Docker can need several minutes for one answer: raise this
       # in .env with the local-llm profile (measured 271 s in docs/proofs/J7/07-ask-local-llm.txt).
       VIGIE_LLM_TIMEOUT_S: ${VIGIE_LLM_TIMEOUT_S:-120.0}
+      # Per-token limits, the defaults of config.py; the red teaming job of the CI raises them
+      # because its 360 replayed attacks share one token.
+      VIGIE_RATE_LIMIT_PER_MINUTE: ${VIGIE_RATE_LIMIT_PER_MINUTE:-20}
+      VIGIE_DAILY_QUOTA: ${VIGIE_DAILY_QUOTA:-200}
       # The web container serves the interface under the same origin: no CORS needed.
       VIGIE_CORS_ORIGINS: "[]"
       VIGIE_AUDIT_POD_NAME: compose-api
