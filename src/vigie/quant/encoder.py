@@ -13,6 +13,7 @@ from typing import Any, Protocol
 import numpy as np
 from numpy.typing import NDArray
 
+from vigie.infra.ort_memory import apply_low_memory
 from vigie.quant.dense import FloatArray, l2_normalize, mean_pool
 
 
@@ -47,7 +48,9 @@ class OnnxEncoder:
         self._inputs = {i.name for i in session.get_inputs()}
 
     @classmethod
-    def from_files(cls, model: Path, tokenizer_json: Path, max_tokens: int) -> OnnxEncoder:
+    def from_files(
+        cls, model: Path, tokenizer_json: Path, max_tokens: int, low_memory: bool = False
+    ) -> OnnxEncoder:
         import onnxruntime as ort  # quant extra, imported lazily
         from tokenizers import Tokenizer as HFTokenizer
 
@@ -56,6 +59,8 @@ class OnnxEncoder:
         tokenizer.enable_padding()
         options = ort.SessionOptions()
         options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+        if low_memory:
+            apply_low_memory(options)
         session = ort.InferenceSession(
             str(model), sess_options=options, providers=["CPUExecutionProvider"]
         )

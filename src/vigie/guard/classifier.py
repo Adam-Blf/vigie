@@ -14,6 +14,7 @@ from typing import Any, Protocol
 import numpy as np
 
 from vigie.guard.prepare import CONFIG_FILE, MODEL_FILE, TOKENIZER_FILE
+from vigie.infra.ort_memory import apply_low_memory
 
 INJECTION_LABEL = "INJECTION"
 
@@ -59,7 +60,9 @@ class InjectionClassifier:
         self._inputs = {item.name for item in session.get_inputs()}
 
     @classmethod
-    def load(cls, model_dir: Path, max_tokens: int, threads: int) -> InjectionClassifier:
+    def load(
+        cls, model_dir: Path, max_tokens: int, threads: int, low_memory: bool = False
+    ) -> InjectionClassifier:
         paths = [model_dir / name for name in (MODEL_FILE, TOKENIZER_FILE, CONFIG_FILE)]
         missing = [p.name for p in paths if not p.exists()]
         if missing:
@@ -74,6 +77,8 @@ class InjectionClassifier:
         options = ort.SessionOptions()
         options.intra_op_num_threads = threads
         options.inter_op_num_threads = 1
+        if low_memory:
+            apply_low_memory(options)
         session = ort.InferenceSession(
             str(paths[0]), sess_options=options, providers=["CPUExecutionProvider"]
         )

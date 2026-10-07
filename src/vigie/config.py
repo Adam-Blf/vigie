@@ -238,6 +238,9 @@ class Settings(BaseSettings):
     # weights the study measured.
     dense_model_revision: str = "e8f8c211226b894fcb81acc59f3b34ba3efd5f42"
     dense_max_tokens: int = Field(default=128, ge=8, le=512)
+    # ONNX Runtime sessions of the dense model and of the guard without prepacked weights
+    # or CPU arena (vigie.infra.ort_memory): same vectors, less resident memory per pod.
+    onnx_low_memory: bool = False
     quant_dir: Path = Path("data/quant")
     quant_warmup_queries: int = Field(default=5, ge=0)
     quant_latency_passes: int = Field(default=3, ge=1)

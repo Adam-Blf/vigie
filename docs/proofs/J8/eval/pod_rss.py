@@ -5,7 +5,8 @@ window, Qdrant path, guard model folder), the fake LLM and a throwaway token dat
 sends questions through POST /v1/ask so the guard, the dense and BM25 models and the
 fusion all run, then reads the memory of the server process. Run from the repository root:
 PYTHONPATH=src python docs/proofs/J8/eval/pod_rss.py
-Prints the resident set after start, after the questions, and the peak. Qdrant is embedded
+Prints the resident set after start, after the questions, the peak, and the p95 latency
+of the questions. Qdrant is embedded
 here (VIGIE_QDRANT_PATH), so the figure also holds the collection the cluster keeps in its
 own Qdrant pod: it errs on the high side.
 """
@@ -74,14 +75,16 @@ with tempfile.TemporaryDirectory() as tmp:
             time.sleep(1)
         process = psutil.Process(server.pid)
         started, _ = rss(process)
-        statuses = []
+        statuses, latencies = [], []
         for question in QUESTIONS:
+            begin = time.perf_counter()
             response = httpx.post(
                 f"{base}/v1/ask",
                 json={"question": question},
                 headers={"Authorization": f"Bearer {token}"},
                 timeout=120,
             )
+            latencies.append((time.perf_counter() - begin) * 1000)
             statuses.append(response.status_code)
         after, peak = rss(process)
         model = os.environ.get("VIGIE_DENSE_MODEL", "default")
@@ -91,6 +94,8 @@ with tempfile.TemporaryDirectory() as tmp:
             f"rss after start {mib(started):.0f} MiB, after asks {mib(after):.0f} MiB, "
             f"peak {mib(peak):.0f} MiB"
         )
+        p95 = sorted(latencies)[int(0.95 * len(latencies)) - 1]
+        print(f"POST /v1/ask p95 {p95:.0f} ms over {len(latencies)} asks (fake LLM)")
     finally:
         server.terminate()
         server.wait(timeout=30)

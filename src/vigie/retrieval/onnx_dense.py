@@ -58,7 +58,7 @@ class OnnxDense:
         return iter(self._encoder.encode([query]))
 
 
-def load_int8(model: str, quant_dir: Path, max_tokens: int) -> OnnxDense:
+def load_int8(model: str, quant_dir: Path, max_tokens: int, low_memory: bool = False) -> OnnxDense:
     from vigie.quant.encoder import OnnxEncoder
 
     paths = variant_paths(model_dir(quant_dir, model))
@@ -67,7 +67,7 @@ def load_int8(model: str, quant_dir: Path, max_tokens: int) -> OnnxDense:
             f"no int8 export of {model} in {paths.int8.parent}; run "
             f"vigie-quant export --models {paths.int8.parent}, or set VIGIE_DENSE_VARIANT=fp32"
         )
-    encoder = OnnxEncoder.from_files(paths.int8, paths.tokenizer, max_tokens)
+    encoder = OnnxEncoder.from_files(paths.int8, paths.tokenizer, max_tokens, low_memory)
     # The width is read from one encoded word rather than written down per model.
     size = int(encoder.encode(["dimension"]).shape[1])
     return OnnxDense(encoder, size)
