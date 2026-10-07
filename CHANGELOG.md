@@ -10,6 +10,9 @@ les notes reprennent la section correspondante.
 
 - `infra-retry` ne s'arrête plus quand le fournisseur OCI de Terraform démarre trop
   lentement sur une machine chargée : ce délai est désormais traité comme passager.
+- Dependabot ne surveille plus l'écosystème Docker sur `/deploy/docker`, dossier absent de
+  toutes les branches, qui faisait avorter chaque passage hebdomadaire (#25). À remettre
+  quand un Dockerfile arrivera.
 
 ## [0.16.0] - 2026-10-06
 
