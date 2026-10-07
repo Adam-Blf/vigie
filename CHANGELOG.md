@@ -6,6 +6,13 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+### Added
+
+- `docs/memory-options.md` : mesures, en conteneurs Linux, des options mémoire du pod de
+  l'API (statu quo J7 978 Mio, MiniLM int8 832 Mio, e5-base int8 992 Mio, réglages ONNX
+  Runtime et allocateur sans effet, service de modèles partagé à 113 Mio par pod d'API),
+  avec leurs arbitrages ; sorties et sondes dans `docs/proofs/J8/memory-options/`.
+
 ## [0.18.1] - 2026-10-07
 
 ### Fixed

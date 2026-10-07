@@ -1,0 +1,28 @@
+{
+  "milestone": "J8, memory options of the API pod (docs/memory-options.md)",
+  "branch": "docs/memory-options",
+  "base_commit": "eddd0e065b08b7afe49ba118e59e5b42849ca9c7",
+  "measured_merge": "origin/main eddd0e0 merged locally with origin/feat/evaluation 8b0479e, never pushed",
+  "date": "2026-10-07",
+  "split_read": "none (20 hand-written questions of docs/proofs/J8/eval/pod_rss.py; the sealed test split was not read)",
+  "commands": {
+    "raw/A.txt": "measure.py on vigiemem-main (origin/main image), baseline then C1 to C7 and a second baseline",
+    "raw/B.txt": "measure.py on vigiemem-o (merged image, run o settings), baseline then C1 to C7 and a second baseline",
+    "raw/A2.txt": "measure.py on vigiemem-d (merged image, run d settings)",
+    "raw/D.txt": "measure.py, local models then VIGIE_PROBE_REMOTE_MODELS, two rounds per configuration, plus a third remote round on A",
+    "raw/A-D.txt": "measure.py, first shared-models run on A, CPU shared with the e5 indexing job",
+    "raw/*-breakdown*.txt": "docker exec <api> python /probe/breakdown.py [--trace]",
+    "raw/A-imports.txt": "docker exec <api> python /probe/imports.py",
+    "raw/C8-graph-opt-off.txt": "breakdown.py with VIGIE_PROBE_ORT_OPT=disable on A and B",
+    "raw/hop.txt": "hop.py remote from each API container, hop.py local in each vigie-models container",
+    "raw/ingest-o-snapshot.txt": "one docker stats snapshot during the e5-base indexing",
+    "raw/environment.txt": "docker and image provenance"
+  },
+  "results_mib": {
+    "api_pod_steady": {"A_main_fastembed_minilm": 978, "A2_minilm_int8": 832, "B_e5base_int8_run_o": 992},
+    "api_pod_cgroup_peak": {"A": 1130, "A2": 969, "B": 1128},
+    "cheap_settings_best_gain": 10,
+    "shared_models": {"api_pod_without_models": 113, "models_service_A_or_B": 951, "models_service_A2": 796},
+    "extra_hop_median_ms_per_call": [2.5, 3.2]
+  }
+}

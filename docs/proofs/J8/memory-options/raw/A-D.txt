@@ -1,0 +1,8 @@
+## A. D shared models: API without models + vigie-models (memory run, CPU shared with an indexing job)
+ready after 10 s; statuses [200] over 20 asks
+POST /v1/ask median 215 ms, p95 355 ms (fake LLM, first ask included)
+docker stats --no-stream:
+  vigiemem-main-api-1 113.1MiB / 15.32GiB
+  vigiemem-main-models-1 950.6MiB / 15.32GiB
+  vigiemem-main-api-1: cgroup current 114 MiB, peak 158 MiB, anon 108 MiB, file 1 MiB; PID 1 VmRSS 156 MiB, VmHWM 156 MiB, 15 threads
+  vigiemem-main-models-1: cgroup current 951 MiB, peak 1090 MiB, anon 938 MiB, file 7 MiB; PID 1 VmRSS 990 MiB, VmHWM 1125 MiB, 26 threads

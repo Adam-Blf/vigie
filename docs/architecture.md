@@ -144,7 +144,8 @@ prend 558 Mio (le double de sa session ONNX brute), le classifieur des garde-fou
 changé ([détail](proofs/J7/08-api-memory-by-model.txt)). La prochaine marche est de
 brancher l'embedding int8 du J12 dans le retriever, ou une session ONNX directe pour la
 branche dense ; d'ici là, la `limit` de 640 Mio du manifeste de l'API est trop basse et
-le canary doit rester à 2 pods d'API au plus.
+le canary doit rester à 2 pods d'API au plus. Les options chiffrées pour en sortir, mesurées en
+conteneurs Linux, sont dans [memory-options.md](memory-options.md).
 
 ### Conteneurs Docker (J7)
 

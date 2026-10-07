@@ -1,0 +1,117 @@
+## A. local models, round 1
+ready after 12 s; statuses [200] over 20 asks
+POST /v1/ask median 145 ms, p95 294 ms (fake LLM, first ask included)
+POST /v1/ask warm pass: median 89 ms, p95 167 ms over 20 asks
+docker stats --no-stream (after the first 20 asks):
+  vigiemem-main-api-1 977.9MiB / 15.32GiB
+  vigiemem-main-api-1: cgroup current 980 MiB, peak 1126 MiB, anon 971 MiB, file 0 MiB; PID 1 VmRSS 1032 MiB, VmHWM 1171 MiB, 26 threads
+
+## A. D shared vigie-models, round 1
+ready after 7 s; statuses [200, 500] over 20 asks
+POST /v1/ask median 162 ms, p95 200 ms (fake LLM, first ask included)
+POST /v1/ask warm pass: median 90 ms, p95 280 ms over 20 asks
+docker stats --no-stream (after the first 20 asks):
+  vigiemem-main-api-1 115.7MiB / 15.32GiB
+  vigiemem-main-models-1 952.4MiB / 15.32GiB
+  vigiemem-main-api-1: cgroup current 117 MiB, peak 162 MiB, anon 110 MiB, file 1 MiB; PID 1 VmRSS 158 MiB, VmHWM 158 MiB, 15 threads
+  vigiemem-main-models-1: cgroup current 945 MiB, peak 1083 MiB, anon 938 MiB, file 0 MiB; PID 1 VmRSS 990 MiB, VmHWM 1126 MiB, 26 threads
+
+## A. local models, round 2
+ready after 13 s; statuses [200] over 20 asks
+POST /v1/ask median 149 ms, p95 348 ms (fake LLM, first ask included)
+POST /v1/ask warm pass: median 85 ms, p95 205 ms over 20 asks
+docker stats --no-stream (after the first 20 asks):
+  vigiemem-main-api-1 978.1MiB / 15.32GiB
+  vigiemem-main-api-1: cgroup current 979 MiB, peak 1130 MiB, anon 972 MiB, file 0 MiB; PID 1 VmRSS 1032 MiB, VmHWM 1171 MiB, 27 threads
+
+## A. D shared vigie-models, round 2
+ready after 4 s; statuses [200] over 20 asks
+POST /v1/ask median 89 ms, p95 150 ms (fake LLM, first ask included)
+POST /v1/ask warm pass: median 150 ms, p95 310 ms over 20 asks
+docker stats --no-stream (after the first 20 asks):
+  vigiemem-main-api-1 110.6MiB / 15.32GiB
+  vigiemem-main-models-1 942.9MiB / 15.32GiB
+  vigiemem-main-api-1: cgroup current 112 MiB, peak 177 MiB, anon 106 MiB, file 0 MiB; PID 1 VmRSS 154 MiB, VmHWM 154 MiB, 14 threads
+  vigiemem-main-models-1: cgroup current 944 MiB, peak 1083 MiB, anon 937 MiB, file 0 MiB; PID 1 VmRSS 990 MiB, VmHWM 1126 MiB, 26 threads
+
+## A2. local models, round 1
+ready after 12 s; statuses [200] over 20 asks
+POST /v1/ask median 97 ms, p95 161 ms (fake LLM, first ask included)
+POST /v1/ask warm pass: median 140 ms, p95 211 ms over 20 asks
+docker stats --no-stream (after the first 20 asks):
+  vigiemem-d-api-1 831.5MiB / 15.32GiB
+  vigiemem-d-api-1: cgroup current 833 MiB, peak 969 MiB, anon 825 MiB, file 0 MiB; PID 1 VmRSS 884 MiB, VmHWM 1019 MiB, 26 threads
+
+## A2. D shared vigie-models, round 1
+ready after 5 s; statuses [200] over 20 asks
+POST /v1/ask median 89 ms, p95 309 ms (fake LLM, first ask included)
+POST /v1/ask warm pass: median 84 ms, p95 149 ms over 20 asks
+docker stats --no-stream (after the first 20 asks):
+  vigiemem-d-api-1 110.9MiB / 15.32GiB
+  vigiemem-d-models-1 794.4MiB / 15.32GiB
+  vigiemem-d-api-1: cgroup current 113 MiB, peak 163 MiB, anon 107 MiB, file 0 MiB; PID 1 VmRSS 153 MiB, VmHWM 153 MiB, 14 threads
+  vigiemem-d-models-1: cgroup current 796 MiB, peak 931 MiB, anon 789 MiB, file 0 MiB; PID 1 VmRSS 841 MiB, VmHWM 975 MiB, 26 threads
+
+## A2. local models, round 2
+ready after 8 s; statuses [200] over 20 asks
+POST /v1/ask median 70 ms, p95 130 ms (fake LLM, first ask included)
+POST /v1/ask warm pass: median 79 ms, p95 155 ms over 20 asks
+docker stats --no-stream (after the first 20 asks):
+  vigiemem-d-api-1 830.6MiB / 15.32GiB
+  vigiemem-d-api-1: cgroup current 833 MiB, peak 969 MiB, anon 825 MiB, file 0 MiB; PID 1 VmRSS 884 MiB, VmHWM 1019 MiB, 27 threads
+
+## A2. D shared vigie-models, round 2
+ready after 4 s; statuses [200] over 20 asks
+POST /v1/ask median 78 ms, p95 143 ms (fake LLM, first ask included)
+POST /v1/ask warm pass: median 77 ms, p95 164 ms over 20 asks
+docker stats --no-stream (after the first 20 asks):
+  vigiemem-d-api-1 110.9MiB / 15.32GiB
+  vigiemem-d-models-1 794.3MiB / 15.32GiB
+  vigiemem-d-api-1: cgroup current 113 MiB, peak 163 MiB, anon 107 MiB, file 0 MiB; PID 1 VmRSS 153 MiB, VmHWM 153 MiB, 15 threads
+  vigiemem-d-models-1: cgroup current 796 MiB, peak 931 MiB, anon 789 MiB, file 0 MiB; PID 1 VmRSS 841 MiB, VmHWM 975 MiB, 27 threads
+
+## B. local models, round 1
+ready after 10 s; statuses [200] over 20 asks
+POST /v1/ask median 112 ms, p95 234 ms (fake LLM, first ask included)
+POST /v1/ask warm pass: median 75 ms, p95 155 ms over 20 asks
+docker stats --no-stream (after the first 20 asks):
+  vigiemem-o-api-1 987.8MiB / 15.32GiB
+  vigiemem-o-api-1: cgroup current 989 MiB, peak 1124 MiB, anon 981 MiB, file 0 MiB; PID 1 VmRSS 1039 MiB, VmHWM 1173 MiB, 26 threads
+
+## B. D shared vigie-models, round 1
+ready after 4 s; statuses [200] over 20 asks
+POST /v1/ask median 109 ms, p95 262 ms (fake LLM, first ask included)
+POST /v1/ask warm pass: median 99 ms, p95 342 ms over 20 asks
+docker stats --no-stream (after the first 20 asks):
+  vigiemem-o-api-1 111.9MiB / 15.32GiB
+  vigiemem-o-models-1 950MiB / 15.32GiB
+  vigiemem-o-api-1: cgroup current 113 MiB, peak 169 MiB, anon 108 MiB, file 0 MiB; PID 1 VmRSS 153 MiB, VmHWM 153 MiB, 15 threads
+  vigiemem-o-models-1: cgroup current 951 MiB, peak 1085 MiB, anon 944 MiB, file 0 MiB; PID 1 VmRSS 996 MiB, VmHWM 1128 MiB, 26 threads
+
+## B. local models, round 2
+ready after 10 s; statuses [200] over 20 asks
+POST /v1/ask median 97 ms, p95 146 ms (fake LLM, first ask included)
+POST /v1/ask warm pass: median 76 ms, p95 175 ms over 20 asks
+docker stats --no-stream (after the first 20 asks):
+  vigiemem-o-api-1 987.6MiB / 15.32GiB
+  vigiemem-o-api-1: cgroup current 989 MiB, peak 1124 MiB, anon 981 MiB, file 0 MiB; PID 1 VmRSS 1039 MiB, VmHWM 1173 MiB, 26 threads
+
+## B. D shared vigie-models, round 2
+ready after 4 s; statuses [200] over 20 asks
+POST /v1/ask median 110 ms, p95 263 ms (fake LLM, first ask included)
+POST /v1/ask warm pass: median 83 ms, p95 188 ms over 20 asks
+docker stats --no-stream (after the first 20 asks):
+  vigiemem-o-api-1 112MiB / 15.32GiB
+  vigiemem-o-models-1 949.7MiB / 15.32GiB
+  vigiemem-o-api-1: cgroup current 114 MiB, peak 174 MiB, anon 108 MiB, file 0 MiB; PID 1 VmRSS 154 MiB, VmHWM 154 MiB, 15 threads
+  vigiemem-o-models-1: cgroup current 951 MiB, peak 1085 MiB, anon 944 MiB, file 0 MiB; PID 1 VmRSS 996 MiB, VmHWM 1128 MiB, 26 threads
+
+## A. D shared vigie-models, round 3 (500 check)
+ready after 4 s; statuses [200] over 20 asks
+POST /v1/ask median 95 ms, p95 127 ms (fake LLM, first ask included)
+POST /v1/ask warm pass: median 115 ms, p95 172 ms over 20 asks
+docker stats --no-stream (after the first 20 asks):
+  vigiemem-main-api-1 110.7MiB / 15.32GiB
+  vigiemem-main-models-1 944.7MiB / 15.32GiB
+  vigiemem-main-api-1: cgroup current 112 MiB, peak 174 MiB, anon 106 MiB, file 0 MiB; PID 1 VmRSS 154 MiB, VmHWM 154 MiB, 15 threads
+  vigiemem-main-models-1: cgroup current 946 MiB, peak 1083 MiB, anon 939 MiB, file 0 MiB; PID 1 VmRSS 992 MiB, VmHWM 1126 MiB, 27 threads

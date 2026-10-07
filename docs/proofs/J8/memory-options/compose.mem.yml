@@ -1,0 +1,68 @@
+# Override of docker-compose.yml for the measurements of docs/memory-options.md.
+#
+#   docker compose -p <project> -f docker-compose.yml -f compose.mem.yml up -d api
+#
+# Own image tag and own project name, so the vigie stack and its volumes stay untouched.
+# PROBE_DIR is docs/proofs/J8/memory-options/probe, QUANT_DIR the folder of the J12 int8
+# exports (data/quant, outside the repository). Every VIGIE_* below defaults to the value
+# of config.py, so an unset variable means the shipped setting.
+
+x-mem-env: &mem-env
+  PYTHONPATH: /probe
+  VIGIE_QUANT_DIR: /quant
+  VIGIE_DENSE_VARIANT: ${VIGIE_DENSE_VARIANT:-int8}
+  VIGIE_DENSE_MODEL: ${VIGIE_DENSE_MODEL:-sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2}
+  VIGIE_DENSE_MAX_TOKENS: ${VIGIE_DENSE_MAX_TOKENS:-128}
+  VIGIE_CORPUS_SPLIT_WORDS: ${VIGIE_CORPUS_SPLIT_WORDS:-1200}
+
+services:
+  # No host port: several measurement projects run side by side.
+  qdrant:
+    ports: !reset []
+
+  ingest:
+    image: vigie-api:${MEM_TAG:?set MEM_TAG}
+    environment:
+      <<: *mem-env
+    volumes:
+      - ${PROBE_DIR:?set PROBE_DIR}:/probe:ro
+      - ${QUANT_DIR:?set QUANT_DIR}:/quant:ro
+
+  api:
+    image: vigie-api:${MEM_TAG:?set MEM_TAG}
+    ports: !override
+      - 127.0.0.1:${MEM_API_PORT:-8711}:8710
+    environment:
+      <<: *mem-env
+      VIGIE_PROBE_ORT_ARENA: ${VIGIE_PROBE_ORT_ARENA:-}
+      VIGIE_PROBE_ORT_PREPACK: ${VIGIE_PROBE_ORT_PREPACK:-}
+      VIGIE_PROBE_ORT_THREADS: ${VIGIE_PROBE_ORT_THREADS:-}
+      VIGIE_PROBE_ORT_OPT: ${VIGIE_PROBE_ORT_OPT:-}
+      VIGIE_PROBE_REMOTE_MODELS: ${VIGIE_PROBE_REMOTE_MODELS:-}
+      MALLOC_ARENA_MAX: ${MALLOC_ARENA_MAX:-}
+      LD_PRELOAD: ${MEM_LD_PRELOAD:-}
+      VIGIE_GUARD_CLASSIFIER: ${VIGIE_GUARD_CLASSIFIER:-onnx}
+    volumes:
+      - ${PROBE_DIR:?set PROBE_DIR}:/probe:ro
+      - ${QUANT_DIR:?set QUANT_DIR}:/quant:ro
+      # libjemalloc.so.2 of Debian bookworm (package libjemalloc2), for MEM_LD_PRELOAD.
+      - ${EXTRA_DIR:?set EXTRA_DIR}:/extra:ro
+
+  models:
+    image: vigie-api:${MEM_TAG:?set MEM_TAG}
+    profiles: [shared-models]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    command: [python, /probe/models_service.py]
+    environment:
+      <<: *mem-env
+    volumes:
+      - ${PROBE_DIR:?set PROBE_DIR}:/probe:ro
+      - ${QUANT_DIR:?set QUANT_DIR}:/quant:ro
+    tmpfs: [/tmp]
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8800/healthz', timeout=4)"]
+      interval: 5s
+      timeout: 5s
+      retries: 60

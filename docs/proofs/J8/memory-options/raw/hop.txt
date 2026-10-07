@@ -1,0 +1,18 @@
+## vigiemem-main
+remote GET /healthz (hop only)     median   2.49 ms   p95   4.74 ms
+remote POST /embed_query           median  21.75 ms   p95  54.74 ms
+remote POST /guard_score           median  36.10 ms   p95  76.07 ms
+in-process embed_query             median  30.18 ms   p95  57.36 ms
+in-process guard score             median  37.29 ms   p95  77.85 ms
+## vigiemem-d
+remote GET /healthz (hop only)     median   3.17 ms   p95   9.70 ms
+remote POST /embed_query           median  15.63 ms   p95  31.68 ms
+remote POST /guard_score           median  32.41 ms   p95  46.68 ms
+in-process embed_query             median   7.61 ms   p95  16.15 ms
+in-process guard score             median  28.77 ms   p95  36.69 ms
+## vigiemem-o
+remote GET /healthz (hop only)     median   2.79 ms   p95   4.39 ms
+remote POST /embed_query           median  19.14 ms   p95  34.92 ms
+remote POST /guard_score           median  33.81 ms   p95  65.69 ms
+in-process embed_query             median  19.04 ms   p95  32.21 ms
+in-process guard score             median  29.58 ms   p95  37.64 ms

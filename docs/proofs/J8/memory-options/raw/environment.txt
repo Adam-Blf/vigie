@@ -1,0 +1,24 @@
+# Measurement environment, 2026-10-07
+docker server 29.8.2, Docker Desktop, kernel 6.6.87.2-microsoft-standard-WSL2, 8 CPUs, 16448176128 bytes
+cgroup v2: memory.current, memory.peak and memory.stat read inside each container
+
+images (built with deploy/docker/api.Dockerfile, docker compose build):
+  vigie-api:mem-main sha256:bdea71e4749d 1515620914 bytes
+  vigie-api:mem-merged sha256:e79ee8587ccd 1515891750 bytes
+  mem-main   = origin/main eddd0e0 (J7 stack, fastembed dense, J2 fusion)
+  mem-merged = origin/main eddd0e0 merged locally with origin/feat/evaluation 8b0479e (int8 dense,
+               e5 profiles, English guard, dense weight 3); only build-time change: the two offline
+               model checks of the Dockerfile run with VIGIE_DENSE_VARIANT=fp32, since the J12 int8
+               files are not in the image but mounted read-only at /quant (data/quant of feat/evaluation)
+
+int8 files mounted from data/quant (bytes), plus the guard baked in the image:
+  279348032 data/quant/intfloat-multilingual-e5-base/model-int8.onnx (per-channel export, run o)
+  118710947 data/quant/sentence-transformers-paraphrase-multilingual-minilm-l12-v2/model-int8.onnx
+  244295917 /opt/models/guard/model.int8.onnx (DeBERTa injection classifier, in the image)
+
+Collections indexed for the runs (one compose project each, own volumes, the vigie stack untouched):
+  vigiemem-main  fastembed MiniLM, 1200-word chunks, 511 points
+  vigiemem-d     MiniLM int8, 1200-word chunks, 511 points
+  vigiemem-o     e5-base int8, 350-word chunks, 1291 points (815.6 s); the drift reference could not
+                 be built (vigie-drift loads the dense model through fastembed, which does not know
+                 multilingual-e5-base), so that API ran without drift monitoring (about 1 MiB)

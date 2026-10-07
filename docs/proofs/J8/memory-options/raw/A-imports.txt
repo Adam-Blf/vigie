@@ -1,0 +1,14 @@
+numpy                  +  16 MiB   pulls: numpy
+pydantic               +   7 MiB   pulls:
+fastapi                +  29 MiB   pulls:
+uvicorn                +  17 MiB   pulls:
+httpx                  +  16 MiB   pulls:
+qdrant_client          + 110 MiB   pulls: onnxruntime fastembed qdrant_client grpc numpy tokenizers
+onnxruntime            +  31 MiB   pulls: onnxruntime numpy
+tokenizers             +   7 MiB   pulls: tokenizers
+fastembed              +  70 MiB   pulls: onnxruntime fastembed numpy tokenizers
+vigie.config           +  24 MiB   pulls:
+vigie.guard.chain      +  28 MiB   pulls:
+vigie.retrieval.search + 116 MiB   pulls: onnxruntime fastembed qdrant_client grpc numpy tokenizers
+vigie.api.app          +  48 MiB   pulls: numpy
+vigie.api.__main__     + 126 MiB   pulls: onnxruntime fastembed qdrant_client grpc numpy tokenizers

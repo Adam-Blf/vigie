@@ -1,0 +1,6 @@
+## A2. MiniLM-L12 int8 ONNX of J12 wired as in run d (feat/evaluation code), 1200-word chunks
+ready after 11 s; statuses [200] over 20 asks
+POST /v1/ask median 92 ms, p95 144 ms (fake LLM, first ask included)
+docker stats --no-stream:
+  vigiemem-d-api-1 831.9MiB / 15.32GiB
+  vigiemem-d-api-1: cgroup current 833 MiB, peak 969 MiB, anon 825 MiB, file 0 MiB; PID 1 VmRSS 884 MiB, VmHWM 1019 MiB, 26 threads

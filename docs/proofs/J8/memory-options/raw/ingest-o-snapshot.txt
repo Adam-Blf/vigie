@@ -1,0 +1,8 @@
+# One `docker stats --no-stream` snapshot taken by hand while the ingest container of project
+# vigiemem-o was indexing (e5-base int8, 512 tokens, 350-word chunks, 1291 chunks), 2026-10-07.
+# A single reading, not a peak: the real peak of that job was not recorded.
+vigiemem-main-api-1 0.24% 981.3MiB / 15.32GiB
+vigiemem-o-qdrant-1 0.35% 45.62MiB / 15.32GiB
+vigiemem-o-ingest-1 408.55% 4.349GiB / 15.32GiB
+vigiemem-main-qdrant-1 2.48% 68.12MiB / 15.32GiB
+# For scale: deploy/k8s/base/ingest-job.yaml gives the ingest Job a 768Mi memory limit.

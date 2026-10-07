@@ -1,0 +1,62 @@
+## B. e5-base int8 per channel, 350-word chunks, English guard, dense weight 3 (run o)
+ready after 30 s; statuses [200] over 20 asks
+POST /v1/ask median 169 ms, p95 227 ms (fake LLM, first ask included)
+docker stats --no-stream:
+  vigiemem-o-api-1 992.1MiB / 15.32GiB
+  vigiemem-o-api-1: cgroup current 993 MiB, peak 1128 MiB, anon 982 MiB, file 3 MiB; PID 1 VmRSS 1040 MiB, VmHWM 1175 MiB, 26 threads
+
+## B. C1 ORT CPU arena off
+ready after 22 s; statuses [200] over 20 asks
+POST /v1/ask median 238 ms, p95 481 ms (fake LLM, first ask included)
+docker stats --no-stream:
+  vigiemem-o-api-1 985.7MiB / 15.32GiB
+  vigiemem-o-api-1: cgroup current 987 MiB, peak 1135 MiB, anon 979 MiB, file 0 MiB; PID 1 VmRSS 1039 MiB, VmHWM 1175 MiB, 26 threads
+
+## B. C2 ORT prepacking off
+ready after 20 s; statuses [200] over 20 asks
+POST /v1/ask median 157 ms, p95 271 ms (fake LLM, first ask included)
+docker stats --no-stream:
+  vigiemem-o-api-1 988.1MiB / 15.32GiB
+  vigiemem-o-api-1: cgroup current 989 MiB, peak 1125 MiB, anon 982 MiB, file 0 MiB; PID 1 VmRSS 1040 MiB, VmHWM 1175 MiB, 26 threads
+
+## B. C3 ORT intra_op threads 1
+ready after 37 s; statuses [200] over 20 asks
+POST /v1/ask median 165 ms, p95 415 ms (fake LLM, first ask included)
+docker stats --no-stream:
+  vigiemem-o-api-1 987.9MiB / 15.32GiB
+  vigiemem-o-api-1: cgroup current 989 MiB, peak 1125 MiB, anon 982 MiB, file 0 MiB; PID 1 VmRSS 1041 MiB, VmHWM 1175 MiB, 22 threads
+
+## B. C4 ORT all three
+ready after 41 s; statuses [200] over 20 asks
+POST /v1/ask median 180 ms, p95 344 ms (fake LLM, first ask included)
+docker stats --no-stream:
+  vigiemem-o-api-1 985.5MiB / 15.32GiB
+  vigiemem-o-api-1: cgroup current 986 MiB, peak 1132 MiB, anon 979 MiB, file 0 MiB; PID 1 VmRSS 1037 MiB, VmHWM 1174 MiB, 23 threads
+
+## B. C5 MALLOC_ARENA_MAX=2
+ready after 15 s; statuses [200] over 20 asks
+POST /v1/ask median 82 ms, p95 225 ms (fake LLM, first ask included)
+docker stats --no-stream:
+  vigiemem-o-api-1 986.9MiB / 15.32GiB
+  vigiemem-o-api-1: cgroup current 988 MiB, peak 1124 MiB, anon 980 MiB, file 0 MiB; PID 1 VmRSS 1039 MiB, VmHWM 1173 MiB, 26 threads
+
+## B. C6 jemalloc 5.3 (LD_PRELOAD)
+ready after 13 s; statuses [200] over 20 asks
+POST /v1/ask median 139 ms, p95 350 ms (fake LLM, first ask included)
+docker stats --no-stream:
+  vigiemem-o-api-1 987.5MiB / 15.32GiB
+  vigiemem-o-api-1: cgroup current 989 MiB, peak 1132 MiB, anon 981 MiB, file 0 MiB; PID 1 VmRSS 1040 MiB, VmHWM 1174 MiB, 27 threads
+
+## B. C7 all of C4 + C5 + C6
+ready after 12 s; statuses [200] over 20 asks
+POST /v1/ask median 97 ms, p95 171 ms (fake LLM, first ask included)
+docker stats --no-stream:
+  vigiemem-o-api-1 981.7MiB / 15.32GiB
+  vigiemem-o-api-1: cgroup current 983 MiB, peak 1125 MiB, anon 975 MiB, file 0 MiB; PID 1 VmRSS 1034 MiB, VmHWM 1174 MiB, 22 threads
+
+## B. baseline again (stability)
+ready after 22 s; statuses [200] over 20 asks
+POST /v1/ask median 185 ms, p95 272 ms (fake LLM, first ask included)
+docker stats --no-stream:
+  vigiemem-o-api-1 988.4MiB / 15.32GiB
+  vigiemem-o-api-1: cgroup current 990 MiB, peak 1126 MiB, anon 982 MiB, file 0 MiB; PID 1 VmRSS 1041 MiB, VmHWM 1175 MiB, 26 threads

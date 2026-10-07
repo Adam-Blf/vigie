@@ -1,0 +1,11 @@
+python start                                   14 MiB  (+   0)   python heap      0 MiB
+API modules imported (fastapi, pydantic, qdrant-client)    195 MiB  (+ 181)   python heap     62 MiB
+onnxruntime imported                          195 MiB  (+   0)   python heap     62 MiB
+fastembed imported                            195 MiB  (+   0)   python heap     62 MiB
+dense session (paraphrase-multilingual-MiniLM-L12-v2, fastembed)    754 MiB  (+ 559)   python heap     62 MiB
+BM25 sparse model (fastembed)                 754 MiB  (+   0)   python heap     62 MiB
+one query through both                        756 MiB  (+   2)   python heap     62 MiB
+guard DeBERTa ONNX int8 session              1072 MiB  (+ 316)   python heap     63 MiB
+one guard check                              1072 MiB  (+   0)   python heap     63 MiB
+drift reference loaded                       1073 MiB  (+   1)   python heap     63 MiB
+Qdrant client and one hybrid search          1082 MiB  (+   9)   python heap     64 MiB
