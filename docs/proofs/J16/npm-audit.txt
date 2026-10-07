@@ -1,0 +1,20 @@
+# npm audit --prefix web --omit=dev --audit-level=high
+found 0 vulnerabilities
+exit code: 0
+
+# npm audit --prefix web --audit-level=high (outillage, non bloquant en CI)
+sprintf-js vulnerable to denial of service through unbounded precision specifiers - https://github.com/advisories/GHSA-hp3w-g68c-fv3c
+fix available via `npm audit fix --force`
+Will install @lhci/cli@0.12.0, which is a breaking change
+node_modules/sprintf-js
+  argparse  1.0.0 - 1.0.10
+  Depends on vulnerable versions of sprintf-js
+  node_modules/argparse
+    js-yaml  3.2.7 - 3.15.2
+    Depends on vulnerable versions of argparse
+    node_modules/js-yaml
+
+9 vulnerabilities (3 moderate, 6 high)
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force

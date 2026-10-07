@@ -1,0 +1,10 @@
+# Mutation: node_modules/preact/package.json declares GPL-3.0-only, then node scripts/third-party-licenses.ts
+ok   MIT            @phosphor-icons/web
+ok   MIT            @rive-app/canvas
+FAIL GPL-3.0-only   preact
+ok   MIT            workbox-core
+ok   MIT            workbox-precaching
+ok   MIT            workbox-routing
+ok   MIT            workbox-strategies
+ok   MIT            workbox-window
+exit code: 1

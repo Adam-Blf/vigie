@@ -1,0 +1,35 @@
+{
+  "milestone": "J16 (conformité et sécurité finale)",
+  "branch": "feat/compliance",
+  "commit_measured": "images et historique : main eddd0e065b08b7afe49ba118e59e5b42849ca9c7 (scanned-sha.txt) ; tests, mutations et inventaire : arbre de travail de feat/compliance avant son premier commit, identique au code commité",
+  "date_utc": "2026-10-07T18:15:00Z",
+  "host": "portable Windows 11, Docker Desktop (VM WSL 2), conteneurs Linux amd64 pour Trivy, gitleaks et pip-licenses",
+  "files": {
+    "retention-red.txt": "pytest tests/test_api_retention.py avec les deux DELETE neutralisés par 'WHERE 0 AND' : 4 échecs ; restauré, 5 verts dans python tasks.py check",
+    "ai-marker-red.txt": "pytest tests/test_api_ai_marker.py sans l'en-tête X-AI-Generated : 2 échecs ; restauré, 4 verts",
+    "web-licences-red.txt": "node web/scripts/third-party-licenses.ts avec node_modules/preact/package.json déclaré GPL-3.0-only : FAIL, exit code 1",
+    "web-licences-green.txt": "même commande sur l'arbre réel : 8 paquets livrés, tous MIT, exit code 0",
+    "licences/python-licenses.json": "uvx pip-licenses==5.5.5 --python /work/.venv/bin/python --format=json --with-urls, dans ghcr.io/astral-sh/uv:python3.12-bookworm-slim après uv sync --frozen --no-install-project (environnement de l'image API)",
+    "licences/web-licenses.json": "web/dist/third-party-licenses.json produit par npm run build",
+    "licences/inventory.txt": "python scripts/third_party_licenses.py puis --check : 53 paquets Python, 8 npm, 0 refusé",
+    "pip-audit.txt": "uvx pip-audit==2.10.1 sur uv export --frozen (exécution seule, puis extras dev, tracking, quant, load comme le job CI) : aucune vulnérabilité connue",
+    "npm-audit.txt": "npm audit --prefix web --omit=dev --audit-level=high : 0 ; arbre complet rapporté pour mémoire (outillage Lighthouse CI, non livré)",
+    "trivy-api.txt": "aquasec/trivy:0.70.0 image --scanners vuln --severity CRITICAL,HIGH --ignore-unfixed --exit-code 1 ghcr.io/adam-blf/vigie-api:<sha> : 0, exit code 0",
+    "trivy-web.txt": "même commande sur ghcr.io/adam-blf/vigie-web:<sha> : 0, exit code 0",
+    "gitleaks-history.txt": "zricethezav/gitleaks:v8.30.0 git --log-opts=--all --redact sur le dépôt : 270 commits, aucune fuite",
+    "headers-web.txt": "docker run de l'image vigie-web de main puis curl -sI / et /legal : CSP, nosniff, Referrer-Policy, Permissions-Policy, COOP"
+  },
+  "tools": {
+    "python": "3.12 (.venv du dépôt)",
+    "uv": "0.9.30 dans le conteneur, 0.11.32 en CI",
+    "node": "22",
+    "pip-licenses": "5.5.5",
+    "pip-audit": "2.10.1",
+    "trivy": "0.70.0",
+    "gitleaks": "8.30.0"
+  },
+  "not_measured": [
+    "HTTPS, HSTS et en-têtes sur la production : la VM Oracle n'existe pas (J14 BLOQUÉ)",
+    "entité contractante du compte Oracle, à vérifier par Adam dans la console"
+  ]
+}

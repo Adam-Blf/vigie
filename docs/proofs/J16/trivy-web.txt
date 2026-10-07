@@ -1,0 +1,16 @@
+# docker run aquasec/trivy:0.70.0 image --quiet --scanners vuln --severity CRITICAL,HIGH --ignore-unfixed --exit-code 1 ghcr.io/adam-blf/vigie-web:SHA
+# SHA = commit de main dans scanned-sha.txt (remplacé ici, gitleaks prend le couple image:empreinte pour une clé)
+
+Report Summary
+
+┌─────────────────────────────────────────────────────────────────────────────┬────────┬─────────────────┐
+│                                   Target                                    │  Type  │ Vulnerabilities │
+├─────────────────────────────────────────────────────────────────────────────┼────────┼─────────────────┤
+│ ghcr.io/adam-blf/vigie-web:SHA (alpine │ alpine │        0        │
+│ 3.24.2)                                                                     │        │                 │
+└─────────────────────────────────────────────────────────────────────────────┴────────┴─────────────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+exit code: 0
