@@ -45,6 +45,10 @@ les notes reprennent la section correspondante.
 - `test_cli_without_passages_retrieves_from_qdrant` échouait dès qu'un `.env` écrit par
   `tasks.py up` définissait `VIGIE_QDRANT_URL` : le test l'écarte, la suite ne dépend plus de
   l'état de la pile Docker.
+- Dependabot ne surveille plus l'écosystème Docker sur `/deploy/docker`, dossier alors absent
+  de toutes les branches, qui faisait avorter chaque passage hebdomadaire (#25). Les
+  Dockerfile arrivent avec le J7, mais la surveillance reste coupée pour l'instant : les
+  digests des images de base se relèvent à la main.
 
 ## [0.16.0] - 2026-10-06
 
