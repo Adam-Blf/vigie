@@ -6,6 +6,14 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+## [0.18.1] - 2026-10-07
+
+### Fixed
+
+- L'image web reposait sur `nginx-unprivileged:1.29-alpine`, branche qui ne bouge plus :
+  Trivy y relevait 42 failles HIGH corrigeables et bloquait sa première publication sur
+  GHCR. La base passe à `1.30-alpine` (Alpine 3.24.2), aucune faille corrigeable.
+
 ## [0.18.0] - 2026-10-07
 
 ### Added
