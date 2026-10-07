@@ -6,6 +6,37 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+## [0.19.0] - 2026-10-07
+
+### Added
+
+- Jalon J16, conformité et sécurité finale : `docs/security.md` (checklist avant
+  déploiement cochée, rapport d'audit juridique et corrections), registre des traitements
+  RGPD, analyse AI Act, fiches des modèles et des données, projet d'accord de
+  responsabilité conjointe, dans `docs/compliance/`.
+- `THIRD_PARTY_LICENSES.md`, généré par `scripts/third_party_licenses.py` à partir de
+  `pip-licenses`, du build de l'interface et de `docs/compliance/licences.yaml` (modèles,
+  jeux de données, images, chacun avec sa source primaire). Le job CI `licenses` le
+  régénère, refuse un copyleft fort ou une licence inconnue et échoue si le fichier a dérivé.
+- Le build de l'interface relève les paquets npm réellement livrés, sert leurs mentions de
+  licence dans `/third-party-licenses.txt` et échoue sur une licence hors liste.
+- En-tête `X-AI-Generated: true` sur toute réponse produite par le modèle (AI Act,
+  article 50.2).
+- `/.well-known/security.txt` (RFC 9116).
+
+### Changed
+
+- Pages Mentions légales, Confidentialité et À propos : identité et coordonnées de
+  l'hébergeur, données traitées complètes, tous les droits et le délai de réponse,
+  exercice des droits auprès de l'un ou l'autre responsable, sujet rédigé par les
+  étudiants, remise en forme des textes EUR-Lex dite telle quelle.
+
+### Fixed
+
+- La durée de 12 mois annoncée pour les compteurs d'usage n'était appliquée par aucun code,
+  et l'empreinte d'un jeton révoqué restait indéfiniment : purge quotidienne des deux
+  (`VIGIE_USAGE_RETENTION_DAYS`, 365 par défaut).
+
 ## [0.18.1] - 2026-10-07
 
 ### Fixed
