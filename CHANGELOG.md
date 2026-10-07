@@ -6,6 +6,19 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+### Added
+
+- `vigie-quant export` quantifie avec une échelle par canal de sortie (`--per-tensor` rend
+  l'export du J12). e5-base int8 ne perd plus que 2,1 points de recall@5 sur `dev`.
+- `docs/proofs/J8/eval/pod_rss.py` mesure la mémoire du pod de l'API entier (garde-fou,
+  modèles, 20 questions) : 864 Mio pour MiniLM int8, 1 019 Mio pour e5-base int8.
+
+### Changed
+
+- `docs/evaluation.md` : run o (e5-base int8 par canal, 0,809 et 0,655 sur `dev`) jugé par
+  la règle `dense_embedding` écrite avant la mesure ; refusé sur la mémoire (950 Mio
+  permis), comme l'option sans préempaquetage ONNX Runtime. MiniLM int8 reste déployé.
+
 ## [0.17.0] - 2026-10-06
 
 ### Added

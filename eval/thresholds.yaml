@@ -62,6 +62,8 @@ dense_embedding:
   # only if, on dev, recall@5 and MRR still reach the floors, the resident set after the
   # asks of docs/proofs/J8/eval/pod_rss.py is under max_pod_rss_mib above, and the p95 of
   # POST /v1/ask in that same run (fake LLM) stays under max_ask_p95_ms (load.p95_ms).
+  # Measured the same day: 1014 MiB, 5 MiB of gain, so option 1 fails too and the flag was
+  # removed from the code (docs/proofs/J8/eval/pod-rss.txt). MiniLM int8 stays deployed.
   low_memory_sessions:
     env: VIGIE_ONNX_LOW_MEMORY
     max_ask_p95_ms: 500

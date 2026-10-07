@@ -95,13 +95,17 @@ recherche hybride de production, sur les 47 questions `dev` (détail dans
 | MiniLM-L12 | garde anglais, poids dense 3 (retenue) | 0,617 | 0,638 | +2,1 points |
 | e5-base | RRF k = 60 | 0,702 | 0,638 | -6,4 points |
 | e5-base | chunks de 350 mots, garde anglais, poids 3 | 0,830 | 0,723 | -10,7 points |
+| e5-base | même configuration, int8 par canal (7 octobre) | 0,830 | 0,809 | -2,1 points |
 
 La colonne fastembed de MiniLM est elle-même une copie ONNX déjà quantifiée par Qdrant
 (`qdrant/paraphrase-multilingual-MiniLM-L12-v2-onnx-Q`), lue sur 512 jetons. Pour MiniLM,
 l'écart tient à une question sur 47 dans un sens ou dans l'autre selon la
 fusion ; int8 reste déployé. Pour e5-base, la quantization dynamique fait perdre bien plus
-que les 2 points permis : si un modèle e5 est adopté, il faudra une autre méthode (par
-canal, ou statique avec calibration), mesurée de nouveau avec `vigie-quant`.
+que les 2 points permis avec une échelle par tenseur. Avec une échelle par canal de sortie,
+désormais le défaut de `vigie-quant export` (`--per-tensor` rend l'ancien export), e5-base
+int8 ne perd plus que 2,1 points (une question sur 47) pour un fichier au quart du fp32
+(`docs/proofs/J8/eval/e5base-parity.txt`). Il reste trop lourd pour le pod de l'API :
+1 019 Mio mesurés pour 950 permis (`docs/evaluation.md`, « Choix et budget mémoire »).
 
 Barrière vue rouge : la même mesure avec une copie du seuil dégradée (`max_size_ratio`
 ramené à 0,2) retient fp32 et donne le motif « int8 file is 0.25 of fp32, above 0.20 »

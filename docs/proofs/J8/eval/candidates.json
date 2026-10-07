@@ -16,6 +16,7 @@
     {"run": "dev-k-e5-base-chunks350", "label": "k. e5-base, chunks 350 mots", "recall_at_5": 0.7660, "mrr": 0.5868, "fits_vm": false},
     {"run": "dev-l-e5-base-chunks350-gated-w3", "label": "l. e5-base, chunks 350, garde, poids 3", "recall_at_5": 0.8298, "mrr": 0.6684, "fits_vm": false},
     {"run": "dev-m-e5-base-int8-chunks350-gated-w3", "label": "m. e5-base int8, chunks 350, garde, poids 3", "recall_at_5": 0.7234, "mrr": 0.5829, "fits_vm": false},
-    {"run": "dev-n-e5-large-jina-rerank30", "label": "n. e5-large puis reranker jina-v2", "recall_at_5": 0.7234, "mrr": 0.5634, "fits_vm": false}
+    {"run": "dev-n-e5-large-jina-rerank30", "label": "n. e5-large puis reranker jina-v2", "recall_at_5": 0.7234, "mrr": 0.5634, "fits_vm": false},
+    {"run": "dev-o-e5-base-int8-perchannel-chunks350-gated-w3", "label": "o. e5-base int8 par canal, chunks 350, garde, poids 3", "recall_at_5": 0.8085, "mrr": 0.6552, "fits_vm": false}
   ]
 }

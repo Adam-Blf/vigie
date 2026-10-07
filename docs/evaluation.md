@@ -69,7 +69,7 @@ recherche (fusion, poids, reranker, `top_k`), version du prompt, étiquette Olla
 `champion` désigne la production, `challenger` le canary. L'API ne contacte jamais
 MLflow : une étape de la CD lit les alias et écrit les ConfigMaps (brief, section 11.8).
 
-État au 6 octobre 2026 : **aucune version enregistrée**. La configuration retenue ne passe
+État au 7 octobre 2026 : **aucune version enregistrée**. La configuration retenue ne passe
 pas les planchers de recherche sur `test` (voir plus bas), et `vigie-eval register` l'a
 refusée (`docs/proofs/J8/eval/register-refused.txt`, code de sortie 1). Le chemin complet,
 version créée, bundle écrit, alias posés puis déplacés, est couvert par les tests sur un
@@ -137,6 +137,7 @@ passage et une question encodés).
 | l | multilingual-e5-base, chunks de 350 mots, garde anglais, poids 3 | 0,830 | 0,668 | 1 445 Mio | non |
 | m | multilingual-e5-base int8, chunks de 350 mots, garde anglais, poids 3 | 0,723 | 0,583 | 666 Mio | non |
 | n | multilingual-e5-large puis reranker jina-v2-base-multilingual sur 30 candidats | 0,723 | 0,563 | 12 Go en pointe pendant la mesure | non |
+| o | multilingual-e5-base int8 par canal, chunks de 350 mots, garde anglais, poids 3 | 0,809 | 0,655 | 1 019 Mio (pod de l'API entier) | non, 950 Mio permis |
 
 ![Comparaison des configurations sur dev](assets/retrieval-candidates.png)
 
@@ -152,11 +153,12 @@ Lecture :
 - **Le découpage aide e5, pas MiniLM.** Avec des chunks de 350 mots, à peu près la fenêtre
   de 512 jetons d'e5, e5-base gagne 6 points ; MiniLM, qui ne lit que 128 jetons, en perd
   8,5, comme au J2.
-- **int8 ne convient qu'à MiniLM.** Pour MiniLM, l'écart tient à une question sur 47 :
+- **int8 par tenseur ne convient qu'à MiniLM, int8 par canal convient aussi à e5-base.** Pour MiniLM, l'écart tient à une question sur 47 :
   avec la fusion du J2, int8 perd 2,1 points de rappel (runs a et b, 0,638 contre 0,617) ;
   avec la fusion retenue, il en gagne 2,1 (0,638 contre 0,617 pour fastembed avec le même
   poids et le même garde, `branches.txt`). Pour e5-base, int8 coûte 6 à 11 points (runs f
-  et g, l et m), bien au-delà du bruit.
+  et g, l et m), bien au-delà du bruit. Avec une échelle par canal de sortie (run o), la perte
+  tombe à 2,1 points, une question sur 47, et le fichier reste au quart du fp32.
 - **Le reranker dégrade et ne tient pas.** Sur e5-large, jina-v2 fait perdre 6 points de
   rappel et prend environ 73 s par question sur le poste ; il lit des articles réglementaires
   français longs, loin de ce qu'il a appris. Il reste disponible (`VIGIE_RERANK_MODEL`),
@@ -171,16 +173,51 @@ La meilleure configuration mesurée, **e5-base en chunks de 350 mots avec le gar
 (run l, 0,830 et 0,668 sur `dev`), et la meilleure à découpage inchangé, **e5-large avec le
 garde anglais** (run i, 0,809 et 0,620), passent les planchers sur `dev`. Aucune ne tient
 dans le pod de l'API : le brief (section 11.7) lui donne 0,7 Go, sans torch, garde-fou
-DeBERTa ONNX compris. e5-base occupe 1,4 Gio en fp32 et 666 Mio en int8, mais int8 lui fait
-perdre 11 points ; e5-large dépasse 1,5 Gio. Sur les deux cœurs Arm de la VM, encoder chaque
+DeBERTa ONNX compris. e5-base occupe 1,4 Gio en fp32 ; en int8 par tenseur il perd
+11 points, en int8 par canal il passe les planchers mais le pod atteint 1 019 Mio (section
+suivante) ; e5-large dépasse 1,5 Gio. Sur les deux cœurs Arm de la VM, encoder chaque
 question avec e5-large prendrait aussi une part du budget de 500 ms au p95 du test de
 charge.
+
+### e5-base int8 par canal (7 octobre 2026)
+
+La règle `dense_embedding` de `eval/thresholds.yaml` a été écrite avant la mesure
+(commit `af6605b`) : e5-base int8 remplace MiniLM seulement si, sur `dev`, recall@5 et MRR
+atteignent les planchers, la parité de l'export fp32 avec PyTorch reste sous 1e-4, le
+fichier int8 pèse au plus la moitié du fp32 et un pod de l'API reste sous 950 Mio
+(8,5 Go de `requests` moins 5,65 Go de composants fixes, partagés par 3 pods).
+
+| Critère | Mesure | Règle | Verdict |
+|---|---|---|---|
+| recall@5 sur `dev` (run o) | 0,809 [0,702 ; 0,915] | au moins 0,80 | passe |
+| MRR sur `dev` (run o) | 0,655 [0,545 ; 0,766] | au moins 0,60 | passe |
+| parité fp32 contre PyTorch | 2,2e-7 | au plus 1e-4 | passe |
+| taille int8 sur fp32 | 0,251 | au plus 0,5 | passe |
+| mémoire du pod de l'API | 1 019 Mio | sous 950 Mio | **échoue** |
+
+La mémoire est celle de `python -m vigie.api` entier (`docs/proofs/J8/eval/pod_rss.py`) :
+garde-fou DeBERTa int8, e5-base int8, BM25, faux LLM, 20 questions posées, Qdrant dans son
+propre conteneur. Le même banc donne 864 Mio pour la configuration déployée (MiniLM int8) :
+e5-base ajoute 155 Mio, à peu près la différence de taille des deux fichiers. Une seconde
+option, écrite elle aussi avant sa mesure (commit `3e18c4f`), a construit les sessions ONNX
+Runtime sans poids préempaquetés ni arène mémoire : 1 014 Mio, 5 Mio de gagnés, refusée
+(`docs/proofs/J8/eval/pod-rss.txt`). Le code de cette option a été retiré ; il reste dans
+l'historique (`07b69e1`) pour rejouer la preuve.
+
+Passer de 3 à 2 pods d'API porterait le budget à 1 425 Mio par pod. Cette voie n'a pas été
+prise : la mémoire d'e5-base est déjà connue, donc une règle écrite maintenant ne serait
+plus écrite avant la mesure, et le budget est une contrainte du brief au même titre que les
+planchers. Elle retire aussi soit la montée en charge de l'HPA, soit le pod du canary. Les
+deux voies restantes, un pod d'embedding séparé ou un budget revu, sont une décision
+d'Adam, à écrire dans un ADR. La partie `test` n'a pas été lue pour e5-base.
 
 **Configuration retenue, run d** : MiniLM-L12 en ONNX int8 (`VIGIE_DENSE_VARIANT=int8`,
 fenêtre de 128 jetons), BM25 français, RRF k = 60 avec un poids dense de 3, BM25 laissé de
 côté sur les questions anglaises, épinglage des références, sans reranker, `top_k` = 6.
-C'est la seule configuration mesurée qui tient dans 0,7 Go avec l'API et le garde-fou
-(453 Mio pour le processus et le modèle). Elle applique la décision du J12 : avec la fusion
+C'est la seule configuration mesurée qui tient dans le budget du pod (453 Mio pour le
+processus et le modèle seuls ; 864 Mio pour l'API entière avec le garde-fou, mesurés le
+7 octobre par `pod_rss.py`, au-dessus de l'estimation de 0,7 Go du brief mais sous les
+950 Mio qui restent par pod). Elle applique la décision du J12 : avec la fusion
 retenue, int8 fait aussi bien que le modèle fastembed sur `dev` (0,638 contre 0,617 pour
 fastembed avec les mêmes réglages, une question d'écart).
 

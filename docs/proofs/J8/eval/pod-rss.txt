@@ -14,3 +14,19 @@ default int8: statuses [200] over 20 asks
 rss after start 856 MiB, after asks 864 MiB, peak 1013 MiB
 
 # Verdict: 1019 MiB after the asks, 69 MiB over the 950 MiB budget. The rule fails on memory.
+
+# Option 1 of eval/thresholds.yaml (dense_embedding.low_memory_sessions), rule committed in
+# commit 3e18c4f, before this run. Same configuration o, VIGIE_ONNX_LOW_MEMORY=true
+# (no weight prepacking, no CPU arena, dense and guard sessions), same harness.
+intfloat/multilingual-e5-base int8: statuses [200] over 20 asks
+rss after start 1009 MiB, after asks 1014 MiB, peak 1170 MiB
+POST /v1/ask p95 842 ms over 20 asks (fake LLM)
+
+# Same harness, flag off, run right after for the latency scale (the workstation was shared
+# with two other jobs, so the latency figures are noisy; memory is stable to 5 MiB):
+intfloat/multilingual-e5-base int8: statuses [200] over 20 asks
+rss after start 1009 MiB, after asks 1019 MiB, peak 1170 MiB
+POST /v1/ask p95 2004 ms over 20 asks (fake LLM)
+
+# Verdict option 1: 1014 MiB, still 64 MiB over 950, and p95 842 ms over 500 ms. Fails.
+# dev recall was not measured again: the rule is a conjunction and memory already fails.
