@@ -54,6 +54,17 @@ dense_embedding:
   max_parity_gap: 0.0001
   max_size_ratio: 0.5
   max_pod_rss_mib: 950
+  # Measured on 2026-10-07 (docs/proofs/J8/eval/pod-rss.txt): parity, size, recall@5 0.809
+  # and MRR 0.655 pass, the pod holds 1019 MiB, so the rule above fails on memory alone.
+  # Option 1, written the same day before any measurement of it: same model and same int8
+  # file, ONNX Runtime sessions of the dense model and of the input guard built without
+  # weight prepacking and without the CPU memory arena (VIGIE_ONNX_LOW_MEMORY=true). Adopted
+  # only if, on dev, recall@5 and MRR still reach the floors, the resident set after the
+  # asks of docs/proofs/J8/eval/pod_rss.py is under max_pod_rss_mib above, and the p95 of
+  # POST /v1/ask in that same run (fake LLM) stays under max_ask_p95_ms (load.p95_ms).
+  low_memory_sessions:
+    env: VIGIE_ONNX_LOW_MEMORY
+    max_ask_p95_ms: 500
 
 bootstrap:
   draws: 1000
