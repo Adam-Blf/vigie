@@ -1,0 +1,44 @@
+collection vigie_paraphrase-multilingual-minilm-l12-v2-f692d1_5abe72f5, 47 dev questions
+dense only                   recall@5=0.5319 mrr=0.4222
+bm25 only                    recall@5=0.3617 mrr=0.2921
+rrf k=60 w=[1.0, 1.0] p=20   recall@5=0.6383 mrr=0.4863
+  + dense only if english    recall@5=0.6383 mrr=0.5132
+rrf k=60 w=[2.0, 1.0] p=20   recall@5=0.6170 mrr=0.4739
+  + dense only if english    recall@5=0.6170 mrr=0.5111
+rrf k=60 w=[3.0, 1.0] p=20   recall@5=0.6170 mrr=0.4738
+  + dense only if english    recall@5=0.6170 mrr=0.5217
+rrf k=60 w=[1.0, 1.0] p=50   recall@5=0.5532 mrr=0.4327
+  + dense only if english    recall@5=0.5745 mrr=0.4803
+collection vigie_multilingual-e5-small-9c062c_5abe72f5, 47 dev questions
+dense only                   recall@5=0.5532 mrr=0.3810
+bm25 only                    recall@5=0.3617 mrr=0.2921
+rrf k=60 w=[1.0, 1.0] p=20   recall@5=0.5106 mrr=0.3966
+  + dense only if english    recall@5=0.5319 mrr=0.3814
+rrf k=60 w=[2.0, 1.0] p=20   recall@5=0.5106 mrr=0.4155
+  + dense only if english    recall@5=0.5319 mrr=0.4020
+rrf k=60 w=[3.0, 1.0] p=20   recall@5=0.5106 mrr=0.4116
+  + dense only if english    recall@5=0.5319 mrr=0.4114
+rrf k=60 w=[1.0, 1.0] p=50   recall@5=0.4894 mrr=0.3805
+  + dense only if english    recall@5=0.5319 mrr=0.3818
+collection vigie_multilingual-e5-base-57113d_5abe72f5, 47 dev questions
+dense only                   recall@5=0.7447 mrr=0.5973
+bm25 only                    recall@5=0.3617 mrr=0.2921
+rrf k=60 w=[1.0, 1.0] p=20   recall@5=0.7021 mrr=0.4919
+  + dense only if english    recall@5=0.7234 mrr=0.5490
+rrf k=60 w=[2.0, 1.0] p=20   recall@5=0.6809 mrr=0.4736
+  + dense only if english    recall@5=0.7234 mrr=0.5376
+rrf k=60 w=[3.0, 1.0] p=20   recall@5=0.6809 mrr=0.4716
+  + dense only if english    recall@5=0.7234 mrr=0.5353
+rrf k=60 w=[1.0, 1.0] p=50   recall@5=0.5745 mrr=0.4496
+  + dense only if english    recall@5=0.6596 mrr=0.5388
+collection vigie_multilingual-e5-large-a86969_5abe72f5, 47 dev questions
+dense only                   recall@5=0.7872 mrr=0.6235
+bm25 only                    recall@5=0.3617 mrr=0.2921
+rrf k=60 w=[1.0, 1.0] p=20   recall@5=0.7872 mrr=0.5900
+  + dense only if english    recall@5=0.8085 mrr=0.6030
+rrf k=60 w=[2.0, 1.0] p=20   recall@5=0.7872 mrr=0.6071
+  + dense only if english    recall@5=0.8085 mrr=0.6200
+rrf k=60 w=[3.0, 1.0] p=20   recall@5=0.7872 mrr=0.6079
+  + dense only if english    recall@5=0.8085 mrr=0.6206
+rrf k=60 w=[1.0, 1.0] p=50   recall@5=0.6170 mrr=0.5156
+  + dense only if english    recall@5=0.6809 mrr=0.5687

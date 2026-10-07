@@ -47,6 +47,19 @@ class Settings(BaseSettings):
     # RRF constant. 60 is the value of the original RRF paper and measured best on the dev
     # split; 0 means Qdrant's plain FusionQuery, whose constant is fixed at 2.
     retrieval_rrf_k: int = Field(default=60, ge=0)
+    # Cross-encoder run over the first fused candidates; empty turns the second pass off.
+    rerank_model: str = ""
+    # Fused candidates the reranker reads; more finds more, each one costs a model call.
+    rerank_depth: int = Field(default=30, ge=1, le=200)
+    # Put the chunks of an article named in the question ("article 28 DORA") first.
+    retrieval_pin_references: bool = True
+    # Weight of the dense list in the RRF sum, BM25 keeping 1. Ignored when the RRF
+    # constant is 0, Qdrant's plain fusion takes no weights. 3 measured best on the dev
+    # split with the int8 MiniLM (docs/evaluation.md).
+    retrieval_dense_weight: float = Field(default=3.0, gt=0.0)
+    # BM25 matches French stems; False leaves it out of questions detected as English,
+    # where its candidates only diluted the dense ones on the dev split.
+    retrieval_sparse_on_english: bool = False
     # qdrant for real answers; static replays a JSON file of passages to measure the LLM alone.
     retriever: RetrieverKind = "qdrant"
     static_passages_path: Path | None = None
@@ -209,6 +222,14 @@ class Settings(BaseSettings):
     golden_path: Path = Path("data/golden/questions.jsonl")
     golden_seal_path: Path = Path("data/golden/test.sha256")
     thresholds_path: Path = Path("eval/thresholds.yaml")
+    # Local MLflow store of vigie-eval, a SQLite file and an artifact folder, both under
+    # mlruns/ which stays out of the repository. CI points it at a throwaway folder, a
+    # cluster at its server.
+    eval_tracking_uri: str = "sqlite:///mlruns/mlflow.db"
+    eval_artifact_dir: Path = Path("mlruns/artifacts")
+    eval_experiment: str = "vigie-eval"
+    eval_registered_model: str = "vigie-rag"
+    eval_report_dir: Path = Path("results/eval")
 
     # Quantization (J12). The deployed embedding variant is the outcome of the study in
     # docs/quantization.md, applied here and nowhere else.

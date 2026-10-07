@@ -1,0 +1,10 @@
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 1002.94it/s]
+FAIL  recall_at_k                        0.6522 >= 0.8000
+FAIL  mrr                                0.5142 >= 0.6000
+PASS  invented_in_final_answer           0.0000 <= 0.0000
+PASS  citation_precision                 0.2063 >= 0.8500  (fake LLM, reported only)
+PASS  citation_coverage                  0.5652 >= 0.8000  (fake LLM, reported only)
+PASS  correct_refusal_rate               0.0000 >= 0.9000  (fake LLM, reported only)
+gate FAILED
+not registered: a version is only created after the gate passes
+exit 1

@@ -16,6 +16,8 @@ from pathlib import Path
 from typing import Any, Protocol
 
 from vigie.config import Settings
+from vigie.retrieval.models import profile_for, register_custom_model
+from vigie.retrieval.onnx_dense import load_int8
 
 
 @dataclass(frozen=True)
@@ -46,14 +48,32 @@ def _slug(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
 
 
-def embedding_id(dense_model: str, sparse_model: str, language: str) -> str:
+def embedding_id(
+    dense_model: str,
+    sparse_model: str,
+    language: str,
+    passage_prefix: str = "",
+    variant: str = "fp32",
+    window: int | None = None,
+) -> str:
     """Readable model name plus a short hash of the whole embedding setup.
 
     The dense name alone would not do: switching BM25 to English changes every sparse
     vector without changing a single dense dimension, and Qdrant would happily mix both.
+    The passage prefix changes every stored vector too; it only enters the hash when set,
+    so the collections built before prefixes existed keep their names. The int8 variant
+    gives other vectors again, and says so in the readable part too. So does the token
+    window of the ONNX export: a passage cut at 128 tokens is not the one cut at 512.
     """
-    setup = f"{dense_model}|{sparse_model}|{language}".encode()
-    return f"{_slug(dense_model.rsplit('/', 1)[-1])}-{hashlib.sha256(setup).hexdigest()[:6]}"
+    parts = [dense_model, sparse_model, language] + ([passage_prefix] if passage_prefix else [])
+    name = _slug(dense_model.rsplit("/", 1)[-1])
+    if variant != "fp32":
+        parts.append(variant)
+        name = f"{name}-{variant}"
+    if window is not None:
+        parts.append(f"window={window}")
+    setup = "|".join(parts).encode()
+    return f"{name}-{hashlib.sha256(setup).hexdigest()[:6]}"
 
 
 # What fastembed hands back, reduced to the members used here.
@@ -79,6 +99,7 @@ SparseFactory = Callable[[str, "str | None", str], _SparseModel]
 def _fastembed_dense(model: str, cache_dir: str | None) -> _DenseModel:
     from fastembed import TextEmbedding
 
+    register_custom_model(model)
     dense: _DenseModel = TextEmbedding(model_name=model, cache_dir=cache_dir)
     return dense
 
@@ -113,14 +134,36 @@ class FastEmbedEmbedder:
         *,
         dense_factory: DenseFactory = _fastembed_dense,
         sparse_factory: SparseFactory = _fastembed_sparse,
+        variant: str = "fp32",
+        window: int | None = None,
     ) -> None:
         cache = str(cache_dir) if cache_dir else None
-        self._id = embedding_id(dense_model, sparse_model, language)
+        profile = profile_for(dense_model)
+        self._query_prefix = profile.query_prefix
+        self._passage_prefix = profile.passage_prefix
+        self._id = embedding_id(
+            dense_model, sparse_model, language, self._passage_prefix, variant, window
+        )
         self._dense = dense_factory(dense_model, cache)
         self._sparse = sparse_factory(sparse_model, cache, language)
 
     @classmethod
     def from_settings(cls, settings: Settings) -> FastEmbedEmbedder:
+        """fp32 is fastembed's copy of the model; int8 is the J12 export (onnx_dense.py)."""
+        if settings.dense_variant == "int8":
+
+            def int8(model: str, _cache: str | None) -> _DenseModel:
+                return load_int8(model, settings.quant_dir, settings.dense_max_tokens)
+
+            return cls(
+                settings.dense_model,
+                settings.sparse_model,
+                settings.sparse_language,
+                settings.embedding_cache_dir,
+                dense_factory=int8,
+                variant="int8",
+                window=settings.dense_max_tokens,
+            )
         return cls(
             settings.dense_model,
             settings.sparse_model,
@@ -137,13 +180,15 @@ class FastEmbedEmbedder:
         return self._dense.embedding_size
 
     def embed_documents(self, texts: Sequence[str]) -> list[Embedded]:
-        dense = [_to_dense(v) for v in self._dense.embed(texts)]
+        # The prefix is for the dense model only: BM25 would count "passage" as a word.
+        prefixed = [self._passage_prefix + t for t in texts]
+        dense = [_to_dense(v) for v in self._dense.embed(prefixed)]
         sparse = [_to_sparse(v) for v in self._sparse.embed(texts)]
         return [Embedded(d, s) for d, s in zip(dense, sparse, strict=True)]
 
     def embed_query(self, text: str) -> Embedded:
         # BM25 weighs a query differently from a document (no length normalisation, each
         # term counted once), which is why fastembed has a separate query_embed.
-        dense = _to_dense(next(iter(self._dense.query_embed(text))))
+        dense = _to_dense(next(iter(self._dense.query_embed(self._query_prefix + text))))
         sparse = _to_sparse(next(iter(self._sparse.query_embed(text))))
         return Embedded(dense, sparse)

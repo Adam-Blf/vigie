@@ -6,6 +6,53 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+### Added
+
+- `vigie-quant export` quantifie avec une échelle par canal de sortie (`--per-tensor` rend
+  l'export du J12). e5-base int8 ne perd plus que 2,1 points de recall@5 sur `dev`.
+- `docs/proofs/J8/eval/pod_rss.py` mesure la mémoire du pod de l'API entier (garde-fou,
+  modèles, 20 questions) : 864 Mio pour MiniLM int8, 1 019 Mio pour e5-base int8.
+
+### Changed
+
+- `docs/evaluation.md` : run o (e5-base int8 par canal, 0,809 et 0,655 sur `dev`) jugé par
+  la règle `dense_embedding` écrite avant la mesure ; refusé sur la mémoire (950 Mio
+  permis), comme l'option sans préempaquetage ONNX Runtime. MiniLM int8 reste déployé.
+
+## [0.17.0] - 2026-10-06
+
+### Added
+
+- Boucle d'évaluation du jalon J8 : `vigie-eval run` mesure la recherche et le pipeline
+  (faux LLM qui invente une citation par réponse) sur une partie du jeu de référence, avec
+  des intervalles de confiance bootstrap (1 000 tirages), écrit le rapport et le journalise
+  dans MLflow (`sqlite:///mlruns/mlflow.db` par défaut, `--tracking-uri`).
+- `vigie-eval gate` : planchers de `eval/thresholds.yaml` puis non-régression de 2 points
+  face au champion (`--baseline` ou `--champion`) ; `vigie-eval register` crée une version
+  du modèle `vigie-rag` avec son `bundle.json` seulement si la barrière passe ;
+  `vigie-eval alias` lit, pose et retire `champion` et `challenger`.
+- Recherche : préfixes `query: ` et `passage: ` des modèles e5, e5-small et e5-base
+  déclarés à fastembed depuis leur export ONNX, reranker cross-encoder optionnel
+  (`VIGIE_RERANK_MODEL`, `VIGIE_RERANK_DEPTH`), épinglage des articles cités par numéro
+  (« article 28 DORA », `VIGIE_RETRIEVAL_PIN_REFERENCES`), poids de la liste dense dans le
+  RRF (`VIGIE_RETRIEVAL_DENSE_WEIGHT`) et garde anglais qui laisse BM25 hors des questions
+  en anglais (`VIGIE_RETRIEVAL_SPARSE_ON_ENGLISH`).
+- La recherche honore `VIGIE_DENSE_VARIANT` : en int8 elle charge l'export ONNX du J12 dans
+  `<VIGIE_QUANT_DIR>/<modèle>/`, et le nom de collection porte la variante et la fenêtre.
+- `docs/evaluation.md` : protocole, comparaison de 14 configurations et de quatre modèles
+  d'embedding sur `dev`, budget mémoire, chiffre publié sur `test`, taille du contexte LLM.
+- Job CI `eval-gate` branché sur les nouvelles commandes, avec l'index en cache.
+- Le `bundle.json` épingle aussi la variante dense, la fenêtre de tokens, le poids dense du RRF
+  et le garde anglais ; preuves du J8 rangées dans `docs/proofs/J8/eval/` (dont une promotion
+  qui passe sur `dev` dans un magasin MLflow jetable) et barrières vues rouges dans
+  `docs/proofs/gates/`.
+
+### Changed
+
+- Configuration de recherche par défaut, choisie sur `dev` : MiniLM-L12 en ONNX int8,
+  poids dense 3, BM25 laissé de côté sur les questions anglaises (recall@5 0,638 et MRR
+  0,509 sur `dev` ; 0,652 et 0,514 sur `test`, sous les planchers, jalon J2 toujours
+  `PARTIEL`).
 ## [0.16.0] - 2026-10-06
 
 ### Added

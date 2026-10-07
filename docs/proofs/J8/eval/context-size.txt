@@ -1,0 +1,5 @@
+dev questions: 54, top_k=6, num_ctx=4096
+passage words per question: median 2280, max 4393
+longest single passage: median 801 words, max 1199
+prompt words: median 2565, max 4695; estimated tokens median 3848
+prompts over num_ctx at 1.5 tokens per word: 24 of 54

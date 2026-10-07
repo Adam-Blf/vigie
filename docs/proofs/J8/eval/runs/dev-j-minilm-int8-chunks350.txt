@@ -1,0 +1,46 @@
+Traceback (most recent call last):
+  File "C:\Users\adamb\Documents\Projets\school\vigie\.venv\Lib\site-packages\portalocker\portalocker.py", line 223, in lock
+    msvcrt.locking(  # type: ignore[attr-defined]
+PermissionError: [Errno 13] Permission denied
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\adamb\Documents\Projets\school\vigie\.venv\Lib\site-packages\qdrant_client\local\qdrant_local.py", line 168, in _load
+    portalocker.lock(
+  File "C:\Users\adamb\Documents\Projets\school\vigie\.venv\Lib\site-packages\portalocker\portalocker.py", line 316, in lock
+    locker(file, flags)
+  File "C:\Users\adamb\Documents\Projets\school\vigie\.venv\Lib\site-packages\portalocker\portalocker.py", line 230, in lock
+    raise exceptions.AlreadyLocked(
+portalocker.exceptions.AlreadyLocked: (1, '[Errno 13] Permission denied')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Users\adamb\Documents\Projets\school\vigie\.claude\worktrees\agent-a794bf6e187ca59f7\src\vigie\evaluation\cli.py", line 125, in main
+    code: int = args.handler(args)
+                ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\adamb\Documents\Projets\school\vigie\.claude\worktrees\agent-a794bf6e187ca59f7\src\vigie\evaluation\run_cli.py", line 64, in _run
+    retriever = stack.enter_context(open_retriever(settings, embedder=embedder))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\adamb\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\contextlib.py", line 526, in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+  File "C:\Users\adamb\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "C:\Users\adamb\Documents\Projets\school\vigie\.claude\worktrees\agent-a794bf6e187ca59f7\src\vigie\retrieval\factory.py", line 64, in open_retriever
+    client = open_client(settings)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\adamb\Documents\Projets\school\vigie\.claude\worktrees\agent-a794bf6e187ca59f7\src\vigie\retrieval\client.py", line 27, in open_client
+    return QdrantClient(path=settings.qdrant_path)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\adamb\Documents\Projets\school\vigie\.venv\Lib\site-packages\qdrant_client\qdrant_client.py", line 127, in __init__
+    self._client = QdrantLocal(
+                   ^^^^^^^^^^^^
+  File "C:\Users\adamb\Documents\Projets\school\vigie\.venv\Lib\site-packages\qdrant_client\local\qdrant_local.py", line 87, in __init__
+    self._load()
+  File "C:\Users\adamb\Documents\Projets\school\vigie\.venv\Lib\site-packages\qdrant_client\local\qdrant_local.py", line 173, in _load
+    raise RuntimeError(
+RuntimeError: Storage folder data/cache/qdrant is already accessed by another instance of Qdrant client. If you require concurrent access, use Qdrant server instead.

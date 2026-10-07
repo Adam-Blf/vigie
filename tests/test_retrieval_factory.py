@@ -111,8 +111,34 @@ def test_no_corpus_and_no_pin_is_a_config_error(tmp_path: Path) -> None:
 @pytest.mark.parametrize(("rrf_k", "top_score"), [(60, 2 / 60), (0, 1.0)])
 def test_rrf_constant_comes_from_the_settings(tmp_path: Path, rrf_k: int, top_score: float) -> None:
     # First in both lists: 2/k with a constant, 1/2 + 1/2 with the plain FusionQuery.
-    settings = indexed_settings(tmp_path, retrieval_rrf_k=rrf_k)
+    # Equal weights, so the score shows the constant alone.
+    settings = indexed_settings(tmp_path, retrieval_rrf_k=rrf_k, retrieval_dense_weight=1.0)
     with open_retriever(settings, embedder=FakeEmbedder()) as retriever:
         top = retriever.search("notification violation de données 72 heures", 1)[0]
     assert top.article_id == "RGPD:33"
     assert top.score == pytest.approx(top_score)
+
+
+def test_a_rerank_model_in_the_settings_builds_the_reranker(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    built: list[tuple[str, Path | None]] = []
+
+    class Recorder:
+        def __init__(self, model: str, cache_dir: Path | None = None) -> None:
+            built.append((model, cache_dir))
+            self.model = model
+
+        def scores(self, query: str, documents: list[str]) -> list[float]:
+            return [0.0] * len(documents)
+
+    monkeypatch.setattr(factory, "FastEmbedReranker", Recorder)
+    settings = indexed_settings(tmp_path, rerank_model="jina", rerank_depth=7)
+    with open_retriever(settings, embedder=FakeEmbedder()) as retriever:
+        assert isinstance(retriever, QdrantRetriever)
+        assert retriever.search("article 28 DORA", 2)[0].score == 0.5
+    assert built == [("jina", None)]
+    # Without the setting no reranker is built at all.
+    with open_retriever(indexed_settings(tmp_path / "b"), embedder=FakeEmbedder()):
+        pass
+    assert len(built) == 1

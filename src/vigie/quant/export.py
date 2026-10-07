@@ -93,12 +93,20 @@ def export_fp32(model_id: str, revision: str, out_dir: Path) -> ExportedModel:
     return paths
 
 
-def quantize_int8(paths: ExportedModel) -> Path:
+def quantize_int8(paths: ExportedModel, per_channel: bool = True) -> Path:
     from onnxruntime.quantization import QuantType, quantize_dynamic
 
     # Dynamic quantization: int8 weights, activations quantized on the fly per batch. No
     # calibration set is needed, which keeps the dev questions out of the model itself.
-    quantize_dynamic(str(paths.fp32), str(paths.int8), weight_type=QuantType.QInt8)
+    # One scale per output channel instead of one per tensor: a single outlier row no
+    # longer stretches the scale of the whole matrix, which is what cost e5-base 6 to 11
+    # points of recall@5 in the per-tensor export (and DeBERTa the same, see guard/prepare).
+    quantize_dynamic(
+        str(paths.fp32),
+        str(paths.int8),
+        weight_type=QuantType.QInt8,
+        per_channel=per_channel,
+    )
     return paths.int8
 
 

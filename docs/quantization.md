@@ -77,10 +77,35 @@ retenue.** Elle est appliquée dans `src/vigie/config.py` (`dense_variant = "int
 variable `VIGIE_DENSE_VARIANT`), et un test vérifie que ce réglage reste égal à la décision
 enregistrée dans `docs/proofs/J12/embedding-results.json`.
 
-Reste à faire, noté dans `docs/progress.md` : la recherche hybride du J2
-(`vigie.retrieval`) charge aujourd'hui le modèle dense par fastembed. Elle doit lire
-`dense_variant` et charger le fichier int8 exporté ici, puis réindexer, puisque les
-vecteurs changent.
+Depuis le J8, la recherche hybride (`vigie.retrieval`) lit `dense_variant` : en int8 elle
+charge `model-int8.onnx` dans `<VIGIE_QUANT_DIR>/<modèle en minuscules, tirets>/`, un
+dossier par modèle (`vigie-quant export --models data/quant/<modèle>`), et le nom de la
+collection Qdrant porte la variante et la fenêtre de jetons, si bien qu'un index fp32 n'est
+jamais interrogé avec des vecteurs int8.
+
+## Contrôle dans la recherche hybride (J8)
+
+La décision ci-dessus a été prise sur une recherche dense seule. Le J8 l'a refaite dans la
+recherche hybride de production, sur les 47 questions `dev` (détail dans
+`docs/evaluation.md`) :
+
+| Modèle | Configuration | fp32 (fastembed) | int8 (export J12) | Écart de rappel@5 |
+|---|---|---|---|---|
+| MiniLM-L12 | RRF k = 60, fusion du J2 | 0,638 | 0,617 | -2,1 points |
+| MiniLM-L12 | garde anglais, poids dense 3 (retenue) | 0,617 | 0,638 | +2,1 points |
+| e5-base | RRF k = 60 | 0,702 | 0,638 | -6,4 points |
+| e5-base | chunks de 350 mots, garde anglais, poids 3 | 0,830 | 0,723 | -10,7 points |
+| e5-base | même configuration, int8 par canal (7 octobre) | 0,830 | 0,809 | -2,1 points |
+
+La colonne fastembed de MiniLM est elle-même une copie ONNX déjà quantifiée par Qdrant
+(`qdrant/paraphrase-multilingual-MiniLM-L12-v2-onnx-Q`), lue sur 512 jetons. Pour MiniLM,
+l'écart tient à une question sur 47 dans un sens ou dans l'autre selon la
+fusion ; int8 reste déployé. Pour e5-base, la quantization dynamique fait perdre bien plus
+que les 2 points permis avec une échelle par tenseur. Avec une échelle par canal de sortie,
+désormais le défaut de `vigie-quant export` (`--per-tensor` rend l'ancien export), e5-base
+int8 ne perd plus que 2,1 points (une question sur 47) pour un fichier au quart du fp32
+(`docs/proofs/J8/eval/e5base-parity.txt`). Il reste trop lourd pour le pod de l'API :
+1 019 Mio mesurés pour 950 permis (`docs/evaluation.md`, « Choix et budget mémoire »).
 
 Barrière vue rouge : la même mesure avec une copie du seuil dégradée (`max_size_ratio`
 ramené à 0,2) retient fp32 et donne le motif « int8 file is 0.25 of fp32, above 0.20 »

@@ -1,0 +1,32 @@
+{
+  "milestone": "J8 evaluation, MLflow and model choice",
+  "branch": "feat/evaluation",
+  "commit": "3726a70c1d662cff84f13647ffcb3c534837bf39",
+  "date": "2026-10-06",
+  "commands": {
+    "runs/dev-*.txt": "vigie-eval run --split dev (one MLflow run per configuration, 14 configurations)",
+    "run-test.txt": "vigie-eval run --split test (chosen configuration, measured once)",
+    "register-refused.txt": "vigie-eval register <run of run-test.txt> (refused, gate red)",
+    "promotion-demo-dev.txt": "vigie-eval run --split dev (e5-large, dense weight 2, English guard), then gate and register with docs/proofs/gates/thresholds-dev-copy.yaml on a scratch MLflow store",
+    "check.txt": "python tasks.py check",
+    "e5base-parity.txt": "vigie-quant export (per-channel int8, VIGIE_DENSE_MODEL=intfloat/multilingual-e5-base), then python docs/proofs/J8/eval/e5base_parity.py",
+    "runs/dev-o-e5-base-int8-perchannel-chunks350-gated-w3.txt": "vigie-index then vigie-eval run --split dev, VIGIE_DENSE_MODEL=intfloat/multilingual-e5-base VIGIE_DENSE_VARIANT=int8 VIGIE_DENSE_MAX_TOKENS=512 VIGIE_CORPUS_DIR=<350-word chunks>",
+    "pod-rss.txt": "python docs/proofs/J8/eval/pod_rss.py (API process tree, Qdrant in its own container), configurations o and d, then option 1 with VIGIE_ONNX_LOW_MEMORY=true at commit 07b69e1"
+  },
+  "results": {
+    "chosen_configuration": "MiniLM-L12 int8, dense weight 3, BM25 off English questions",
+    "dev": {"questions": 47, "recall_at_5": 0.6383, "mrr": 0.5089},
+    "test": {"questions": 23, "recall_at_5": 0.6522, "mrr": 0.5142, "floors": {"recall_at_5": 0.80, "mrr": 0.60}, "gate": "red"},
+    "promotion_demo_dev": {"config": "e5-large, dense weight 2, English guard", "recall_at_5": 0.8085, "mrr": 0.62, "gate": "green", "registered": "vigie-rag version 1, alias challenger, scratch store only"},
+    "degraded_candidate": {"recall_at_5": 0.5319, "gate": "red", "regression_vs_champion_points": 10.64},
+    "tests": "925 passed, total coverage 98.2 %",
+    "dense_embedding_rule_2026_10_07": {"config": "o, e5-base int8 per channel, 350-word chunks, English guard, dense weight 3", "dev_recall_at_5": 0.8085, "dev_mrr": 0.6552, "parity_fp32": 2.161e-07, "size_ratio": 0.251, "pod_rss_mib": 1019, "budget_mib": 950, "verdict": "fails on memory", "option_low_memory_sessions_pod_rss_mib": 1014, "test_split_read": false}
+  },
+  "limits": [
+    "no vigie-rag version in the repository registry: the chosen configuration fails the retrieval floors on test",
+    "LLM judge (DeepEval) not run, still open",
+    "the dev promotion demo proves the mechanism only, dev was used to choose the configuration",
+    "pod memory measured on a Windows workstation (working set of the process tree), not in the Linux container of J7"
+  ],
+  "tools": {"python": "3.12.13"}
+}

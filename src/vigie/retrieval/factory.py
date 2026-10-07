@@ -18,6 +18,7 @@ from vigie.rag.static_retriever import StaticRetriever
 from vigie.retrieval.client import open_client
 from vigie.retrieval.embeddings import Embedder, FastEmbedEmbedder
 from vigie.retrieval.index import collection_name
+from vigie.retrieval.rerank import FastEmbedReranker, Reranker
 from vigie.retrieval.search import QdrantRetriever
 
 
@@ -44,8 +45,13 @@ def open_retriever(
     *,
     passages: Path | None = None,
     embedder: Embedder | None = None,
+    reranker: Reranker | None = None,
 ) -> Iterator[Retriever]:
-    """Yield a ready retriever; `passages` forces the static one on that file."""
+    """Yield a ready retriever; `passages` forces the static one on that file.
+
+    `embedder` and `reranker` replace the models the settings name, for the tests and for
+    an evaluation run that already holds them in memory.
+    """
     if passages is not None or settings.retriever == "static":
         path = passages or settings.static_passages_path
         if path is None:
@@ -53,6 +59,8 @@ def open_retriever(
         yield StaticRetriever.from_json(path)
         return
     embedder = embedder or FastEmbedEmbedder.from_settings(settings)
+    if reranker is None and settings.rerank_model:
+        reranker = FastEmbedReranker(settings.rerank_model, settings.embedding_cache_dir)
     client = open_client(settings)
     try:
         yield QdrantRetriever(
@@ -61,6 +69,11 @@ def open_retriever(
             embedder,
             prefetch_limit=settings.retrieval_prefetch_limit,
             rrf_k=settings.retrieval_rrf_k or None,
+            reranker=reranker,
+            rerank_depth=settings.rerank_depth,
+            pin_references=settings.retrieval_pin_references,
+            dense_weight=settings.retrieval_dense_weight,
+            sparse_on_english=settings.retrieval_sparse_on_english,
         )
     finally:
         # Local mode holds a lock on its folder until closed; a second process would fail.

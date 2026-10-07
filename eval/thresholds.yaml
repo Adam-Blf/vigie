@@ -41,6 +41,33 @@ quantization:
   max_recall_drop: 0.02
   max_size_ratio: 0.5
 
+# Dense embedding choice, decided on 2026-10-07 and written before the e5-base int8 measurement
+# (per-channel export). e5-base int8 becomes the deployed model only if, on the dev split,
+# recall@5 and MRR reach the retrieval floors above, parity with PyTorch stays under
+# max_parity_gap, the file is at most max_size_ratio of the fp32 one, and one API pod stays
+# under max_pod_rss_mib (brief 11.7: 8.5 GB of requests minus 5.65 GB of fixed components,
+# shared by 3 API pods). The test split is measured once, only after dev clears.
+dense_embedding:
+  model: intfloat/multilingual-e5-base
+  variant: int8
+  split: dev
+  max_parity_gap: 0.0001
+  max_size_ratio: 0.5
+  max_pod_rss_mib: 950
+  # Measured on 2026-10-07 (docs/proofs/J8/eval/pod-rss.txt): parity, size, recall@5 0.809
+  # and MRR 0.655 pass, the pod holds 1019 MiB, so the rule above fails on memory alone.
+  # Option 1, written the same day before any measurement of it: same model and same int8
+  # file, ONNX Runtime sessions of the dense model and of the input guard built without
+  # weight prepacking and without the CPU memory arena (VIGIE_ONNX_LOW_MEMORY=true). Adopted
+  # only if, on dev, recall@5 and MRR still reach the floors, the resident set after the
+  # asks of docs/proofs/J8/eval/pod_rss.py is under max_pod_rss_mib above, and the p95 of
+  # POST /v1/ask in that same run (fake LLM) stays under max_ask_p95_ms (load.p95_ms).
+  # Measured the same day: 1014 MiB, 5 MiB of gain, so option 1 fails too and the flag was
+  # removed from the code (docs/proofs/J8/eval/pod-rss.txt). MiniLM int8 stays deployed.
+  low_memory_sessions:
+    env: VIGIE_ONNX_LOW_MEMORY
+    max_ask_p95_ms: 500
+
 bootstrap:
   draws: 1000
   seed: 20261002

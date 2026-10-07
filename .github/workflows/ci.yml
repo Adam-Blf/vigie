@@ -217,20 +217,26 @@ jobs:
     env:
       VIGIE_LLM_PROVIDER: fake
       VIGIE_QDRANT_PATH: ${{ github.workspace }}/.qdrant
-      FASTEMBED_CACHE_PATH: ${{ github.workspace }}/.cache/fastembed
+      VIGIE_EMBEDDING_CACHE_DIR: ${{ github.workspace }}/.cache/fastembed
+      # The int8 file of production is exported with torch, which CI does not install; the
+      # gate measures fastembed's copy of the same model with the same fusion settings.
+      VIGIE_DENSE_VARIANT: fp32
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: ./.github/actions/python-env
-      - name: Restore corpus and embedding models
+      # The index is cached with the corpus and the models: it is rebuilt only when the
+      # corpus, the parser, the retrieval code or the settings change.
+      - name: Restore corpus, embedding models and index
         id: corpus
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             data/corpus
             .cache/fastembed
-          key: corpus-${{ hashFiles('data/corpus.lock', 'src/vigie/corpus/parse.py', 'src/vigie/config.py') }}
+            .qdrant
+          key: corpus-${{ hashFiles('data/corpus.lock', 'src/vigie/corpus/parse.py', 'src/vigie/config.py', 'src/vigie/retrieval/**') }}
       # A Cellar outage fails this step on purpose: an evaluation without corpus would pass
       # for the wrong reason, and skipping it would hide the outage.
       - name: Download the corpus
@@ -238,8 +244,12 @@ jobs:
         run: uv run --no-sync vigie-ingest --out data/corpus/
       - name: Golden set is sealed and verified
         run: uv run --no-sync vigie-eval validate-golden
-      - name: Evaluation gate
-        run: uv run --no-sync vigie-eval gate --thresholds eval/thresholds.yaml --split test
+      - name: Build the index
+        run: uv run --no-sync vigie-index
+      - name: Evaluate on the sealed test split
+        run: uv run --no-sync vigie-eval run --split test --no-mlflow --out results/eval/ci-test.json
+      - name: Evaluation gate (floors of eval/thresholds.yaml)
+        run: uv run --no-sync vigie-eval gate --thresholds eval/thresholds.yaml --report results/eval/ci-test.json
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:

@@ -50,7 +50,7 @@ def _logger(args: argparse.Namespace, settings: Settings) -> LogRun | None:
 
 def _export(args: argparse.Namespace, settings: Settings) -> int:
     paths = export_fp32(settings.dense_model, settings.dense_model_revision, args.models)
-    quantize_int8(paths)
+    quantize_int8(paths, per_channel=not args.per_tensor)
     for path in (paths.fp32, paths.int8):
         print(f"{path.name}: {file_size(path)} bytes")
     return 0
@@ -145,6 +145,11 @@ def build_parser(settings: Settings) -> argparse.ArgumentParser:
     proofs = Path("docs/proofs/J12")
 
     export = commands.add_parser("export", help="export fp32 ONNX and quantize to int8")
+    export.add_argument(
+        "--per-tensor",
+        action="store_true",
+        help="one scale per tensor, the J12 export of MiniLM, instead of one per channel",
+    )
     export.set_defaults(handler=_export)
 
     parity = commands.add_parser("parity", help="check the fp32 export against PyTorch")

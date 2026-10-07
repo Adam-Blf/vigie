@@ -1,0 +1,21 @@
+
+Q1. Que prévoit l'article 28 de DORA sur les prestataires tiers de services TIC ?
+  1. [DORA art. 28 §7]      rrf=0.0327  7. Les entités financières veillent à ce que les accords contractuels relatifs à l’utilisa
+  2. [DORA art. 28 §4]      rrf=0.0327  4. Avant de conclure un accord contractuel sur l’utilisation de services TIC, les entités
+  3. [DORA art. 28 §1]      rrf=0.0327  1. Les entités financières gèrent les risques liés aux prestataires tiers de services TIC
+  4. [DORA art. 31 §10]     rrf=0.0327  10. Aux fins du paragraphe 1, point a), les autorités compétentes transmettent, sur une ba
+  5. [DORA art. 31 §8]      rrf=0.0306  8. La désignation visée au paragraphe 1, point a), ne s’applique pas: i) aux entités finan
+
+Q2. Quelles pratiques d'intelligence artificielle sont interdites dans l'Union ?
+  1. [AIACT art. 5 §8]      rrf=0.0312  8. Le présent article ne porte pas atteinte aux interdictions qui s’appliquent lorsqu’une
+  2. [AIACT art. 84]        rrf=0.0309  1. La Commission désigne une ou plusieurs structures de soutien de l’Union pour les essais
+  3. [AIACT art. 109]       rrf=0.0305  À l’article 11 du règlement (UE) 2019/2144, le paragraphe suivant est ajouté: «3. Lors de
+  4. [AIACT art. 105]       rrf=0.0296  À l’article 8 de la directive 2014/90/UE, le paragraphe suivant est ajouté: «5. Pour les s
+  5. [AIACT art. 5 §6]      rrf=0.0289  6. Les autorités nationales de surveillance du marché et les autorités nationales chargées
+
+Q3. Dans quel délai une violation de données personnelles doit-elle être notifiée ?
+  1. [RGPD art. 33]         rrf=0.0335  1. En cas de violation de données à caractère personnel, le responsable du traitement en n
+  2. [RGPD art. 34]         rrf=0.0332  1. Lorsqu'une violation de données à caractère personnel est susceptible d'engendrer un ri
+  3. [RGPD art. 19]         rrf=0.0167  Le responsable du traitement notifie à chaque destinataire auquel les données à caractère
+  4. [RGPD art. 14]         rrf=0.0166  1. Lorsque les données à caractère personnel n'ont pas été collectées auprès de la personn
+  5. [AMLR art. 76]         rrf=0.0165  1. Dans la mesure où cela est strictement nécessaire aux fins de la prévention du blanchim
