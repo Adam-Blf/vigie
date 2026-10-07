@@ -3,19 +3,18 @@
 #
 #   docker build -f deploy/docker/api.Dockerfile -t vigie-api:dev .
 #
-# Four stages: the locked dependencies, the models (downloaded and quantized at build time,
+# Stages: the locked dependencies, the models (downloaded and quantized at build time,
 # with network), and a slim runtime that carries neither uv nor torch nor the build-only
 # tools. The runtime stage then loads every model again as the non-root user with no
 # network at all, so an image that would need the internet to answer is never produced.
 # Base images are pinned by multi-architecture index digest: amd64 and arm64 (Oracle Ampere).
 
 ARG PYTHON_IMAGE=docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
-ARG UV_IMAGE=ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c
 
-FROM ${UV_IMAGE} AS uv
-
+# uv is copied straight from its pinned image in both stages that need it. A FROM stage
+# holding only uv, with --platform=$BUILDPLATFORM, crashed the dockerfile:1.12 frontend.
 FROM ${PYTHON_IMAGE} AS builder
-COPY --from=uv /uv /usr/local/bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c /uv /usr/local/bin/uv
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
     UV_PYTHON_DOWNLOADS=never \
@@ -29,8 +28,21 @@ COPY src ./src
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-editable
 
-# Build-only stage: the guard-model extra (huggingface-hub, onnx) never reaches the runtime.
-FROM builder AS models
+# Build-only stages: the guard-model extra (huggingface-hub, onnx) never reaches the runtime.
+# They run on the builder's own platform: ONNX files are the same for amd64 and arm64, and
+# quantizing under QEMU took more than 20 minutes on its own. The runtime stage still loads
+# every model on the target platform, so a model arm64 could not run fails the build there.
+FROM --platform=$BUILDPLATFORM ${PYTHON_IMAGE} AS models
+COPY --from=ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c /uv /usr/local/bin/uv
+ENV UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
+    UV_PYTHON_DOWNLOADS=never \
+    UV_PROJECT_ENVIRONMENT=/opt/venv
+WORKDIR /src
+COPY pyproject.toml uv.lock README.md ./
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-install-project --no-editable --extra guard-model
+COPY src ./src
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-editable --extra guard-model
 # Downloads go through cache mounts so a code change does not fetch a gigabyte again;
@@ -72,9 +84,13 @@ COPY data/corpus.lock data/corpus.lock
 COPY data/golden/questions.jsonl data/golden/questions.jsonl
 # Everything written at runtime goes to /data (a volume) or /tmp (a tmpfs), so the
 # container runs with a read-only root filesystem.
+# MALLOC_TRIM_THRESHOLD_: loading the guard classifier leaves about 270 MiB of freed
+# memory that glibc keeps by default; a fixed 128 KiB threshold hands it back to the OS
+# (measured in docs/proofs/J7/08-api-memory-by-model.txt).
 ENV PATH=/opt/venv/bin:$PATH \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
+    MALLOC_TRIM_THRESHOLD_=131072 \
     HF_HUB_OFFLINE=1 \
     HF_HOME=/tmp/hf \
     FASTEMBED_CACHE_PATH=/opt/models/fastembed \

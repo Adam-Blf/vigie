@@ -21,7 +21,7 @@ COPY web/ ./
 RUN npm run build
 
 FROM ${NGINX_IMAGE} AS runtime
-USER root
+USER 0
 # The stock site and its IPv6 rewrite script both target /etc/nginx/conf.d, which is
 # read-only at runtime; the Vigie site is rendered into /tmp instead.
 RUN rm -f /etc/nginx/conf.d/default.conf /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh

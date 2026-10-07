@@ -87,6 +87,9 @@ services:
       <<: *vigie-env
       # fake unless the local-llm profile is on (tasks.py up --local-llm sets ollama).
       VIGIE_LLM_PROVIDER: ${VIGIE_COMPOSE_LLM_PROVIDER:-fake}
+      # A 3B model on a CPU inside Docker can need several minutes for one answer: raise this
+      # in .env with the local-llm profile (measured 271 s in docs/proofs/J7/07-ask-local-llm.txt).
+      VIGIE_LLM_TIMEOUT_S: ${VIGIE_LLM_TIMEOUT_S:-120.0}
       # The web container serves the interface under the same origin: no CORS needed.
       VIGIE_CORS_ORIGINS: "[]"
       VIGIE_AUDIT_POD_NAME: compose-api
@@ -119,9 +122,27 @@ services:
       api:
         condition: service_healthy
 
+  # One-shot, root with CHOWN only: a fresh named volume belongs to root, and MLflow and
+  # Ollama then run as uid 1000, the same user as their pods in deploy/k8s.
+  volumes-init:
+    image: ghcr.io/mlflow/mlflow:v3.16.1@sha256:06058cc872276873e9759c635e773342aca4731e240f6d20d88ea43774083984
+    <<: *hardening
+    user: "0:0"
+    cap_add: [CHOWN]
+    network_mode: none
+    command: [chown, -R, "1000:1000", /mlflow, /models]
+    volumes:
+      - mlflow-data:/mlflow
+      - ollama-models:/models
+    restart: "no"
+
   mlflow:
     image: ghcr.io/mlflow/mlflow:v3.16.1@sha256:06058cc872276873e9759c635e773342aca4731e240f6d20d88ea43774083984
     <<: *hardening
+    user: "1000:1000"
+    depends_on:
+      volumes-init:
+        condition: service_completed_successfully
     command:
       - mlflow
       - server
@@ -151,6 +172,10 @@ services:
     image: docker.io/ollama/ollama:0.35.0@sha256:2a6e883b917fc543389599dae79918f5cac9e1438890506982f44aa4f5625d01
     profiles: [local-llm]
     <<: *hardening
+    user: "1000:1000"
+    depends_on:
+      volumes-init:
+        condition: service_completed_successfully
     environment:
       OLLAMA_HOST: 0.0.0.0:11434
       OLLAMA_MODELS: /models
