@@ -1,0 +1,63 @@
+{
+  "milestone": "J6",
+  "title": "Interface measured: Lighthouse and the Playwright suite against the real API",
+  "date": "2026-10-06",
+  "branch": "feat/close-j6-j10-j11",
+  "commit": "406d664",
+  "platform": "Windows 11, 8 logical CPUs at 100 % load from other local jobs (Docker builds, embeddings) during every run; port 4710 was held by a local Docker stack, so the preview ran on 4720 through VIGIE_WEB_PORT",
+  "tools": {
+    "node": "v24.14.1",
+    "vite": "8.3.2",
+    "@playwright/test": "1.63.0",
+    "@axe-core/playwright": "4.13.0",
+    "@lhci/cli": "0.15.1",
+    "lighthouse": "12.6.1",
+    "lighthouse_browser": "chrome-headless-shell 153.0.8010.12 from Playwright (CHROME_PATH)",
+    "python": "3.12.13"
+  },
+  "api_setup": "python -m vigie.api on 127.0.0.1:8731, VIGIE_LLM_PROVIDER=fake, hybrid Qdrant index of the corpus, real guard model, throwaway token store in a gitignored folder",
+  "steps": [
+    {
+      "name": "live suite before the fix, seen red",
+      "command": "cd web && VIGIE_API_PROXY=http://127.0.0.1:8731 VIGIE_E2E_TOKEN=<test token> npx playwright test -c playwright.live.config.ts",
+      "output": "e2e-live-before-fix.txt",
+      "result": "5 passed, 1 failed: the usage screen shows a server error against the real API (schema mismatch). The answer test passed only through the JSON fallback, which hid that the page never streamed."
+    },
+    {
+      "name": "live suite after the fix",
+      "command": "cd web && VIGIE_WEB_PORT=4720 VIGIE_API_PROXY=http://127.0.0.1:8731 VIGIE_E2E_TOKEN=<test token> npm run e2e:live",
+      "output": "e2e-live-after-fix.txt",
+      "result": "6 passed, the answer now arrives on /v1/ask/stream as text/event-stream"
+    },
+    {
+      "name": "mocked suite after the fix",
+      "command": "cd web && VIGIE_WEB_PORT=4720 npx playwright test",
+      "output": "e2e-mocked-after-fix.txt",
+      "result": "54 passed, axe scans and visual baselines included"
+    },
+    {
+      "name": "build and initial JS budget",
+      "command": "cd web && npm run build",
+      "output": "build-and-bundle-budget.txt",
+      "result": "initial JS 26.7 KB gzip, budget 120 KB"
+    },
+    {
+      "name": "Lighthouse with the installed Chrome 154",
+      "command": "cd web && npx lhci autorun",
+      "output": "../lighthouse-2026-10-06/lhci-chrome154-no-navstart.txt",
+      "result": "every run fails with NO_NAVSTART: Lighthouse 12.6.1, the version @lhci/cli 0.15.1 ships, cannot read the trace of Chrome 154"
+    },
+    {
+      "name": "Lighthouse, mobile, median of 3",
+      "command": "cd web && VIGIE_WEB_PORT=4720 CHROME_PATH=<playwright chrome-headless-shell> npx lhci autorun --collect.url=http://127.0.0.1:4720/ --collect.url=http://127.0.0.1:4720/about --collect.startServerReadyPattern=4720",
+      "output": ["../lighthouse-2026-10-06/lhci-autorun.txt", "../lighthouse-2026-10-06/summary.json", "../lighthouse-2026-10-06/home-median.report.html", "../lighthouse-2026-10-06/about-median.report.html"],
+      "result": "all assertions of web/lighthouserc.json pass. Home: performance 98, accessibility 100, best practices 100, LCP 1841 ms, CLS 0.001, TBT 137 ms. About: 99, 100, 100, LCP 1656 ms, CLS 0, TBT 72 ms."
+    },
+    {
+      "name": "screenshots and journey recording",
+      "command": "cd web && VIGIE_WEB_PORT=4720 npx vite preview, then node scripts/capture-proofs.ts <dir>, GIF made with ffmpeg (fps 8, width 800)",
+      "output": ["../screenshots-2026-10-06/", "../../../assets/web/"],
+      "result": "12 screenshots (desktop 1440 and mobile 360, light and dark) and docs/assets/web/parcours.gif"
+    }
+  ]
+}

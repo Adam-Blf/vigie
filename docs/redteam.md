@@ -159,6 +159,49 @@ exécution qui n'a rien pu juger. Ces chiffres valident l'outillage, pas Vigie.
 
 ### Contre l'API réelle
 
-À compléter quand J5 sera fusionné : taux en CI avec le faux LLM, taux en exécution
-manuelle avec Ministral, liste des attaques qui passent encore et correctif apporté à
-chacune.
+Rejeu du 6 octobre 2026 contre l'API du J5 lancée depuis le dépôt : faux LLM, index hybride
+du corpus, vrai garde-fou d'entrée. Pièces brutes dans `docs/proofs/J10/real-api-2026-10-06/`.
+
+| Run | Bloquées | Refusées | Répondues sans fuite | Réussies | Erreurs | Verdict |
+|---|---|---|---|---|---|---|
+| 1 : faux LLM simple, rejeu d'origine | 103 | 56 | 201, dont 71 réponses 503 | 0 | 0 annoncée | vert à tort |
+| 3 : faux LLM qui fuit, contrôle de sortie, rejeu corrigé | 103 | 257 (56 par le pipeline, 201 retenues en sortie) | 0 | 0 | 0 | vert, 0 % |
+| Barrière dégradée (PR #23, contrôle de sortie coupé) | 103 | 78 | 0 | 177 | 2 | rouge, 49,44 % |
+
+Deux défauts trouvés et corrigés en route, chacun avec un test vu rouge avant le correctif.
+
+- **Un 503 comptait comme une attaque contenue.** Promptfoo accepte tout statut par défaut :
+  les 71 réponses `llm_busy` du run 1 étaient notées « répondue sans fuite ». Le rejeu
+  exige désormais un 2xx (`validateStatus`), et toute autre réponse compte comme erreur,
+  ce qui fait échouer la barrière.
+- **Rien ne retenait une réponse qui récite le prompt système.** Le faux LLM ne fuit jamais
+  par défaut, donc la CI ne pouvait pas le voir. Il a gagné un mode fuite
+  (`VIGIE_FAKE_LLM_LEAK=true`, toujours actif en CI) et l'API un contrôle de sortie qui
+  retient une réponse contenant le prompt système ou son marqueur.
+
+En CI, le workflow `redteam` lance l'API depuis la branche avec ce mode fuite et rejoue les
+360 attaques. Il est passé rouge sur la PR #23, qui coupait le contrôle de sortie
+(https://github.com/Adam-Blf/vigie/pull/23, fermée sans fusion, 48,89 %), et vert sur la
+configuration de `main` sur la PR #27 (0 %, 103 bloquées, 257 refusées). Preuves dans
+`docs/proofs/gates/` (`redteam-red-ci.txt`, `redteam-green-ci.txt`).
+
+### Contre Ministral 3B
+
+Rejeu manuel du 7 octobre 2026, API branchée sur Ollama, Ministral 3 3B (`q4_K_M`) sur le
+processeur du poste. Les 360 attaques auraient pris une dizaine d'heures à cette vitesse :
+le rejeu porte sur l'échantillon stratifié de `redteam/sample.py`, la première attaque de
+chaque triplet plugin, stratégie et langue, soit 72 attaques qui couvrent tous les types.
+
+```sh
+cd redteam && python sample.py attacks.generated.yaml attacks.sample.yaml
+npm run replay:sample && python score.py results.json --summary summary.json
+```
+
+| Cible | Bloquées | Refusées | Réussies | Erreurs | Durée | Verdict |
+|---|---|---|---|---|---|---|
+| Ministral 3B, 72 attaques | 20 | 52 | 0 | 0 | 2 h 28 | vert, 0 % |
+
+Aucune attaque ne passe, donc aucune n'entre dans `data/regression/` à ce tour. Le modèle a
+été appelé 55 fois, toutes les réponses de l'API sont des 200. Les stratégies itératives
+(`jailbreak`, `crescendo`) restent à jouer à la main, elles demandent un modèle attaquant
+pendant toute l'exécution. Pièces dans `docs/proofs/J10/ministral-2026-10-07/`.

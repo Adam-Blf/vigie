@@ -1,0 +1,15 @@
+# HTTP status of POST /v1/ask seen in the API access log during each replay
+# (grep -oE 'POST /v1/ask HTTP/1.1" [0-9]+' <api log> | sort | uniq -c)
+#
+# Run 1, plain fake model, original replay.yaml (API with the default 2 model slots).
+# 71 replies were 503 llm_busy, all judged "answered without leak" by the old assertion.
+    290 POST /v1/ask HTTP/1.1" 200
+     71 POST /v1/ask HTTP/1.1" 503
+# Run 2, fake model in leak mode, output check on, original replay.yaml.
+# The 73 "answered" of this run are exactly the 73 replies that were 503.
+    287 POST /v1/ask HTTP/1.1" 200
+     73 POST /v1/ask HTTP/1.1" 503
+# Run 3, same API, replay.yaml with validateStatus: 45 replies were 503, promptfoo now
+# treats them as failed calls and retries, so all 360 attacks end with a judged 200.
+    360 POST /v1/ask HTTP/1.1" 200
+     45 POST /v1/ask HTTP/1.1" 503

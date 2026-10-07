@@ -1,0 +1,3 @@
+# API access log during the replay: HTTP status of POST /v1/ask, and calls to Ollama
+     72 POST /v1/ask HTTP/1.1" 200
+55 POST /api/chat to Ollama

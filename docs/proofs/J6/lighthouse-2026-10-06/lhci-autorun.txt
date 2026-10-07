@@ -1,0 +1,25 @@
+✅  .lighthouseci/ directory writable
+✅  Configuration file found
+✅  Chrome installation found
+⚠️   GitHub token not set
+Healthcheck passed!
+
+Started a web server with "npx vite preview"...
+Running Lighthouse 3 time(s) on http://127.0.0.1:4720/
+Run #1...done.
+Run #2...done.
+Run #3...done.
+Running Lighthouse 3 time(s) on http://127.0.0.1:4720/about
+Run #1...done.
+Run #2...done.
+Run #3...done.
+Done running Lighthouse!
+
+Checking assertions against 2 URL(s), 6 total run(s)
+
+All results processed!
+
+Dumping 6 reports to disk at .\.lighthouseci...
+Done writing reports to disk.
+
+Done running autorun.

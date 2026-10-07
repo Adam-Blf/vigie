@@ -1,0 +1,108 @@
+{
+  "http://127.0.0.1:4720/": {
+    "median_of_runs": 3,
+    "median": {
+      "performance": 0.98,
+      "accessibility": 1,
+      "best_practices": 1,
+      "lcp_ms": 1841.472,
+      "cls": 0.00139221898259507,
+      "tbt_ms": 136.5,
+      "fcp_ms": 1520.06
+    },
+    "runs": [
+      {
+        "file": "127_0_0_1--2026_10_06_13_47_41.report.json",
+        "performance": 0.98,
+        "accessibility": 1,
+        "best_practices": 1,
+        "lcp_ms": 1841.472,
+        "cls": 0.00139221898259507,
+        "tbt_ms": 136.5,
+        "fcp_ms": 1520.06,
+        "form_factor": "mobile",
+        "lighthouse": "12.6.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      },
+      {
+        "file": "127_0_0_1--2026_10_06_13_48_10.report.json",
+        "performance": 0.97,
+        "accessibility": 1,
+        "best_practices": 1,
+        "lcp_ms": 2115.612,
+        "cls": 0.00139221898259507,
+        "tbt_ms": 0,
+        "fcp_ms": 2040.612,
+        "form_factor": "mobile",
+        "lighthouse": "12.6.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      },
+      {
+        "file": "127_0_0_1--2026_10_06_13_48_36.report.json",
+        "performance": 0.98,
+        "accessibility": 1,
+        "best_practices": 1,
+        "lcp_ms": 1690.5625,
+        "cls": 0.00139221898259507,
+        "tbt_ms": 150,
+        "fcp_ms": 1490.5625,
+        "form_factor": "mobile",
+        "lighthouse": "12.6.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    ]
+  },
+  "http://127.0.0.1:4720/about": {
+    "median_of_runs": 3,
+    "median": {
+      "performance": 0.99,
+      "accessibility": 1,
+      "best_practices": 1,
+      "lcp_ms": 1656.0185000000001,
+      "cls": 0,
+      "tbt_ms": 72,
+      "fcp_ms": 1403.84875
+    },
+    "runs": [
+      {
+        "file": "127_0_0_1-about-2026_10_06_13_49_01.report.json",
+        "performance": 0.99,
+        "accessibility": 1,
+        "best_practices": 1,
+        "lcp_ms": 1657.88,
+        "cls": 0,
+        "tbt_ms": 72,
+        "fcp_ms": 1404.4,
+        "form_factor": "mobile",
+        "lighthouse": "12.6.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      },
+      {
+        "file": "127_0_0_1-about-2026_10_06_13_49_28.report.json",
+        "performance": 0.99,
+        "accessibility": 1,
+        "best_practices": 1,
+        "lcp_ms": 1656.0185000000001,
+        "cls": 0,
+        "tbt_ms": 55.5,
+        "fcp_ms": 1403.84875,
+        "form_factor": "mobile",
+        "lighthouse": "12.6.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      },
+      {
+        "file": "127_0_0_1-about-2026_10_06_13_49_52.report.json",
+        "performance": 0.99,
+        "accessibility": 1,
+        "best_practices": 1,
+        "lcp_ms": 1631.3885,
+        "cls": 0,
+        "tbt_ms": 74.5,
+        "fcp_ms": 1384.82375,
+        "form_factor": "mobile",
+        "lighthouse": "12.6.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36"
+      }
+    ]
+  }
+}

@@ -34,7 +34,7 @@ côté GitHub, la CD se résume à la publication de l'image.
 | `web` | build Vite, tests vitest, tests Playwright | `web/package-lock.json` existe |
 | `npm-audit` | dépendance npm livrée (`--omit=dev` pour `web/`) avec une vulnérabilité `high` ou `critical` ; l'arbre complet de `web/` est audité à titre de constat, car Lighthouse CI tire `extract-zip` et `sprintf-js` sans version corrigée, qui ne partent jamais dans l'image nginx ; `redteam/` bloque sur `critical`, le niveau `high` restant (`node-forge` via promptfoo, sans correctif) est publié à titre de constat | `web/` ou `redteam/` existe |
 | `eval-gate` | régression des métriques déterministes sous les seuils | `src/vigie/evaluation/gate.py` (commande `vigie-eval gate`) et `eval/thresholds.yaml` existent |
-| `redteam-gate` | plus de 5 % d'attaques réussies au rejeu Promptfoo | `redteam/replay.yaml`, `redteam/attacks.generated.yaml` et `docker-compose.yml` existent |
+| `redteam-gate` (workflow `redteam`) | plus de 5 % d'attaques réussies au rejeu Promptfoo contre l'API lancée depuis le dépôt (vrai garde-fou, index hybride, faux LLM en mode fuite), ou une seule réponse hors 2xx | toujours, sur chaque PR et sur `main` |
 
 Le job `detect` calcule ces conditions avec `hashFiles` une seule fois, puis les autres
 jobs lisent ses sorties. `hashFiles` n'est pas disponible dans le `if` d'un job, d'où ce

@@ -7,7 +7,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium, type Browser, type Page } from "@playwright/test";
 
-const BASE = "http://127.0.0.1:4710";
+const BASE = `http://127.0.0.1:${process.env.VIGIE_WEB_PORT ?? 4710}`;
 
 interface Shot {
   name: string;

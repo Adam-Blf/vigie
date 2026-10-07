@@ -1,0 +1,58 @@
+[WebServer] <script src="/theme-init.js"> in "/index.html" can't be bundled without type="module" attribute
+[WebServer] [PLUGIN_TIMINGS] JavaScript callbacks ran for 52.6s. The build took 4.3s. Callbacks such as `closeBundle` run after the build ends, so callback time can be more than build time.
+[WebServer] The slowest callbacks, timed inside each callback (the wait before a callback starts is excluded, the time it awaits is included):
+[WebServer]   - plugin vite-plugin-pwa:build closeBundle (100%, 48.8s, 1 call)
+[WebServer] Additional callback time came from the callbacks below and from callbacks under 1s.
+[WebServer] 1 callback is listed without a time. Its calls overlapped, so the time inside one call includes work from other calls. To find its cost, profile the build with `node --cpu-prof`:
+[WebServer]   - plugin vite:css transform (5 calls)
+[WebServer] See https://rolldown.rs/reference/InputOptions.checks#bundlertimings for more details.
+[WebServer]
+
+Running 6 tests using 1 worker
+
+  ✓  1 [chromium] › e2e-live\live.spec.ts:21:1 › streams a cited answer from the real API and opens the cited article (3.5s)
+  ✓  2 [chromium] › e2e-live\live.spec.ts:43:1 › the real input guard blocks an injection and the page says so (1.7s)
+  ✓  3 [chromium] › e2e-live\live.spec.ts:51:1 › a token the API does not know opens the token prompt (909ms)
+  ✓  4 [chromium] › e2e-live\live.spec.ts:59:1 › an over-long question is rejected by the API under the field (1.8s)
+  ✘  5 [chromium] › e2e-live\live.spec.ts:66:1 › usage screen shows the counters of the real token (6.5s)
+  ✓  6 [chromium] › e2e-live\live.spec.ts:75:1 › an answered conversation has no serious or critical axe violation (4.1s)
+
+
+  1) [chromium] › e2e-live\live.spec.ts:66:1 › usage screen shows the counters of the real token ───
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('main')
+    Expected pattern: /\d+ sur \d+/
+    Received string:  "Mon usageLe serveur a rencontré une erreur."
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" locator('main') with timeout 5000ms
+      - waiting for locator('main')
+        13 × locator resolved to <main id="main" tabindex="-1" class="main main-usage">…</main>
+           - unexpected value "Mon usageLe serveur a rencontré une erreur."
+
+
+      70 |   await expect(settled(page)).toContainText("[", { timeout: 30_000 });
+      71 |   await page.goto("/usage");
+    > 72 |   await expect(page.locator("main")).toContainText(/\d+ sur \d+/);
+         |                                      ^
+      73 | });
+      74 |
+      75 | test("an answered conversation has no serious or critical axe violation", async ({ page }) => {
+        at .\web\e2e-live\live.spec.ts:72:38
+
+    Error Context: test-results\e2e-live\live-usage-screen-shows-the-counters-of-the-real-token-chromium\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\e2e-live\live-usage-screen-shows-the-counters-of-the-real-token-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\e2e-live\live-usage-screen-shows-the-counters-of-the-real-token-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › e2e-live\live.spec.ts:66:1 › usage screen shows the counters of the real token ────
+  5 passed (2.1m)
