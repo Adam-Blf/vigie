@@ -1,0 +1,89 @@
+# Licences relevées à la main, là où aucun outil ne lit de métadonnées : modèles, jeux de
+# données, textes, images de service. Chaque entrée renvoie à sa source primaire, consultée
+# le 2026-10-07. scripts/third_party_licenses.py en tire THIRD_PARTY_LICENSES.md.
+
+# Paquets Python dont les métadonnées ne déclarent aucune licence, vérifiée à la source.
+overrides:
+  py_rust_stemmers:
+    license: MIT
+    source: https://github.com/qdrant/py-rust-stemmers (fichier LICENSE, API GitHub spdx_id MIT)
+
+models:
+  - name: mistralai/Ministral-3-3B-Instruct-2512
+    pin: "Ollama ministral-3:3b-instruct-2512-q4_K_M (src/vigie/config.py:74)"
+    role: LLM de production, servi par Ollama sur la VM
+    license: Apache-2.0
+    source: "https://huggingface.co/mistralai/Ministral-3-3B-Instruct-2512 (carte : license apache-2.0) ; couche licence du manifeste Ollama : texte Apache 2.0"
+    shipped: téléchargé au déploiement par Ollama, jamais dans le dépôt
+  - name: protectai/deberta-v3-base-prompt-injection-v2
+    pin: "révision 90c9989b1a342275dd0d1a95aad283c04e075671 (src/vigie/config.py:145)"
+    role: classifieur d'injection du garde-fou d'entrée, exporté en ONNX int8
+    license: Apache-2.0
+    source: "https://huggingface.co/protectai/deberta-v3-base-prompt-injection-v2 (license apache-2.0, modèle de base microsoft/deberta-v3-base sous MIT)"
+    shipped: intégré à l'image de l'API au build, jamais dans le dépôt
+  - name: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+    pin: "révision e8f8c211226b894fcb81acc59f3b34ba3efd5f42 (src/vigie/config.py:227)"
+    role: embedding dense de la recherche et de la détection de dérive
+    license: Apache-2.0
+    source: https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 (license apache-2.0)
+    shipped: intégré à l'image de l'API au build, jamais dans le dépôt
+  - name: Qdrant/bm25
+    pin: "src/vigie/config.py:40"
+    role: modèle creux BM25 (mots vides et racinisation) de la recherche hybride
+    license: Apache-2.0
+    source: https://huggingface.co/Qdrant/bm25 (license apache-2.0)
+    shipped: intégré à l'image de l'API au build, jamais dans le dépôt
+  - name: fastino/gliguard-LLMGuardrails-300M
+    pin: "src/vigie/config.py:199"
+    role: benchmark des garde-fous (J4) seulement
+    license: Apache-2.0
+    source: https://huggingface.co/fastino/gliguard-LLMGuardrails-300M (license apache-2.0)
+    shipped: jamais livré, banc d'essai sur le poste
+  - name: meta-llama/Llama-Guard-3-1B
+    pin: "Ollama llama-guard3:1b (src/vigie/config.py:200)"
+    role: benchmark des garde-fous (J4) seulement
+    license: Llama 3.2 Community License
+    source: "https://huggingface.co/meta-llama/Llama-Guard-3-1B (license llama3.2, accès soumis à acceptation) ; couche licence du manifeste Ollama : LLAMA 3.2 COMMUNITY LICENSE AGREEMENT"
+    shipped: jamais livré ni redistribué, banc d'essai sur le poste
+
+datasets:
+  - name: deepset/prompt-injections
+    pin: "src/vigie/config.py:197"
+    role: contrôle externe du benchmark des garde-fous (J4)
+    license: Apache-2.0
+    source: https://huggingface.co/datasets/deepset/prompt-injections (license apache-2.0)
+    shipped: téléchargé au moment du benchmark, jamais dans le dépôt
+  - name: Jeu de référence data/golden et graines data/seed.jsonl
+    pin: data/golden/test.sha256
+    role: évaluation (J8) et benchmark (J4)
+    license: rédigés par le binôme, sous la licence du dépôt (LICENSE)
+    source: data/golden/questions.jsonl, data/seed.jsonl
+    shipped: dans le dépôt
+  - name: Règlements DORA, AI Act, RGPD, AMLR (EUR-Lex, Cellar)
+    pin: data/corpus.lock (empreinte SHA-256 par texte)
+    role: corpus indexé
+    license: "réutilisation autorisée avec mention de la source, décision 2011/833/UE, articles 6 et 7"
+    source: "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html (Copyright notice) ; CELEX 32011D0833"
+    shipped: téléchargé à l'ingestion, jamais dans le dépôt
+
+services:
+  - name: Qdrant (image qdrant/qdrant)
+    role: base vectorielle
+    license: Apache-2.0
+    source: https://github.com/qdrant/qdrant
+  - name: Ollama (image ollama/ollama)
+    role: serveur du LLM local
+    license: MIT
+    source: https://github.com/ollama/ollama
+  - name: nginx-unprivileged (image nginxinc/nginx-unprivileged)
+    role: serveur de l'interface
+    license: "BSD-2-Clause (nginx), Apache-2.0 (recette de l'image)"
+    source: "https://github.com/nginx/nginx ; https://github.com/nginxinc/docker-nginx-unprivileged"
+  - name: MLflow
+    role: suivi d'expériences
+    license: Apache-2.0
+    source: https://github.com/mlflow/mlflow
+  - name: Lakera Guard (API distante)
+    role: benchmark des garde-fous (J4) seulement, sur les jeux publics, jamais sur une question d'utilisateur
+    license: conditions d'utilisation de Lakera (service propriétaire)
+    source: https://www.lakera.ai/terms-of-service

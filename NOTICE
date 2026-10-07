@@ -23,3 +23,10 @@ Seuls les textes publiés au Journal officiel de l'Union européenne font foi. V
 les textes par article et normalise leur mise en forme (espaces, listes présentées en
 tableaux), sans en modifier le contenu. Les réponses de Vigie ne constituent pas un conseil
 juridique.
+
+Composants tiers
+----------------
+
+Les bibliothèques, modèles, jeux de données et images utilisés par Vigie, avec leur licence
+et leur source, sont listés dans THIRD_PARTY_LICENSES.md. Les mentions de licence des
+paquets inclus dans l'interface web sont servies avec elle (/third-party-licenses.txt).

@@ -1,0 +1,6 @@
+# python scripts/third_party_licenses.py --python docs/proofs/J16/licences/python-licenses.json --web web/dist/third-party-licenses.json
+53 Python and 8 npm packages, 0 refused
+exit code: 0
+# ... --check
+53 Python and 8 npm packages, 0 refused
+exit code: 0
