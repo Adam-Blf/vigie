@@ -1,0 +1,16 @@
+# python docs/proofs/J8/eval/pod_rss.py, 2026-10-07, Windows 11 workstation, Python 3.12.
+# API started by python -m vigie.api, fake LLM, guard DeBERTa int8 (models/guard), Qdrant
+# server in its own container (qdrant/qdrant v1.19.1, 127.0.0.1:6340), so the collection is
+# not counted. 20 POST /v1/ask, resident set of the whole process tree (launcher included).
+# Budget of the dense_embedding rule (eval/thresholds.yaml): max_pod_rss_mib 950.
+
+# VIGIE_DENSE_MODEL=intfloat/multilingual-e5-base VIGIE_DENSE_VARIANT=int8 VIGIE_DENSE_MAX_TOKENS=512
+# (per-channel export, 350-word chunks, English guard, dense weight 3: configuration o)
+intfloat/multilingual-e5-base int8: statuses [200] over 20 asks
+rss after start 1010 MiB, after asks 1019 MiB, peak 1170 MiB
+
+# deployed configuration d, MiniLM-L12 int8, 128 tokens, same harness, for reference
+default int8: statuses [200] over 20 asks
+rss after start 856 MiB, after asks 864 MiB, peak 1013 MiB
+
+# Verdict: 1019 MiB after the asks, 69 MiB over the 950 MiB budget. The rule fails on memory.

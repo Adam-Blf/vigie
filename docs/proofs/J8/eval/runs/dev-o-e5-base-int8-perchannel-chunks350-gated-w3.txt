@@ -1,0 +1,10 @@
+split=dev llm=fake-llm collection=vigie_multilingual-e5-base-int8-471238_ff7833b2
+  recall_at_k                0.8085  95 % CI [0.7021, 0.9149]
+  mrr                        0.6552  95 % CI [0.5449, 0.7660]
+  raw_citation_validity      0.7099
+  invented_in_final_answer   0.0000
+  citation_precision         0.3043  95 % CI [0.2397, 0.3704]
+  citation_coverage          0.7447  95 % CI [0.6170, 0.8723]
+  correct_refusal_rate       0.4286
+report: data\cache\reports\dev-o.json
+mlflow run: 06f442f7f3bf4d368d14a9193bbf4c9b

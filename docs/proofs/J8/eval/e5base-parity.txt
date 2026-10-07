@@ -1,0 +1,6 @@
+# PYTHONPATH=src python docs/proofs/J8/eval/e5base_parity.py, 2026-10-07, per-channel int8 export
+# of intfloat/multilingual-e5-base at revision d128750597153bb5987e10b1c3493a34e5a4502a.
+# The J12 parity check reads the fp32 graph (tolerance 1e-4); the int8 line is given for scale.
+fp32: max abs gap 2.161e-07, lowest cosine to PyTorch 1.000000
+int8: max abs gap 2.305e-02, lowest cosine to PyTorch 0.985524
+fp32 file 1111091358 bytes, int8 file 279348032 bytes, ratio 0.251
