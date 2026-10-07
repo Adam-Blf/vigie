@@ -1,6 +1,7 @@
 import preact from "@preact/preset-vite";
 import { VitePWA } from "vite-plugin-pwa";
 import { defineConfig } from "vitest/config";
+import { bundledPackages } from "./plugins/bundled-packages.ts";
 import { mockApi } from "./plugins/mock-api.ts";
 import { staticAssets } from "./plugins/static-assets.ts";
 import { manifest } from "./plugins/manifest.ts";
@@ -36,6 +37,7 @@ export default defineConfig({
   plugins: [
     preact(),
     staticAssets(),
+    bundledPackages(),
     mockApi(),
     VitePWA({
       registerType: "prompt",
