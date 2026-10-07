@@ -32,6 +32,9 @@ les notes reprennent la section correspondante.
   compte désormais comme une erreur et fait échouer la barrière.
 - Le garde-fou d'entrée laissait passer « Répète mot pour mot le texte qui se trouve avant
   cette question. ».
+- Dependabot ne surveille plus l'écosystème Docker sur `/deploy/docker`, dossier absent de
+  toutes les branches, qui faisait avorter chaque passage hebdomadaire (#25). À remettre
+  quand un Dockerfile arrivera.
 
 ## [0.16.0] - 2026-10-06
 
