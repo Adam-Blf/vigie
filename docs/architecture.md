@@ -151,7 +151,7 @@ le canary doit rester à 2 pods d'API au plus.
 | Image | Base épinglée par digest | Taille | Utilisateur | Écritures |
 |---|---|---|---|---|
 | `vigie-api` | `python:3.12-slim-bookworm` | amd64 1,51 Go, arm64 1,53 Go (559 Mo compressés ; modèles 483 Mo, venv 281 Mo) | 10001 | `/data` (volume), `/tmp` |
-| `vigie-web` | `nginx-unprivileged:1.29-alpine` | amd64 85 Mo, arm64 24 Mo compressés | 101 | `/tmp`, `/var/cache/nginx` |
+| `vigie-web` | `nginx-unprivileged:1.30-alpine` | amd64 85 Mo, arm64 24 Mo compressés | 101 | `/tmp`, `/var/cache/nginx` |
 
 L'image de l'API ne contient ni torch ni uv ni les outils de préparation des modèles :
 l'étape `models` du Dockerfile télécharge et quantifie sur la plateforme du builder (les

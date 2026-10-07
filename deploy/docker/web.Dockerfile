@@ -7,7 +7,7 @@
 # same for amd64 and arm64, so emulating Node under QEMU would only cost time.
 
 ARG NODE_IMAGE=docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
-ARG NGINX_IMAGE=docker.io/nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
+ARG NGINX_IMAGE=docker.io/nginxinc/nginx-unprivileged:1.30-alpine@sha256:15c994d10d6d78658721c3bcafff14cb281fba2a4bdf9d5ba92c416a472516e3
 
 FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS build
 WORKDIR /web

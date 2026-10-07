@@ -1,0 +1,12 @@
+First publication from main (build run 37652977396): the api image was built for amd64
+and arm64, scanned, pushed and signed; the web image stopped at Trivy, 42 fixable HIGH
+in nginx-unprivileged:1.29-alpine (alpine 3.23.4: c-ares, curl and others). The 1.29 tag
+no longer moves, so the base goes to 1.30-alpine (current stable, alpine 3.24.2).
+
++ trivy 0.70.0 image --severity CRITICAL,HIGH --ignore-unfixed vigie-web (rebuilt on 1.30)
+vigie-web:nginx130 (alpine 3.24.2)  alpine  0 vulnerabilities
+
++ docker run --read-only --cap-drop ALL --security-opt no-new-privileges (port 4799)
+health healthy
+HTTP/1.1 200 OK, Content-Security-Policy, X-Content-Type-Options nosniff, Referrer-Policy no-referrer
+GET /config.json 200
