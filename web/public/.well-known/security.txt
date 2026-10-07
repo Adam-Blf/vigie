@@ -1,0 +1,4 @@
+Contact: mailto:adam.beloucif@efrei.net
+Expires: 2027-06-30T23:00:00.000Z
+Preferred-Languages: fr, en
+Policy: https://github.com/Adam-Blf/vigie/blob/main/SECURITY.md

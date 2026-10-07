@@ -140,9 +140,17 @@ test("legal pages carry the mandatory mentions", async ({ page }) => {
   await page.goto("/about");
   await expect(page.locator("main")).toContainText("article 50");
   await expect(page.locator("main")).toContainText("non affilié officiellement à l'EFREI");
+  await expect(page.locator("main")).toContainText("rédigé par les deux étudiants eux-mêmes");
+  await page.goto("/legal");
+  // LCEN, article 6 : identité, adresse et téléphone de l'hébergeur.
+  await expect(page.locator("main")).toContainText("92715 Colombes Cedex");
+  await expect(page.locator("main")).toContainText("+33 1 57 60 83 02");
+  await expect(page.locator("main")).toContainText("/third-party-licenses.txt");
   await page.goto("/privacy");
   await expect(page.locator("main")).toContainText("Aucun cookie");
   await expect(page.locator("main")).toContainText("CNIL");
+  await expect(page.locator("main")).toContainText("vous opposer au traitement");
+  await expect(page.locator("main")).toContainText("puis 12 mois");
 });
 
 test("server error page shows a validated trace id only", async ({ page }) => {

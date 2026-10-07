@@ -137,12 +137,12 @@ export const fr = {
     "Quand aucun texte ne répond, Vigie le dit au lieu d'inventer. Les tentatives de manipulation sont bloquées avant d'atteindre le modèle de langage.",
   "about.ai.title": "Transparence",
   "about.ai":
-    "Vigie est un système d'IA générative, conformément à l'article 50 du règlement européen sur l'IA. Ses réponses ne constituent pas un conseil juridique. Le modèle de langage tourne sur notre propre serveur, aucun fournisseur tiers ne reçoit vos questions.",
+    "Vous échangez avec un système d'IA générative (transparence prévue par l'article 50 du règlement (UE) 2024/1689 sur l'IA). Ses réponses sont produites automatiquement, peuvent contenir des erreurs et ne constituent pas un conseil juridique. Le modèle de langage tourne sur notre propre serveur, aucun fournisseur tiers ne reçoit vos questions.",
   "about.school":
-    "Projet réalisé dans le cadre du cours MLOps, M2 Data Engineering et IA, EFREI Paris. Projet pédagogique, non affilié officiellement à l'EFREI.",
+    "Projet de cours réalisé dans le cadre du module MLOps, M2 Data Engineering et IA, EFREI Paris. Le sujet a été choisi et rédigé par les deux étudiants eux-mêmes. Projet pédagogique, non affilié officiellement à l'EFREI, qui n'en est ni l'éditeur ni le responsable.",
   "about.sources.title": "Sources",
   "about.sources":
-    "© Union européenne, https://eur-lex.europa.eu/, réutilisation autorisée avec mention de la source (décision 2011/833/UE). Textes non altérés. Seule la version publiée au Journal officiel fait foi.",
+    "© Union européenne, https://eur-lex.europa.eu/, réutilisation autorisée avec mention de la source (décision 2011/833/UE). Textes découpés par article et remis en forme, sans modification de leur contenu. Seule la version publiée au Journal officiel de l'Union européenne fait foi.",
 
   "legal.title": "Mentions légales",
   "legal.editor.title": "Éditeurs",
@@ -154,33 +154,33 @@ export const fr = {
   "legal.contact": "adam.beloucif@efrei.net, emilien.morice@efrei.net",
   "legal.host.title": "Hébergeur",
   "legal.host":
-    "Oracle Cloud Infrastructure, offre Always Free, région Paris. Les coordonnées de l'entité contractante figurent dans les conditions d'Oracle.",
+    "Oracle France SAS, 15 boulevard Charles de Gaulle, 92715 Colombes Cedex, France, téléphone +33 1 57 60 83 02. Service Oracle Cloud Infrastructure, offre Always Free, région Paris.",
   "legal.ip.title": "Propriété intellectuelle",
   "legal.ip":
-    "Les textes réglementaires proviennent d'EUR-Lex, © Union européenne, réutilisation autorisée avec mention de la source (décision 2011/833/UE).",
+    "Code et interface de Vigie : © 2026 Adam Beloucif et Emilien Morice, tous droits réservés. Textes réglementaires : EUR-Lex, © Union européenne, réutilisation autorisée avec mention de la source (décision 2011/833/UE). Composants tiers et leurs licences : /third-party-licenses.txt.",
 
   "privacy.title": "Confidentialité",
   "privacy.controllers.title": "Responsables du traitement",
   "privacy.controllers":
-    "Adam Beloucif et Emilien Morice, responsables conjoints du traitement au sens de l'article 26 du RGPD.",
+    "Adam Beloucif et Emilien Morice, responsables conjoints du traitement au sens de l'article 26 du RGPD. Vous pouvez exercer vos droits auprès de l'un ou de l'autre, aux adresses des mentions légales.",
   "privacy.purposes.title": "Finalités et bases légales",
   "privacy.purposes":
-    "Répondre à vos questions (exécution du service demandé, article 6.1.b du RGPD). Tenir un journal d'audit et protéger le service contre les abus (intérêt légitime, article 6.1.f).",
+    "Répondre à vos questions et appliquer le quota de votre jeton (exécution du service demandé, article 6.1.b du RGPD). Tenir un journal d'audit et protéger le service contre les abus (intérêt légitime à sécuriser le service et à retracer ses réponses, article 6.1.f).",
   "privacy.data.title": "Données traitées",
   "privacy.data":
-    "Le texte de vos questions, le jeton d'accès sous forme hachée et des compteurs d'usage. Aucune adresse IP ni empreinte de navigateur n'est inscrite au journal d'audit, et les données personnelles évidentes y sont masquées.",
+    "Le nom ou pseudonyme associé à votre jeton, l'empreinte du jeton (jamais le jeton lui-même), le texte de vos questions et des réponses, les horodatages et des compteurs d'usage. Le journal d'audit ne contient ni adresse IP ni empreinte de navigateur, et les données personnelles évidentes (e-mail, IBAN, carte, téléphone) y sont masquées avant écriture. Ces données sont nécessaires pour utiliser le service.",
   "privacy.retention.title": "Durées de conservation",
   "privacy.retention":
-    "Journal d'audit : 30 jours. Compteurs d'usage : 12 mois. Jeton : jusqu'à sa révocation.",
+    "Journal d'audit : 30 jours. Compteurs d'usage : 12 mois. Empreinte du jeton : jusqu'à sa révocation ou son expiration, puis 12 mois.",
   "privacy.recipients.title": "Destinataires",
   "privacy.recipients":
-    "Oracle pour l'hébergement. Aucun fournisseur de modèle de langage tiers : le modèle tourne sur notre serveur.",
+    "Les deux responsables, et Oracle comme hébergeur, en région Paris (France). Aucun fournisseur de modèle de langage tiers : le modèle tourne sur notre serveur. Aucun transfert hors de l'Union européenne n'est organisé.",
   "privacy.storage.title": "Stockage sur votre appareil",
   "privacy.storage":
     "Aucun cookie ni outil de mesure d'audience. Seul un stockage technique strictement nécessaire est utilisé : le jeton (pour l'onglet, ou sur l'appareil si vous cochez « Rester connecté »), vos préférences de langue et de thème, et l'historique affiché.",
   "privacy.rights.title": "Vos droits",
   "privacy.rights":
-    "Vous pouvez demander l'accès, la rectification ou l'effacement de vos données en écrivant aux contacts des mentions légales, et saisir la CNIL (cnil.fr). Aucune décision automatisée ne produit d'effet juridique à votre égard.",
+    "Vous pouvez demander l'accès à vos données, leur rectification, leur effacement, la limitation du traitement ou leur portabilité, et vous opposer au traitement fondé sur l'intérêt légitime, en écrivant aux contacts des mentions légales. Réponse sous un mois. Vous pouvez aussi saisir la CNIL (cnil.fr). Aucune décision automatisée ne produit d'effet juridique à votre égard.",
 
   "offline.title": "Vous êtes hors ligne",
   "offline.body":
