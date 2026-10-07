@@ -1,0 +1,668 @@
+python.exe :  Image vigie-api:dev Building
+ Image vigie-api:dev Building
+ Image vigie-web:dev Building
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.79kB 0.1s done
+#1 DONE 0.1s
+#2 [api internal] load build definition from api.Dockerfile
+#2 transferring dockerfile: 4.93kB 0.0s done
+#2 DONE 0.1s
+#3 [web internal] load build definition from web.Dockerfile
+#3 transferring dockerfile: 2.08kB 0.0s done
+#3 DONE 0.1s
+#4 [api] resolve image config for docker-image://docker.io/docker/dockerfile:1.12
+#4 DONE 2.1s
+#5 [ingest] docker-image://docker.io/docker/dockerfile:1.12@sha256:93bfd3b68c109427185cd78b4779fc82b484b0b7618e36d0f104d4d801e66d25
+#5 resolve docker.io/docker/dockerfile:1.12@sha256:93bfd3b68c109427185cd78b4779fc82b484b0b7618e36d0f104d4d801e66d25 0.0s done
+#5 sha256:8a2af9a64344571e7f712dde5e52bb25729d3ea0f3208ec86dd5af836b4ef1b9 0B / 12.78MB 0.2s
+#5 sha256:8a2af9a64344571e7f712dde5e52bb25729d3ea0f3208ec86dd5af836b4ef1b9 1.05MB / 12.78MB 1.2s
+#5 sha256:8a2af9a64344571e7f712dde5e52bb25729d3ea0f3208ec86dd5af836b4ef1b9 2.10MB / 12.78MB 1.7s
+#5 sha256:8a2af9a64344571e7f712dde5e52bb25729d3ea0f3208ec86dd5af836b4ef1b9 3.15MB / 12.78MB 3.3s
+#5 sha256:8a2af9a64344571e7f712dde5e52bb25729d3ea0f3208ec86dd5af836b4ef1b9 4.19MB / 12.78MB 3.8s
+#5 sha256:8a2af9a64344571e7f712dde5e52bb25729d3ea0f3208ec86dd5af836b4ef1b9 5.24MB / 12.78MB 4.4s
+#5 sha256:8a2af9a64344571e7f712dde5e52bb25729d3ea0f3208ec86dd5af836b4ef1b9 6.29MB / 12.78MB 6.3s
+#5 sha256:8a2af9a64344571e7f712dde5e52bb25729d3ea0f3208ec86dd5af836b4ef1b9 7.34MB / 12.78MB 7.2s
+#5 sha256:8a2af9a64344571e7f712dde5e52bb25729d3ea0f3208ec86dd5af836b4ef1b9 8.39MB / 12.78MB 10.5s
+#5 sha256:8a2af9a64344571e7f712dde5e52bb25729d3ea0f3208ec86dd5af836b4ef1b9 9.44MB / 12.78MB 10.9s
+#5 sha256:8a2af9a64344571e7f712dde5e52bb25729d3ea0f3208ec86dd5af836b4ef1b9 10.49MB / 12.78MB 11.5s
+#5 sha256:8a2af9a64344571e7f712dde5e52bb25729d3ea0f3208ec86dd5af836b4ef1b9 11.53MB / 12.78MB 12.9s
+#5 sha256:8a2af9a64344571e7f712dde5e52bb25729d3ea0f3208ec86dd5af836b4ef1b9 12.64MB / 12.78MB 13.3s
+#5 sha256:8a2af9a64344571e7f712dde5e52bb25729d3ea0f3208ec86dd5af836b4ef1b9 12.78MB / 12.78MB 13.4s done
+#5 extracting sha256:8a2af9a64344571e7f712dde5e52bb25729d3ea0f3208ec86dd5af836b4ef1b9
+#5 extracting sha256:8a2af9a64344571e7f712dde5e52bb25729d3ea0f3208ec86dd5af836b4ef1b9 8.3s done
+#5 extracting sha256:8a2af9a64344571e7f712dde5e52bb25729d3ea0f3208ec86dd5af836b4ef1b9 8.3s done
+#5 DONE 21.9s
+#6 [web internal] load metadata for docker.io/nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
+#6 DONE 2.2s
+#7 [ingest internal] load metadata for ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c
+#7 ...
+#8 [ingest internal] load metadata for docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#8 ...
+#9 [web internal] load metadata for docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
+#9 DONE 10.6s
+#7 [ingest internal] load metadata for ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c
+#7 ...
+#10 [web internal] load .dockerignore
+#10 ...
+#7 [ingest internal] load metadata for ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c
+#7 DONE 11.9s
+#8 [ingest internal] load metadata for docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#8 DONE 13.3s
+#10 [api internal] load .dockerignore
+#10 transferring context:
+#10 transferring context: 431B 0.2s done
+#10 DONE 4.5s
+#11 [ingest internal] load build context
+#11 DONE 0.0s
+#12 [ingest uv 1/1] FROM ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c
+#12 resolve ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c
+#12 ...
+#11 [api internal] load build context
+#11 DONE 0.0s
+#13 [web internal] load build context
+#13 DONE 0.0s
+#12 [api uv 1/1] FROM ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c
+#12 resolve ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c 1.7s done
+#12 resolve ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c 1.7s done
+#12 ...
+#11 [api internal] load build context
+#11 transferring context: 205.08kB 2.5s
+#11 ...
+#12 [ingest uv 1/1] FROM ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c
+#12 sha256:73f635c1b7365232b60daf8f991657597b3b9b732df92fac948a395d57803cba 0B / 27.20MB 0.3s
+#12 sha256:e6baf26ea4302ea40e15999625cea18f8694b3977222e350fd2407c99d76b490 0B / 96B 0.2s
+#12 sha256:e6baf26ea4302ea40e15999625cea18f8694b3977222e350fd2407c99d76b490 96B / 96B 1.2s
+#12 sha256:e6baf26ea4302ea40e15999625cea18f8694b3977222e350fd2407c99d76b490 96B / 96B 1.4s done
+#12 ...
+#14 [api builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 resolve docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf 1.8s done
+#14 ...
+#12 [ingest uv 1/1] FROM ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c
+#12 ...
+#15 [web build 1/6] FROM docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
+#15 resolve docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402 2.0s done
+#15 ...
+#16 [web runtime 1/6] FROM docker.io/nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
+#16 resolve docker.io/nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6 1.6s done
+#16 ...
+#14 [ingest builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 DONE 10.5s
+#11 [api internal] load build context
+#11 ...
+#13 [web internal] load build context
+#13 transferring context: 765.81kB 7.3s done
+#13 ...
+#11 [api internal] load build context
+#11 ...
+#15 [web build 1/6] FROM docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
+#15 DONE 14.4s
+#11 [api internal] load build context
+#11 ...
+#13 [web internal] load build context
+#13 DONE 13.1s
+#14 [api builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 sha256:f9d2fb07d6f062d06ddc7aa58191cc5359c728f54af6cebe69a37d2c89e72a0d 249B / 249B 0.9s done
+#14 sha256:86a9e13e035d8e44ae37bfebc52c7fc68898fde19b4b26dd0585f2231fcfaf2c 1.05MB / 15.97MB 3.2s
+#14 sha256:6e0ba8ba048777f5354b5a7cb497ae5261116fac8246160c06fc045c8300c582 0B / 3.34MB 3.0s
+#14 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 0B / 28.25MB 2.7s
+#14 sha256:6e0ba8ba048777f5354b5a7cb497ae5261116fac8246160c06fc045c8300c582 1.05MB / 3.34MB 4.1s
+#14 ...
+#16 [web runtime 1/6] FROM docker.io/nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
+#16 DONE 18.5s
+#14 [api builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 ...
+#12 [ingest uv 1/1] FROM ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c
+#12 sha256:73f635c1b7365232b60daf8f991657597b3b9b732df92fac948a395d57803cba 5.24MB / 27.20MB 11.3s
+#12 ...
+#14 [api builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 1.95MB / 28.25MB 6.8s
+#14 sha256:6e0ba8ba048777f5354b5a7cb497ae5261116fac8246160c06fc045c8300c582 1.29MB / 3.34MB 7.1s
+#14 sha256:86a9e13e035d8e44ae37bfebc52c7fc68898fde19b4b26dd0585f2231fcfaf2c 2.10MB / 15.97MB 7.7s
+#14 sha256:6e0ba8ba048777f5354b5a7cb497ae5261116fac8246160c06fc045c8300c582 2.10MB / 3.34MB 7.5s
+#14 ...
+#11 [ingest internal] load build context
+#11 transferring context: 2.35MB 15.9s done
+#11 DONE 19.5s
+#14 [api builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 sha256:6e0ba8ba048777f5354b5a7cb497ae5261116fac8246160c06fc045c8300c582 2.73MB / 3.34MB 8.9s
+#14 sha256:86a9e13e035d8e44ae37bfebc52c7fc68898fde19b4b26dd0585f2231fcfaf2c 3.15MB / 15.97MB 9.3s
+#14 sha256:6e0ba8ba048777f5354b5a7cb497ae5261116fac8246160c06fc045c8300c582 3.15MB / 3.34MB 9.0s
+#14 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 4.19MB / 28.25MB 8.9s
+#14 sha256:6e0ba8ba048777f5354b5a7cb497ae5261116fac8246160c06fc045c8300c582 3.34MB / 3.34MB 9.2s
+#14 sha256:86a9e13e035d8e44ae37bfebc52c7fc68898fde19b4b26dd0585f2231fcfaf2c 4.19MB / 15.97MB 9.8s
+#14 sha256:6e0ba8ba048777f5354b5a7cb497ae5261116fac8246160c06fc045c8300c582 3.34MB / 3.34MB 9.8s done
+#14 sha256:86a9e13e035d8e44ae37bfebc52c7fc68898fde19b4b26dd0585f2231fcfaf2c 5.00MB / 15.97MB 10.9s
+#14 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 6.12MB / 28.25MB 10.7s
+#14 sha256:86a9e13e035d8e44ae37bfebc52c7fc68898fde19b4b26dd0585f2231fcfaf2c 5.91MB / 15.97MB 11.7s
+#14 ...
+#15 [web build 1/6] FROM docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
+#15 sha256:d39db1cf9caa4f49c5a2e67111fbe6e0d5eea8ede550cb82f3dc2b79712688d6 447B / 447B 1.0s done
+#15 sha256:e554276b05e6306c5ad33cd85bfa7f0693083e21f6114db5abf60a20fb413039 1.26MB / 1.26MB 4.7s done
+#15 sha256:f7f2d304681aaa935c9cfd180850cf616ae843efce7682873d6521ded7268937 1.05MB / 55.59MB 3.0s
+#15 sha256:e2de96513ba9eb53b431787ec8a65cdde380ac4772a3e4c4b714dcfde2a102b5 0B / 3.85MB 2.1s
+#15 ...
+#14 [api builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 sha256:86a9e13e035d8e44ae37bfebc52c7fc68898fde19b4b26dd0585f2231fcfaf2c 6.94MB / 15.97MB 12.3s
+#14 ...
+#16 [web runtime 1/6] FROM docker.io/nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
+#16 extracting sha256:6a0ac1617861a677b045b7ff88545213ec31c0ff08763195a70a4a5adda577bb 2.1s done
+#16 extracting sha256:a59fda7b685c4ebb8ce32a651bb8a658cf3deef70ab1a1c48949f4044e7adb6f 2.3s done
+#16 extracting sha256:21179318df10e9e55989e27603c211d6175028e90b7a88f09f7b8cd005c15884 0.7s done
+#16 extracting sha256:d27683448c0c6746887b39bb7c17ee483c3aee1f2d742396f83931a26293ecee 0.3s done
+#16 extracting sha256:d9bbd50eb93d816d954d71d20a0f4321392d6d1094ebd07373c898d4c96bddd9 0.3s done
+#16 extracting sha256:a6149ef9330e099be60f1c5c087197a29f8e549c796f2c4e830e5821b4a7219c 0.5s done
+#16 extracting sha256:7afb425babf4f65da5fbc6dec68235c24bdff24b6d97625387ef5a2df5361e7d 1.1s done
+#16 extracting sha256:7d12c185557730cd127ae6641f2a971889c80ef273fc98c76812eaf288dc8559 0.4s done
+#16 DONE 26.2s
+#14 [api builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 sha256:86a9e13e035d8e44ae37bfebc52c7fc68898fde19b4b26dd0585f2231fcfaf2c 7.84MB / 15.97MB 13.7s
+#14 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 7.64MB / 28.25MB 15.2s
+#14 sha256:86a9e13e035d8e44ae37bfebc52c7fc68898fde19b4b26dd0585f2231fcfaf2c 9.42MB / 15.97MB 15.8s
+#14 sha256:86a9e13e035d8e44ae37bfebc52c7fc68898fde19b4b26dd0585f2231fcfaf2c 10.49MB / 15.97MB 16.8s
+#14 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 9.44MB / 28.25MB 16.5s
+#14 ...
+#12 [ingest uv 1/1] FROM ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c
+#12 sha256:73f635c1b7365232b60daf8f991657597b3b9b732df92fac948a395d57803cba 14.68MB / 27.20MB 22.4s
+#12 ...
+#14 [api builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 sha256:86a9e13e035d8e44ae37bfebc52c7fc68898fde19b4b26dd0585f2231fcfaf2c 11.53MB / 15.97MB 18.8s
+#14 sha256:86a9e13e035d8e44ae37bfebc52c7fc68898fde19b4b26dd0585f2231fcfaf2c 12.58MB / 15.97MB 19.4s
+#14 ...
+#16 [web runtime 1/6] FROM docker.io/nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
+#16 extracting sha256:80e1316c58deb5457520401af597207c6e9f1b306a83822d8911f5435f7e8181 6.0s done
+#16 DONE 32.2s
+#14 [api builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 11.53MB / 28.25MB 19.6s
+#14 sha256:86a9e13e035d8e44ae37bfebc52c7fc68898fde19b4b26dd0585f2231fcfaf2c 13.63MB / 15.97MB 20.3s
+#14 sha256:86a9e13e035d8e44ae37bfebc52c7fc68898fde19b4b26dd0585f2231fcfaf2c 14.56MB / 15.97MB 21.2s
+#14 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 13.63MB / 28.25MB 21.2s
+#14 sha256:86a9e13e035d8e44ae37bfebc52c7fc68898fde19b4b26dd0585f2231fcfaf2c 15.73MB / 15.97MB 22.1s
+#14 ...
+#15 [web build 1/6] FROM docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
+#15 sha256:f7f2d304681aaa935c9cfd180850cf616ae843efce7682873d6521ded7268937 10.49MB / 55.59MB 13.3s
+#15 sha256:e2de96513ba9eb53b431787ec8a65cdde380ac4772a3e4c4b714dcfde2a102b5 3.85MB / 3.85MB 8.9s done
+#15 extracting sha256:e2de96513ba9eb53b431787ec8a65cdde380ac4772a3e4c4b714dcfde2a102b5 1.4s done
+#15 ...
+#14 [api builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 sha256:86a9e13e035d8e44ae37bfebc52c7fc68898fde19b4b26dd0585f2231fcfaf2c 15.97MB / 15.97MB 22.6s done
+#14 ...
+#17 [web runtime 2/6] RUN rm -f /etc/nginx/conf.d/default.conf /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+#17 DONE 3.1s
+#14 [api builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 ...
+#18 [web runtime 3/6] COPY deploy/docker/nginx/nginx.conf /etc/nginx/nginx.conf
+#18 DONE 0.4s
+#14 [api builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 15.73MB / 28.25MB 23.6s
+#14 ...
+#19 [web runtime 4/6] COPY deploy/docker/nginx/security-headers.conf /etc/nginx/snippets/security-headers.conf
+#19 DONE 0.5s
+#14 [api builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 ...
+#20 [web runtime 5/6] COPY deploy/docker/nginx/default.conf.template /etc/nginx/templates/vigie/default.conf.template
+#20 DONE 0.3s
+#14 [api builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 17.83MB / 28.25MB 25.0s
+#14 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 19.92MB / 28.25MB 26.0s
+#14 ...
+#12 [ingest uv 1/1] FROM ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c
+#12 sha256:73f635c1b7365232b60daf8f991657597b3b9b732df92fac948a395d57803cba 27.20MB / 27.20MB 32.6s
+#12 ...
+#14 [api builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 ...
+#12 [ingest uv 1/1] FROM ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c
+#12 sha256:73f635c1b7365232b60daf8f991657597b3b9b732df92fac948a395d57803cba 27.20MB / 27.20MB 32.8s done
+#12 DONE 40.3s
+#14 [api builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 22.02MB / 28.25MB 27.8s
+#14 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 24.12MB / 28.25MB 28.7s
+#14 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 25.78MB / 28.25MB 29.5s
+#14 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 27.26MB / 28.25MB 30.1s
+#14 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 28.25MB / 28.25MB 30.5s done
+#14 DONE 43.0s
+#15 [web build 1/6] FROM docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
+#15 sha256:f7f2d304681aaa935c9cfd180850cf616ae843efce7682873d6521ded7268937 25.17MB / 55.59MB 21.7s
+#15 ...
+#12 [api uv 1/1] FROM ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c
+#12 extracting sha256:73f635c1b7365232b60daf8f991657597b3b9b732df92fac948a395d57803cba 3.2s done
+#12 extracting sha256:e6baf26ea4302ea40e15999625cea18f8694b3977222e350fd2407c99d76b490 0.2s done
+#12 DONE 43.7s
+#15 [web build 1/6] FROM docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
+#15 ...
+#14 [ingest builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 extracting sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39
+#14 ...
+#12 [ingest uv 1/1] FROM ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c
+#12 extracting sha256:e6baf26ea4302ea40e15999625cea18f8694b3977222e350fd2407c99d76b490 0.2s done
+#12 DONE 43.7s
+#15 [web build 1/6] FROM docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
+#15 sha256:f7f2d304681aaa935c9cfd180850cf616ae843efce7682873d6521ded7268937 28.23MB / 55.59MB 22.9s
+#15 sha256:f7f2d304681aaa935c9cfd180850cf616ae843efce7682873d6521ded7268937 31.46MB / 55.59MB 24.1s
+#15 sha256:f7f2d304681aaa935c9cfd180850cf616ae843efce7682873d6521ded7268937 34.60MB / 55.59MB 25.0s
+#15 sha256:f7f2d304681aaa935c9cfd180850cf616ae843efce7682873d6521ded7268937 37.75MB / 55.59MB 26.5s
+#15 sha256:f7f2d304681aaa935c9cfd180850cf616ae843efce7682873d6521ded7268937 40.89MB / 55.59MB 28.3s
+#15 sha256:f7f2d304681aaa935c9cfd180850cf616ae843efce7682873d6521ded7268937 44.04MB / 55.59MB 30.5s
+#15 ...
+#14 [api builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 extracting sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 5.0s done
+#14 extracting sha256:6e0ba8ba048777f5354b5a7cb497ae5261116fac8246160c06fc045c8300c582 1.1s done
+#14 extracting sha256:86a9e13e035d8e44ae37bfebc52c7fc68898fde19b4b26dd0585f2231fcfaf2c 4.0s done
+#14 DONE 53.1s
+#14 [api builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 extracting sha256:86a9e13e035d8e44ae37bfebc52c7fc68898fde19b4b26dd0585f2231fcfaf2c 4.0s done
+#14 extracting sha256:f9d2fb07d6f062d06ddc7aa58191cc5359c728f54af6cebe69a37d2c89e72a0d 0.1s done
+#14 DONE 53.2s
+#15 [web build 1/6] FROM docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
+#15 ...
+#14 [ingest builder 1/7] FROM docker.io/library/python:3.12-slim-bookworm@sha256:7753c33391fc9f01d1984375bf375eb6686d52ba10db6043a86634a5ccf90dcf
+#14 extracting sha256:f9d2fb07d6f062d06ddc7aa58191cc5359c728f54af6cebe69a37d2c89e72a0d 0.1s done
+#14 DONE 53.2s
+#15 [web build 1/6] FROM docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
+#15 sha256:f7f2d304681aaa935c9cfd180850cf616ae843efce7682873d6521ded7268937 47.19MB / 55.59MB 32.2s
+#15 sha256:f7f2d304681aaa935c9cfd180850cf616ae843efce7682873d6521ded7268937 50.33MB / 55.59MB 33.5s
+#15 sha256:f7f2d304681aaa935c9cfd180850cf616ae843efce7682873d6521ded7268937 53.48MB / 55.59MB 35.2s
+#15 ...
+#21 [api builder 2/7] COPY --from=uv /uv /usr/local/bin/uv
+#21 DONE 3.4s
+#15 [web build 1/6] FROM docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
+#15 sha256:f7f2d304681aaa935c9cfd180850cf616ae843efce7682873d6521ded7268937 55.59MB / 55.59MB 35.9s done
+#15 DONE 57.3s
+#22 [api builder 3/7] WORKDIR /src
+#22 DONE 0.4s
+#23 [ingest builder 4/7] COPY pyproject.toml uv.lock README.md ./
+#23 ...
+#24 [api runtime 2/8] RUN groupadd --system --gid 10001 vigie     && useradd --system --uid 10001 --gid vigie --no-create-home        --home-dir /nonexistent --shell /usr/sbin/nologin vigie     && install -d -o 10001 -g 10001 -m 0750 /data
+#24 3.567 useradd warning: vigie's uid 10001 is greater than SYS_UID_MAX 999
+#24 DONE 4.1s
+#24 [ingest runtime 2/8] RUN groupadd --system --gid 10001 vigie     && useradd --system --uid 10001 --gid vigie --no-create-home        --home-dir /nonexistent --shell /usr/sbin/nologin vigie     && install -d -o 10001 -g 10001 -m 0750 /data
+#24 DONE 4.1s
+#15 [web build 1/6] FROM docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
+#15 extracting sha256:f7f2d304681aaa935c9cfd180850cf616ae843efce7682873d6521ded7268937
+#15 ...
+#23 [api builder 4/7] COPY pyproject.toml uv.lock README.md ./
+#23 DONE 1.2s
+#23 [ingest builder 4/7] COPY pyproject.toml uv.lock README.md ./
+#23 DONE 1.2s
+#25 [ingest builder 5/7] RUN --mount=type=cache,target=/root/.cache/uv     uv sync --frozen --no-install-project --no-editable
+#25 5.191 Using CPython 3.12.15 interpreter at: /usr/local/bin/python3
+#25 5.191 Creating virtual environment at: /opt/venv
+#25 ...
+#15 [web build 1/6] FROM docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
+#15 extracting sha256:f7f2d304681aaa935c9cfd180850cf616ae843efce7682873d6521ded7268937 6.9s done
+#15 DONE 64.2s
+#15 [web build 1/6] FROM docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
+#15 extracting sha256:e554276b05e6306c5ad33cd85bfa7f0693083e21f6114db5abf60a20fb413039
+#15 extracting sha256:e554276b05e6306c5ad33cd85bfa7f0693083e21f6114db5abf60a20fb413039 0.2s done
+#15 DONE 64.5s
+#25 [ingest builder 5/7] RUN --mount=type=cache,target=/root/.cache/uv     uv sync --frozen --no-install-project --no-editable
+#25 ...
+#15 [web build 1/6] FROM docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
+#15 extracting sha256:d39db1cf9caa4f49c5a2e67111fbe6e0d5eea8ede550cb82f3dc2b79712688d6 0.1s done
+#15 DONE 64.6s
+#26 [web build 2/6] WORKDIR /web
+#26 DONE 1.7s
+#25 [ingest builder 5/7] RUN --mount=type=cache,target=/root/.cache/uv     uv sync --frozen --no-install-project --no-editable
+#25 6.755 Downloading numpy (15.9MiB)
+#25 6.756 Downloading pillow (6.6MiB)
+#25 6.780 Downloading pydantic-core (2.0MiB)
+#25 6.791 Downloading uvloop (4.3MiB)
+#25 6.792 Downloading hf-xet (4.3MiB)
+#25 6.795 Downloading onnxruntime (22.5MiB)
+#25 6.809 Downloading grpcio (6.8MiB)
+#25 6.811 Downloading lxml (5.0MiB)
+#25 6.823 Downloading tokenizers (3.1MiB)
+#25 ...
+#27 [web build 3/6] COPY web/package.json web/package-lock.json ./
+#27 DONE 0.3s
+#28 [web build 4/6] RUN --mount=type=cache,target=/root/.npm npm ci --no-audit
+#28 ...
+#25 [ingest builder 5/7] RUN --mount=type=cache,target=/root/.cache/uv     uv sync --frozen --no-install-project --no-editable
+#25 15.44  Downloaded pydantic-core
+#25 17.38  Downloaded tokenizers
+#25 18.84  Downloaded hf-xet
+#25 19.04  Downloaded uvloop
+#25 19.42  Downloaded lxml
+#25 20.67  Downloaded pillow
+#25 22.58  Downloaded grpcio
+#25 ...
+#28 [web build 4/6] RUN --mount=type=cache,target=/root/.npm npm ci --no-audit
+#28 18.40 npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+#28 23.37 npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+#28 23.58 npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+#28 ...
+#25 [ingest builder 5/7] RUN --mount=type=cache,target=/root/.cache/uv     uv sync --frozen --no-install-project --no-editable
+#25 29.94  Downloaded numpy
+#25 31.83  Downloaded onnxruntime
+#25 31.84 Prepared 53 packages in 26.17s
+#25 35.03 Installed 53 packages in 3.20s
+#25 44.31 Bytecode compiled 2139 files in 9.28s
+#25 44.32  + annotated-doc==0.0.5
+#25 44.32  + annotated-types==0.8.0
+#25 44.32  + anyio==4.15.1
+#25 44.32  + beautifulsoup4==4.15.0
+#25 44.32  + certifi==2026.7.22
+#25 44.32  + charset-normalizer==3.5.2
+#25 44.32  + click==8.5.0
+#25 44.32  + fastapi==0.142.2
+#25 44.32  + fastembed==0.8.1
+#25 44.32  + filelock==4.0.12
+#25 44.32  + flatbuffers==25.12.19
+#25 44.32  + fsspec==2026.9.0
+#25 44.32  + grpcio==1.84.0
+#25 44.32  + h11==0.16.0
+#25 44.32  + h2==4.4.1
+#25 44.32  + hf-xet==1.6.0
+#25 44.32  + hpack==4.2.0
+#25 44.32  + httpcore==1.0.9
+#25 44.32  + httptools==0.8.0
+#25 44.32  + httpx==0.28.1
+#25 44.32  + huggingface-hub==0.36.2
+#25 44.32  + hyperframe==6.1.0
+#25 44.32  + idna==3.20
+#25 44.32  + loguru==0.7.3
+#25 44.32  + lxml==6.1.3
+#25 44.32  + mmh3==5.3.1
+#25 44.32  + numpy==2.5.3
+#25 44.32  + onnxruntime==1.30.0
+#25 44.32  + opentelemetry-api==1.45.0
+#25 44.32  + packaging==26.3
+#25 44.32  + pillow==12.3.0
+#25 44.32  + portalocker==3.2.0
+#25 44.32  + prometheus-client==0.26.0
+#25 44.32  + protobuf==6.33.6
+#25 44.32  + py-rust-stemmers==0.1.8
+#25 44.32  + pydantic==2.13.5
+#25 44.32  + pydantic-core==2.46.5
+#25 44.32  + pydantic-settings==2.15.0
+#25 44.32  + python-dotenv==1.2.4
+#25 44.32  + pyyaml==6.0.3
+#25 44.32  + qdrant-client==1.19.1
+#25 44.32  + requests==2.34.2
+#25 44.32  + soupsieve==2.10
+#25 44.32  + starlette==1.7.0
+#25 44.32  + tokenizers==0.22.2
+#25 44.32  + tqdm==4.70.1
+#25 44.32  + typing-extensions==4.16.0
+#25 44.32  + typing-inspection==0.4.4
+#25 44.32  + urllib3==2.8.0
+#25 44.32  + uvicorn==0.54.0
+#25 44.32  + uvloop==0.23.0
+#25 44.32  + watchfiles==1.3.0
+#25 44.32  + websockets==17.2
+#25 DONE 51.2s
+#28 [web build 4/6] RUN --mount=type=cache,target=/root/.npm npm ci --no-audit
+#28 ...
+#25 [ingest builder 5/7] RUN --mount=type=cache,target=/root/.cache/uv     uv sync --frozen --no-install-project --no-editable
+#25 DONE 51.2s
+#29 [ingest builder 6/7] COPY src ./src
+#29 DONE 2.9s
+#28 [web build 4/6] RUN --mount=type=cache,target=/root/.npm npm ci --no-audit
+#28 43.26 npm warn deprecated glob@11.1.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+#28 ...
+#29 [api builder 6/7] COPY src ./src
+#29 DONE 2.9s
+#30 [ingest builder 7/7] RUN --mount=type=cache,target=/root/.cache/uv     uv sync --frozen --no-editable
+#30 3.120    Building vigie @ file:///src
+#30 7.910       Built vigie @ file:///src
+#30 7.953 Prepared 1 package in 4.84s
+#30 8.253 Installed 1 package in 299ms
+#30 10.74 Bytecode compiled 2267 files in 2.51s
+#30 10.74  + vigie==0.16.0 (from file:///src)
+#30 DONE 13.4s
+#28 [web build 4/6] RUN --mount=type=cache,target=/root/.npm npm ci --no-audit
+#28 ...
+#30 [api builder 7/7] RUN --mount=type=cache,target=/root/.cache/uv     uv sync --frozen --no-editable
+#30 DONE 13.4s
+#31 [ingest models 1/2] RUN --mount=type=cache,target=/root/.cache/uv     uv sync --frozen --no-editable --extra guard-model
+#31 2.883 Downloading onnx (8.5MiB)
+#31 ...
+#28 [web build 4/6] RUN --mount=type=cache,target=/root/.npm npm ci --no-audit
+#28 74.77
+#28 74.77 added 735 packages in 1m
+#28 DONE 77.3s
+#31 [ingest models 1/2] RUN --mount=type=cache,target=/root/.cache/uv     uv sync --frozen --no-editable --extra guard-model
+#31 ...
+#32 [web build 5/6] COPY web/ ./
+#32 DONE 3.6s
+#31 [ingest models 1/2] RUN --mount=type=cache,target=/root/.cache/uv     uv sync --frozen --no-editable --extra guard-model
+#31 21.55  Downloaded onnx
+#31 21.55 Prepared 2 packages in 19.65s
+#31 21.60 Uninstalled 1 package in 134ms
+#31 24.17 Installed 3 packages in 2.57s
+#31 26.33 Bytecode compiled 2780 files in 2.17s
+#31 26.33  + ml-dtypes==0.6.0
+#31 26.33  + onnx==1.23.2
+#31 26.33  ~ vigie==0.16.0 (from file:///src)
+#31 DONE 27.9s
+#33 [web build 6/6] RUN npm run build
+#33 4.121
+#33 4.121 > vigie-web@0.1.0 build
+#33 4.121 > npm run typecheck && vite build && node scripts/check-bundle.ts
+#33 4.121
+#33 5.272
+#33 5.272 > vigie-web@0.1.0 typecheck
+#33 5.272 > tsc --noEmit -p tsconfig.json
+#33 5.272
+#33 ...
+#31 [ingest models 1/2] RUN --mount=type=cache,target=/root/.cache/uv     uv sync --frozen --no-editable --extra guard-model
+#31 DONE 27.9s
+#34 [ingest models 2/2] RUN --mount=type=cache,target=/cache     python -m vigie.guard.prepare     && python -m vigie.deploy.models     && for snapshot in /cache/fastembed/models--Qdrant--bm25/snapshots/*/; do          for name in mock.file tamil.txt; do            [ -e "${snapshot}${name}" ] || : > "${snapshot}${name}";          done;        done     && cp -a /cache/fastembed /opt/models/fastembed
+#34 ...
+#33 [web build 6/6] RUN npm run build
+#33 11.28 vite v8.3.2 building client environment for production...
+#33 11.36 transforming...
+#33 11.47 <script src="/theme-init.js"> in "/index.html" can't be bundled without type="module" attribute
+#33 11.98 ✓ 58 modules transformed.
+#33 12.19 rendering chunks...
+#33 12.52 computing gzip size...
+#33 12.73 dist/theme-init.js                                   0.59 kB
+#33 12.73 dist/manifest.webmanifest                            0.62 kB
+#33 12.73 dist/index.html                                      1.32 kB │ gzip:   0.59 kB
+#33 12.73 dist/assets/Phosphor-DtdjzkpE.woff2                147.38 kB
+#33 12.73 dist/vendor/rive.wasm                            1,992.30 kB │ gzip: 836.60 kB
+#33 12.73 dist/assets/index-Bq8dEsp0.css                      20.98 kB │ gzip:   4.81 kB
+#33 12.73 dist/assets/rive-loader-BzImYFXL.js                  1.79 kB │ gzip:   1.01 kB
+#33 12.73 dist/assets/workbox-window.prod.es5-Bd17z0YL.js      5.65 kB │ gzip:   2.20 kB
+#33 12.73 dist/assets/index-MdhVwrGu.js                       77.90 kB │ gzip:  27.29 kB
+#33 12.73 dist/assets/rive-C87B3fK5.js                       209.49 kB │ gzip:  59.70 kB
+#33 12.73
+#33 12.74 ✓ built in 1.45s
+#33 24.30
+#33 24.30 PWA v1.3.0
+#33 24.30 mode      generateSW
+#33 24.30 precache  56 entries (327.64 KiB)
+#33 24.30 files generated
+#33 24.30   dist/sw.js
+#33 25.13     0.3 KB gzip  /theme-init.js
+#33 25.14    26.5 KB gzip  /assets/index-MdhVwrGu.js
+#33 25.14 ok initial JS 26.8 KB gzip (budget 120 KB)
+#33 DONE 25.6s
+#34 [ingest models 2/2] RUN --mount=type=cache,target=/cache     python -m vigie.guard.prepare     && python -m vigie.deploy.models     && for snapshot in /cache/fastembed/models--Qdrant--bm25/snapshots/*/; do          for name in mock.file tamil.txt; do            [ -e "${snapshot}${name}" ] || : > "${snapshot}${name}";          done;        done     && cp -a /cache/fastembed /opt/models/fastembed
+#34 ...
+#35 [web runtime 6/6] COPY --from=build /web/dist /usr/share/nginx/html
+#35 DONE 1.7s
+#34 [ingest models 2/2] RUN --mount=type=cache,target=/cache     python -m vigie.guard.prepare     && python -m vigie.deploy.models     && for snapshot in /cache/fastembed/models--Qdrant--bm25/snapshots/*/; do          for name in mock.file tamil.txt; do            [ -e "${snapshot}${name}" ] || : > "${snapshot}${name}";          done;        done     && cp -a /cache/fastembed /opt/models/fastembed
+#34 ...
+#36 [web] exporting to image
+#36 exporting layers
+#36 exporting layers 7.2s done
+#36 exporting manifest sha256:7bfb5173cfd89a846189ec9e8c93a155e639c9d4dd88688e7964bdbe46d960e5
+#36 exporting manifest sha256:7bfb5173cfd89a846189ec9e8c93a155e639c9d4dd88688e7964bdbe46d960e5 0.3s done
+#36 exporting config sha256:0b08c638879b9a66a67c21ead2da96f5d43d317fa1bef79039927b8f55558c6b
+#36 exporting config sha256:0b08c638879b9a66a67c21ead2da96f5d43d317fa1bef79039927b8f55558c6b 0.3s done
+#36 exporting attestation manifest sha256:bf9d45e3fb502cf321de7e3306079a2a605d6c1b41331a59773da9d4f6597230
+#36 exporting attestation manifest sha256:bf9d45e3fb502cf321de7e3306079a2a605d6c1b41331a59773da9d4f6597230 0.4s done
+#36 exporting manifest list sha256:56af1eb0af52b7c165ed767c4a881403e158dd5c72d1acf1fe5681189ef506fa
+#36 exporting manifest list sha256:56af1eb0af52b7c165ed767c4a881403e158dd5c72d1acf1fe5681189ef506fa 0.7s done
+#36 naming to docker.io/library/vigie-web:dev
+#36 naming to docker.io/library/vigie-web:dev 0.1s done
+#36 unpacking to docker.io/library/vigie-web:dev
+#36 unpacking to docker.io/library/vigie-web:dev 2.0s done
+#36 DONE 11.5s
+#34 [ingest models 2/2] RUN --mount=type=cache,target=/cache     python -m vigie.guard.prepare     && python -m vigie.deploy.models     && for snapshot in /cache/fastembed/models--Qdrant--bm25/snapshots/*/; do          for name in mock.file tamil.txt; do            [ -e "${snapshot}${name}" ] || : > "${snapshot}${name}";          done;        done     && cp -a /cache/fastembed /opt/models/fastembed
+#34 ...
+#37 [web] resolving provenance for metadata file
+#37 DONE 0.8s
+#34 [ingest models 2/2] RUN --mount=type=cache,target=/cache     python -m vigie.guard.prepare     && python -m vigie.deploy.models     && for snapshot in /cache/fastembed/models--Qdrant--bm25/snapshots/*/; do          for name in mock.file tamil.txt; do            [ -e "${snapshot}${name}" ] || : > "${snapshot}${name}";          done;        done     && cp -a /cache/fastembed /opt/models/fastembed
+#34 225.8 WARNING:root:Please consider to run pre-processing before quantization. Refer to example: https://github.com/microsoft/onnxruntime-inference-examples/blob/main/quantization/image_classification/cpu/ReadMe.md
+#34 289.4 {
+#34 289.4   "repo": "protectai/deberta-v3-base-prompt-injection-v2",
+#34 289.4   "revision": "90c9989b1a342275dd0d1a95aad283c04e075671",
+#34 289.4   "source_onnx_sha256": "f0ea7f239f765aedbde7c9e163a7cb38a79c5b8853d3f76db5152172047b228c",
+#34 289.4   "source_onnx_bytes": 738563188,
+#34 289.4   "quantization": "onnxruntime dynamic, weights QInt8 per channel",
+#34 289.4   "files": {
+#34 289.4     "model.int8.onnx": {
+#34 289.4       "sha256": "f016c89e97205cb42b29022d429f9fe831e8a20a7b0320d3e320088850fca5ea",
+#34 289.4       "bytes": 244295917
+#34 289.4     },
+#34 289.4     "tokenizer.json": {
+#34 289.4       "sha256": "752fe5f0d5678ad563e1bd2ecc1ddf7a3ba7e2024d0ac1dba1a72975e26dff2f",
+#34 289.4       "bytes": 8648886
+#34 289.4     },
+#34 289.4     "config.json": {
+#34 289.4       "sha256": "05079f4735092040b780d459027afab413faa6eeb66a548571a58832304b60bb",
+#34 289.4       "bytes": 994
+#34 289.4     }
+#34 289.4   }
+#34 289.4 }
+#34 296.9
+Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]
+Fetching 5 files:  20%|██        | 1/5 [00:00<00:03,  1.25it/s]
+Fetching 5 files:  80%|████████  | 4/5 [00:04<00:01,  1.21s/it]
+Fetching 5 files:  80%|████████  | 4/5 [00:19<00:04,  5.00s/it]
+Fetching 5 files: 100%|██████████| 5/5 [00:58<00:00, 11.72s/it]
+Fetching 5 files: 100%|██████████| 5/5 [00:58<00:00, 11.72s/it]
+#34 362.7
+Fetching 18 files:   0%|          | 0/18 [00:00<?, ?it/s]
+Fetching 18 files:  44%|████▍     | 8/18 [00:01<00:01,  7.49it/s]
+Fetching 18 files:  89%|████████▉ | 16/18 [00:01<00:00, 11.48it/s]
+Fetching 18 files: 100%|██████████| 18/18 [00:01<00:00, 12.32it/s]
+#34 375.5 embedding  paraphrase-multilingual-minilm-l12-v2-f692d1 dense=384 sparse_terms=8
+#34 375.5 guard      classifier=onnx blocked=False
+#34 375.5 elapsed    82.2 s
+#34 DONE 387.3s
+#34 [ingest models 2/2] RUN --mount=type=cache,target=/cache     python -m vigie.guard.prepare     && python -m vigie.deploy.models     && for snapshot in /cache/fastembed/models--Qdrant--bm25/snapshots/*/; do          for name in mock.file tamil.txt; do            [ -e "${snapshot}${name}" ] || : > "${snapshot}${name}";          done;        done     && cp -a /cache/fastembed /opt/models/fastembed
+#34 DONE 387.3s
+#38 [api runtime 3/8] COPY --from=models /opt/models /opt/models
+#38 DONE 8.0s
+#38 [api runtime 3/8] COPY --from=models /opt/models /opt/models
+#38 DONE 8.0s
+#39 [api runtime 4/8] COPY --from=builder /opt/venv /opt/venv
+#39 DONE 13.0s
+#39 [api runtime 4/8] COPY --from=builder /opt/venv /opt/venv
+#39 DONE 13.0s
+#40 [api runtime 5/8] WORKDIR /app
+#40 DONE 0.2s
+#40 [api runtime 5/8] WORKDIR /app
+#40 DONE 0.2s
+#41 [api runtime 6/8] COPY data/corpus.lock data/corpus.lock
+#41 DONE 0.1s
+#42 [ingest runtime 7/8] COPY data/golden/questions.jsonl data/golden/questions.jsonl
+#42 DONE 0.2s
+#42 [ingest runtime 7/8] COPY data/golden/questions.jsonl data/golden/questions.jsonl
+#42 DONE 0.2s
+#43 [ingest runtime 8/8] RUN --network=none python -m vigie.deploy.models
+#43 5.117 [0;93m2026-10-06 13:14:22.114234034 [W:onnxruntime:Default, telemetry.cc:800 operator()] Failed to persist telemetry device ID; using an in-memory identifier[m
+#43 8.389 embedding  paraphrase-multilingual-minilm-l12-v2-f692d1 dense=384 sparse_terms=8
+#43 14.70 guard      classifier=onnx blocked=False
+#43 14.70 elapsed    10.7 s
+#43 DONE 15.5s
+#43 [ingest runtime 8/8] RUN --network=none python -m vigie.deploy.models
+#43 DONE 15.5s
+#44 [ingest] exporting to image
+#44 exporting layers
+#44 ...
+#45 [api] exporting to image
+#45 ...
+#44 [ingest] exporting to image
+#44 exporting layers 47.8s done
+#44 exporting manifest sha256:e1aedba35cd2efb2c3cbbe5dc1619a4527e89b584fb4fa7dc5ef1c045df2dd52
+#44 exporting manifest sha256:e1aedba35cd2efb2c3cbbe5dc1619a4527e89b584fb4fa7dc5ef1c045df2dd52 0.2s done
+#44 exporting config sha256:6314da65d8695a6540e33df9eccee2920d794b92c359442f4ca788ad801aa131
+#44 exporting config sha256:6314da65d8695a6540e33df9eccee2920d794b92c359442f4ca788ad801aa131 0.2s done
+#44 exporting attestation manifest sha256:930f9a9853e0a15e020c21a1094d2414dca30f72f00674da360361e1053561f5
+#44 exporting attestation manifest sha256:930f9a9853e0a15e020c21a1094d2414dca30f72f00674da360361e1053561f5 0.1s done
+#44 exporting manifest list sha256:18631d9f50b574498f7689d2b722a2c8d329ad83560016dbb491d82bf57cd862 0.0s done
+#44 naming to docker.io/library/vigie-api:dev
+#44 naming to docker.io/library/vigie-api:dev 0.0s done
+#44 unpacking to docker.io/library/vigie-api:dev
+#44 ...
+#45 [api] exporting to image
+#45 exporting layers 47.8s done
+#45 exporting manifest sha256:26ecafdb40bdca54f20271df79333508f7ad4d19df5f8c9cd6d978a31df3b2b3 0.2s done
+#45 exporting config sha256:790ed31f1619d9d49a3712084e4be3749a55a33510773167ce08defba29df3d7 0.3s done
+#45 exporting attestation manifest sha256:7433af14884f376ba7f29ec07352ac79f474f5bbaf37e454f252a3a4c3a51fbc 0.1s done
+#45 exporting manifest list sha256:c337f1582a84b89472b7caf3de35deabf7d3b60a1666e13f818c54e115eed7a2 0.1s done
+#45 naming to docker.io/library/vigie-api:dev 0.0s done
+#45 ...
+#44 [ingest] exporting to image
+#44 unpacking to docker.io/library/vigie-api:dev 23.6s done
+#44 DONE 72.2s
+#45 [api] exporting to image
+#45 unpacking to docker.io/library/vigie-api:dev 23.6s done
+#45 DONE 72.4s
+#46 [ingest] resolving provenance for metadata file
+#46 DONE 0.3s
+#47 [api] resolving provenance for metadata file
+#47 DONE 0.1s
+ Image vigie-api:dev Built
+ Image vigie-api:dev Built
+ Image vigie-web:dev Built
+ Network vigie_default Creating
+ Volume vigie_vigie-data Creating
+ Volume vigie_qdrant-snapshots Creating
+ Volume vigie_qdrant-storage Creating
+ Volume vigie_mlflow-data Creating
+ Volume vigie_mlflow-data Creating
+ Volume vigie_qdrant-snapshots Creating
+ Volume vigie_qdrant-storage Creating
+ Volume vigie_vigie-data Creating
+ Network vigie_default Creating
+ Volume vigie_mlflow-data Created
+ Volume vigie_mlflow-data Created
+ Volume vigie_vigie-data Created
+ Volume vigie_vigie-data Created
+ Volume vigie_qdrant-snapshots Created
+ Volume vigie_qdrant-snapshots Created
+ Volume vigie_qdrant-storage Created
+ Volume vigie_qdrant-storage Created
+ Network vigie_default Created
+ Network vigie_default Created
+ Container vigie-mlflow-1 Creating
+ Container vigie-qdrant-1 Creating
+ Container vigie-qdrant-1 Created
+ Container vigie-ingest-1 Creating
+ Container vigie-mlflow-1 Created
+ Container vigie-ingest-1 Created
+ Container vigie-api-1 Creating
+ Container vigie-api-1 Created
+ Container vigie-web-1 Creating
+ Container vigie-web-1 Created
+ Container vigie-qdrant-1 Starting
+ Container vigie-mlflow-1 Starting
+ Container vigie-qdrant-1 Started
+ Container vigie-qdrant-1 Waiting
+ Container vigie-mlflow-1 Started
+ Container vigie-qdrant-1 Healthy
+ Container vigie-ingest-1 Starting
+ Container vigie-ingest-1 Started
+ Container vigie-ingest-1 Waiting
+ Container vigie-qdrant-1 Waiting
+ Container vigie-qdrant-1 Healthy
+ Container vigie-ingest-1 Exited
+ Container vigie-api-1 Starting
+ Container vigie-api-1 Started
+ Container vigie-api-1 Waiting
+ Container vigie-api-1 Healthy
+ Container vigie-web-1 Starting
+ Container vigie-web-1 Started
+wrote a random VIGIE_QDRANT_API_KEY into .env
+building and starting the stack, the first run takes several minutes
+id=097cb76e71dc user=demo scope=user expires=2026-11-05T13:20:52.751475+00:00
+Copy the token now, it will not be shown again:
+vig_REDACTED
+interface  http://127.0.0.1:4710
+API        http://127.0.0.1:8710/healthz
+MLflow     http://127.0.0.1:5710
+LLM        fake

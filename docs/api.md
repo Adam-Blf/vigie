@@ -29,9 +29,10 @@ bundle, jamais par une requête.
 | `POST /v1/ask/stream` | `user` | même chose en SSE : événements `delta`, puis `answer` ou `error` |
 | `GET /v1/usage/me` | `user` | requêtes, blocages, refus, jetons du modèle, coût estimé, quota du jour |
 | `GET /v1/admin/usage` | `admin` | la même chose pour chaque utilisateur |
+| `GET /v1/admin/drift` | `admin` | dérive des questions récentes face à la référence (J9), calculée sur les seuls embeddings |
 | `GET /healthz` | aucun | le processus répond |
 | `GET /readyz` | aucun | le retriever et le LLM sont joignables, sinon 503 |
-| `GET /metrics` | aucun | Prometheus, absent du contrat ; Traefik ne route que `/v1` vers l'API |
+| `GET /metrics` | aucun | Prometheus (dont les jauges `vigie_drift_*`), absent du contrat ; Traefik ne route que `/v1` vers l'API |
 
 Chaque réponse porte `trace_id`, `app_version`, `bundle_version`, `prompt_version` et
 `model`, en corps et en en-têtes `X-*`, ce qui rend le canary visible depuis l'interface.
@@ -53,6 +54,7 @@ Toujours `{"error": "<code>", "trace_id": "..."}`, jamais de trace d'exécution.
 | 429 | `rate_limited`, `quota_exceeded` | limite par minute ou quota quotidien du jeton, avec `Retry-After` |
 | 500 | `internal_error` | panne, y compris la panne injectée du canary |
 | 503 | `maintenance`, `llm_busy`, `llm_overloaded`, `llm_unavailable` | avec `Retry-After` |
+| 503 | `drift_unavailable` | `/v1/admin/drift` sans référence de dérive construite (`vigie-drift build-reference`) |
 | 504 | `llm_timeout` | le modèle n'a pas répondu à temps |
 
 ## Jetons

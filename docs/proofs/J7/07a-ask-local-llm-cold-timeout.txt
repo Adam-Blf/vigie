@@ -1,0 +1,6 @@
++ POST http://127.0.0.1:8710/v1/ask (--local-llm, ollama)
+status 504
+{
+  "error": "llm_timeout",
+  "trace_id": "4960002e54264768815e72078f850cfe"
+}

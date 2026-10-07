@@ -1,0 +1,6 @@
++ python tasks.py down -v
+ Volume vigie_vigie-data Removed
+ Volume vigie_qdrant-storage Removed
+ Volume vigie_qdrant-snapshots Removed
+ Network vigie_default Removed
++ docker volume ls --filter name=vigie_

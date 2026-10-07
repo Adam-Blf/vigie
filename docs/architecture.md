@@ -120,20 +120,50 @@ production de l'API.
 ## Budget mémoire sur 12 Go
 
 La VM Always Free offre 12 Go. 1,5 Go reste à l'OS. La somme des `requests` ne dépasse
-pas 8,5 Go, celle des `limits` pas 10,5 Go. Les valeurs ci-dessous sont des estimations ;
-elles seront mesurées à la conteneurisation (J7) puis figées ici.
+pas 8,5 Go, celle des `limits` pas 10,5 Go. Estimations du brief (11.7) face aux
+mesures du J7 (`docker stats --no-stream` sur la pile Compose remontée sur volumes vides le
+7 octobre 2026, après deux questions ; Ollama mesuré le 6 octobre, modèle chargé ; preuves
+dans [docs/proofs/J7/](proofs/J7/)) :
 
-| Composant | Mémoire estimée |
-|---|---|
-| k3s, Traefik, CoreDNS, metrics-server | 1,2 Go |
-| Ollama avec Ministral 3B Q4 (une instance partagée) | 3,0 Go |
-| Qdrant | 0,4 Go |
-| MLflow (1 worker) | 0,4 Go |
-| Prometheus (rétention 24 h) | 0,4 Go |
-| Argo Rollouts, Flux | 0,2 Go |
-| web | 0,05 Go |
-| API (par pod, sans torch) | 0,7 Go, 3 pods au plus (HPA 2 plus 1 canary) |
-| **Total au pic** | **7,75 Go**, soit 0,75 Go de marge sous le plafond de 8,5 Go |
+| Composant | Estimation | Mesuré au J7 | Verdict |
+|---|---|---|---|
+| k3s, Traefik, CoreDNS, metrics-server | 1,2 Go | hors Compose | à mesurer au J13 |
+| Ollama avec Ministral 3B Q4 (une instance partagée) | 3,0 Go | 3,5 Gio (modèle chargé) | **dépasse** de 0,5 Go |
+| Qdrant | 0,4 Go | 51 Mio (511 points) | dans le budget |
+| MLflow (1 worker) | 0,4 Go | 426 Mio | **dépasse** de 26 Mio, sans expérience enregistrée |
+| Prometheus (rétention 24 h) | 0,4 Go | hors Compose | à mesurer au J13 |
+| Argo Rollouts, Flux | 0,2 Go | hors Compose | à mesurer au J13 |
+| web | 0,05 Go | 3 Mio | dans le budget |
+| API (par pod, sans torch) | 0,7 Go, 3 pods au plus | 975 Mio | **dépasse** de 0,27 Go par pod |
+| **Total au pic** | **7,75 Go** | **8,7 Go** avec 3 pods d'API mesurés | au-dessus du plafond de 8,5 Go |
+
+Le dépassement de l'API est mesuré, pas estimé : l'embedder dense chargé par fastembed
+prend 558 Mio (le double de sa session ONNX brute), le classifieur des garde-fous
+240 Mio, le reste est Python et les bibliothèques. Un seuil de restitution mémoire fixe
+(`MALLOC_TRIM_THRESHOLD_`) a déjà rendu 270 Mio ; les autres réglages essayés n'ont rien
+changé ([détail](proofs/J7/08-api-memory-by-model.txt)). La prochaine marche est de
+brancher l'embedding int8 du J12 dans le retriever, ou une session ONNX directe pour la
+branche dense ; d'ici là, la `limit` de 640 Mio du manifeste de l'API est trop basse et
+le canary doit rester à 2 pods d'API au plus.
+
+### Conteneurs Docker (J7)
+
+| Image | Base épinglée par digest | Taille | Utilisateur | Écritures |
+|---|---|---|---|---|
+| `vigie-api` | `python:3.12-slim-bookworm` | amd64 1,51 Go, arm64 1,53 Go (559 Mo compressés ; modèles 483 Mo, venv 281 Mo) | 10001 | `/data` (volume), `/tmp` |
+| `vigie-web` | `nginx-unprivileged:1.29-alpine` | amd64 85 Mo, arm64 24 Mo compressés | 101 | `/tmp`, `/var/cache/nginx` |
+
+L'image de l'API ne contient ni torch ni uv ni les outils de préparation des modèles :
+l'étape `models` du Dockerfile télécharge et quantifie sur la plateforme du builder (les
+fichiers ONNX sont les mêmes pour amd64 et arm64), l'étape finale copie le résultat puis
+recharge chaque modèle sans réseau sous l'utilisateur 10001 et sur l'architecture cible.
+Les noms des modèles viennent de `config.py`, jamais du Dockerfile. Tous les conteneurs de
+la pile tournent en `read_only`, sans capacité, avec `no-new-privileges`, sous un
+utilisateur non root (API 10001, web 101, Qdrant, MLflow et Ollama 1000) ; seul le job
+`volumes-init` reste root, avec la seule capacité `CHOWN` et sans réseau, le temps de
+donner les volumes neufs de MLflow et d'Ollama à l'uid 1000. Le job `ingest` partage le volume
+`/data` avec l'API : le corpus (d'où l'API dérive le nom de la collection), la référence
+de dérive, la base SQLite des jetons et de l'usage, le journal d'audit.
 
 Deux conséquences structurent le code. L'image de l'API ne contient pas torch : le
 garde-fou d'entrée repose sur des règles et un classifieur ONNX int8. Et la ligne

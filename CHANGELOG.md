@@ -6,6 +6,46 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-10-07
+
+### Added
+
+- Pile Docker du jalon J7 (niveau 0) : `python tasks.py up` construit, démarre et attend
+  `qdrant`, le job `ingest` (téléchargement Cellar, découpage, `vigie-index`, référence de
+  dérive), `api`, `web` et `mlflow`, puis affiche une seule fois un jeton de
+  démonstration ; `python tasks.py down` arrête tout en gardant les volumes. Profil
+  `local-llm` avec Ollama (`OLLAMA_NUM_PARALLEL=1`, file de 4) et le téléchargement du
+  modèle ; sans lui, le LLM est le faux. Ports liés à `127.0.0.1` seulement.
+- `deploy/docker/api.Dockerfile` : multi-étapes, bases épinglées par digest, `uv sync
+  --frozen`, sans torch, utilisateur 10001, modèles d'embedding et classifieur ONNX int8
+  intégrés au build dans une couche dédiée, puis rechargés sans réseau sous l'utilisateur
+  non root (`python -m vigie.deploy.models`), système de fichiers racine en lecture seule.
+  L'étape des modèles tourne sur la plateforme du builder (fichiers ONNX identiques pour
+  amd64 et arm64) : l'image arm64 ne quantifie plus sous QEMU, elle recharge seulement les
+  modèles sous l'architecture cible.
+- Job unique `volumes-init` (root avec la seule capacité `CHOWN`, sans réseau) : MLflow et
+  Ollama tournent sous l'uid 1000, comme leurs pods de `deploy/k8s`, et plus en root.
+- `deploy/docker/web.Dockerfile` : build Vite sur la plateforme du builder, nginx non
+  root avec la CSP et les en-têtes de sécurité du brief, `/v1` relayé vers l'API sous la
+  même origine, `config.json` jamais mis en cache.
+- `GET /v1/admin/drift` (jeton `admin`, 403 pour `user`, 503 sans référence) et jauges
+  `vigie_drift_*` dans `/metrics` : l'embedding déjà calculé pour la recherche alimente
+  la fenêtre de dérive du J9, sans le texte de la question.
+- `uv.lock` versionné ; toutes les dépendances d'exécution ont une roue `aarch64`.
+
+### Changed
+
+- `VIGIE_LLM_TIMEOUT_S` traverse Compose jusqu'au conteneur de l'API (120 s par défaut) : le LLM
+  local sur processeur seul demande 900 s dans `.env` (271 s mesurées pour une réponse).
+- Le job de red teaming de la CI démarre la pile Compose avec une clé Qdrant aléatoire
+  propre au runner, et dispose de 30 minutes pour le premier build.
+
+### Fixed
+
+- `test_cli_without_passages_retrieves_from_qdrant` échouait dès qu'un `.env` écrit par
+  `tasks.py up` définissait `VIGIE_QDRANT_URL` : le test l'écarte, la suite ne dépend plus de
+  l'état de la pile Docker.
+
 ## [0.16.0] - 2026-10-06
 
 ### Added

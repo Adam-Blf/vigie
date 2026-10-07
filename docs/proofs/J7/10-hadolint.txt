@@ -1,0 +1,4 @@
++ hadolint deploy/docker/api.Dockerfile
+exit 0
++ hadolint deploy/docker/web.Dockerfile
+exit 0

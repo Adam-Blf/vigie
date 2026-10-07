@@ -1,0 +1,40 @@
+ Container vigie-mlflow-1 Creating
+ Container vigie-qdrant-1 Created
+ Container vigie-ingest-1 Creating
+ Container vigie-mlflow-1 Created
+ Container vigie-ingest-1 Created
+ Container vigie-api-1 Creating
+ Container vigie-api-1 Created
+ Container vigie-web-1 Creating
+ Container vigie-web-1 Created
+ Container vigie-volumes-init-1 Starting
+ Container vigie-qdrant-1 Starting
+ Container vigie-volumes-init-1 Started
+ Container vigie-volumes-init-1 Waiting
+ Container vigie-qdrant-1 Started
+ Container vigie-qdrant-1 Waiting
+ Container vigie-volumes-init-1 Exited
+ Container vigie-mlflow-1 Starting
+ Container vigie-mlflow-1 Started
+ Container vigie-qdrant-1 Healthy
+ Container vigie-ingest-1 Starting
+ Container vigie-ingest-1 Started
+ Container vigie-qdrant-1 Waiting
+ Container vigie-ingest-1 Waiting
+ Container vigie-qdrant-1 Healthy
+ Container vigie-ingest-1 Exited
+ Container vigie-api-1 Starting
+ Container vigie-api-1 Started
+ Container vigie-api-1 Waiting
+ Container vigie-api-1 Healthy
+ Container vigie-web-1 Starting
+ Container vigie-web-1 Started
+building and starting the stack, the first run takes several minutes
+id=b3566b865889 user=demo scope=user expires=2026-11-06T14:26:29.925537+00:00
+Copy the token now, it will not be shown again:
+vig_[REDACTED]
+interface  http://127.0.0.1:4710
+API        http://127.0.0.1:8710/healthz
+MLflow     http://127.0.0.1:5710
+LLM        fake
+up exit 0

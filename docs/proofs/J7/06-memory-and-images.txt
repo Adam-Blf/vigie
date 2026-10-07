@@ -1,0 +1,26 @@
++ docker stats --no-stream (fake LLM, after two answered questions)
+NAME             MEM USAGE / LIMIT     CPU %
+vigie-api-1      975MiB / 15.32GiB     0.23%
+vigie-mlflow-1   425.9MiB / 15.32GiB   0.27%
+vigie-qdrant-1   51.11MiB / 15.32GiB   0.47%
+vigie-web-1      2.828MiB / 15.32GiB   0.00%
+
++ docker image inspect --format {{.Size}} (bytes)
+vigie-api:dev 1512548089 amd64
+vigie-web:dev 85459275 amd64
+vigie-api:arm64-proof 558929373 arm64
+vigie-web:arm64-proof 24216483 arm64
+
++ docker run --rm --entrypoint du vigie-api:dev -sh /opt/models/guard /opt/models/fastembed /opt/venv
+242M	/opt/models/guard
+241M	/opt/models/fastembed
+281M	/opt/venv
++ torch in the runtime venv
+torch present: False
++ docker compose ps -a volumes-init
+volumes-init Exited (0) 3 minutes ago
++ user of the running containers
+api 10001
+web 101
+qdrant 1000
+mlflow 1000

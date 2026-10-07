@@ -1,0 +1,6 @@
++ GET /v1/admin/drift with the demo user token
+{"error":"forbidden","trace_id":"3d897fc2b7524edba89cd745b8add7c2"} 403
++ GET /v1/admin/drift with an admin token
+{"ready":false,"window_size":1,"alert":false,"reasons":[],"indicators":null,"thresholds":{"centroid_distance":0.3,"out_of_scope_similarity":0.3,"out_of_scope_ratio":0.25,"ks_alpha":0.01,"min_window":30}} 200
++ GET /metrics | grep vigie_drift_alert
+vigie_drift_alert{bundle_version="dev"} 0.0
