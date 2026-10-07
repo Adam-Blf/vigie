@@ -6,6 +6,11 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+### Fixed
+
+- `infra-retry` ne s'arrête plus quand le fournisseur OCI de Terraform démarre trop
+  lentement sur une machine chargée : ce délai est désormais traité comme passager.
+
 ## [0.16.0] - 2026-10-06
 
 ### Added

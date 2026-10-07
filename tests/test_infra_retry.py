@@ -84,6 +84,17 @@ def test_rate_limits_are_retryable() -> None:
     assert not is_retryable("Error: 404-NotAuthorizedOrNotFound")
 
 
+def test_slow_provider_start_is_retryable() -> None:
+    # EN: seen twice on 2026-10-07 while the laptop was busy building images.
+    # FR : vu deux fois le 07/10/2026 pendant que le poste construisait des images.
+    slow = (
+        'failed to instantiate provider "registry.terraform.io/oracle/oci" to obtain schema: '
+        "timeout while waiting for plugin to start"
+    )
+    assert is_retryable(slow)
+    assert not is_retryable("Error: Invalid provider configuration")
+
+
 def test_plan_reads_settings(tmp_path: Path) -> None:
     settings = Settings(_env_file=None, infra_state_dir=tmp_path, infra_retry_interval_s=120)
     plan = RetryPlan.from_settings(settings, "terraform", tmp_path)
