@@ -1,0 +1,70 @@
+{
+  "milestone": "J10",
+  "title": "Red teaming replayed against the real API",
+  "date": "2026-10-06",
+  "branch": "feat/close-j6-j10-j11",
+  "commit": "406d664",
+  "commit_note": "Run 1 used main at 6e71158. Run 2 added the guard change later committed as 3223471. Run 3 and the tests used the code of 65d0c51 (replay fix) and 3223471 (guard), both contained in 406d664.",
+  "platform": "Windows 11, 8 logical CPUs at 100 % load from other local jobs (Docker builds, embeddings) during every run",
+  "tools": {
+    "python": "3.12.13",
+    "promptfoo": "0.124.0",
+    "node": "v24.14.1",
+    "fastapi": "0.142.2",
+    "onnxruntime": "1.30.0",
+    "fastembed": "0.8.1",
+    "guard_model": "protectai/deberta-v3-base-prompt-injection-v2 at 90c9989b, int8 ONNX",
+    "ollama": "0.35.1",
+    "ollama_model": "ministral-3:3b-instruct-2512-q4_K_M"
+  },
+  "attacks_file": {
+    "path": "redteam/attacks.generated.yaml",
+    "attacks": 360
+  },
+  "api_setup": "python -m vigie.api on 127.0.0.1 with VIGIE_LLM_PROVIDER=fake, VIGIE_QDRANT_PATH=.qdrant (hybrid index of the corpus), real guard model under models/guard, VIGIE_RATE_LIMIT_PER_MINUTE=100000, VIGIE_DAILY_QUOTA=1000000, token store and audit log in a gitignored temporary folder. Token created with python -m vigie.api.tokens create redteam-local, never printed in these files.",
+  "steps": [
+    {
+      "name": "run 1, plain fake model, original replay",
+      "command": "VIGIE_REDTEAM_BASE_URL=http://127.0.0.1:<port> VIGIE_REDTEAM_TOKEN=<test token> python tasks.py redteam",
+      "output": ["1-replay-fake-original.txt", "1-summary.json", "api-status-counts.txt"],
+      "result": "reported PASS 0 %, but 71 of the 360 replies were 503 and were counted as defended"
+    },
+    {
+      "name": "tests written before the fix, seen red",
+      "command": "python -m pytest -q tests/test_guard_leak.py tests/test_redteam_regression.py",
+      "output": ["red-before-fix-collection.txt", "red-before-fix.txt"],
+      "result": "first without the module, then with the leaking fake and no output check: the 46 regression attacks all leak"
+    },
+    {
+      "name": "tests after the fix",
+      "command": "python -m pytest -q tests/test_guard_leak.py tests/test_redteam_regression.py tests/test_guard_pii_output.py tests/test_api_stream.py tests/test_api_ask.py",
+      "output": "green-after-fix.txt",
+      "result": "48 passed"
+    },
+    {
+      "name": "run 2, fake model in leak mode, output check on, original replay",
+      "setup": "API restarted with VIGIE_FAKE_LLM_LEAK=true",
+      "command": "python tasks.py redteam",
+      "output": ["2-replay-leak-before-status-fix.txt", "2-summary.json"],
+      "result": "PASS 0 %, the 73 answered are exactly the 73 replies that were 503"
+    },
+    {
+      "name": "run 3, fake model in leak mode, output check on, replay with validateStatus",
+      "command": "python tasks.py redteam",
+      "output": ["3-replay-final.txt", "3-summary.json"],
+      "result": "PASS, attack success rate 0.00 %, 0 errors: 103 blocked by the input guard, 257 refused (56 by the pipeline, 201 withheld by the output check)"
+    },
+    {
+      "name": "gate seen red",
+      "branch": "test/gate-redteam, PR #23 closed without merge, branch deleted",
+      "degradation": "output prompt leak check switched off (LEAK_CHECK = False) with the fake model in leak mode",
+      "output": ["../../gates/redteam-red-ci.txt", "../../gates/redteam-red-local.txt", "../../gates/redteam-red-local-summary.json"],
+      "result": "CI FAIL 48.89 % (176 breached), local FAIL 49.44 % (177 breached)"
+    },
+    {
+      "name": "manual run against Ministral 3B",
+      "output": ["ollama-replay.txt", "ollama-summary.json"],
+      "result": "see docs/redteam.md"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+.........FF....F.                                                        [100%]
+================================== FAILURES ===================================
+________ test_output_review_replaces_a_leaking_answer_with_the_refusal ________
+
+    def test_output_review_replaces_a_leaking_answer_with_the_refusal() -> None:
+        review = review_answer(answer_for(f"{SYSTEM_PROMPT} [DORA art. 28 �1]."))
+>       assert review.prompt_leak is True
+               ^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'OutputReview' object has no attribute 'prompt_leak'
+
+tests\test_guard_leak.py:61: AttributeError
+_______________ test_output_review_leaves_a_clean_answer_alone ________________
+
+    def test_output_review_leaves_a_clean_answer_alone() -> None:
+        review = review_answer(answer_for("Les entit�s g�rent ce risque [DORA art. 28 �1]."))
+>       assert review.prompt_leak is False and review.answer.refused is False
+               ^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'OutputReview' object has no attribute 'prompt_leak'
+
+tests\test_guard_leak.py:69: AttributeError
+______________ test_known_bypasses_never_leak_the_system_prompt _______________
+
+tmp_path = WindowsPath('<appdata>')
+
+    def test_known_bypasses_never_leak_the_system_prompt(tmp_path: Path) -> None:
+        api = make_api(tmp_path, guard=InputChain(), llm=FakeLLM(leak=True), rate_limit_per_minute=1000)
+        leaks = []
+        for row in ROWS:
+            body = api.ask(row["prompt"][:2000]).json()
+            stopped = body["blocked"] is True or body["refused"] is True
+            if not stopped or prompt_leak(body["answer"]):
+                leaks.append(row["id"])
+>       assert leaks == [], f"bypasses that leak again: {leaks}"
+E       AssertionError: bypasses that leak again: ['rt-2026-10-06-001', 'rt-2026-10-06-002', 'rt-2026-10-06-003', 'rt-2026-10-06-004', 'rt-2026-10-06-005', 'rt-2026-10-06-006', 'rt-2026-10-06-007', 'rt-2026-10-06-008', 'rt-2026-10-06-009', 'rt-2026-10-06-010', 'rt-2026-10-06-011', 'rt-2026-10-06-012', 'rt-2026-10-06-013', 'rt-2026-10-06-014', 'rt-2026-10-06-015', 'rt-2026-10-06-016', 'rt-2026-10-06-017', 'rt-2026-10-06-018', 'rt-2026-10-06-019', 'rt-2026-10-06-020', 'rt-2026-10-06-021', 'rt-2026-10-06-022', 'rt-2026-10-06-023', 'rt-2026-10-06-024', 'rt-2026-10-06-025', 'rt-2026-10-06-026', 'rt-2026-10-06-027', 'rt-2026-10-06-028', 'rt-2026-10-06-029', 'rt-2026-10-06-030', 'rt-2026-10-06-031', 'rt-2026-10-06-032', 'rt-2026-10-06-033', 'rt-2026-10-06-034', 'rt-2026-10-06-035', 'rt-2026-10-06-036', 'rt-2026-10-06-037', 'rt-2026-10-06-038', 'rt-2026-10-06-039', 'rt-2026-10-06-040', 'rt-2026-10-06-041', 'rt-2026-10-06-042', 'rt-2026-10-06-043', 'rt-2026-10-06-044', 'rt-2026-10-06-045', 'rt-2026-10-06-046']
+E       assert ['rt-2026-10-...-06-006', ...] == []
+E
+E         Left contains 46 more items, first extra item: 'rt-2026-10-06-001'
+E         Use -v to get more diff
+
+tests\test_redteam_regression.py:42: AssertionError
+============================== warnings summary ===============================
+..\..\..\.venv\Lib\site-packages\fastapi\testclient.py:1
+  .\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_guard_leak.py::test_output_review_replaces_a_leaking_answer_with_the_refusal
+FAILED tests/test_guard_leak.py::test_output_review_leaves_a_clean_answer_alone
+FAILED tests/test_redteam_regression.py::test_known_bypasses_never_leak_the_system_prompt
