@@ -6,6 +6,12 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+### Fixed
+
+- Dependabot ne surveille plus l'écosystème Docker sur `/deploy/docker`, dossier absent de
+  toutes les branches, qui faisait avorter chaque passage hebdomadaire (#25). À remettre
+  quand un Dockerfile arrivera.
+
 ## [0.16.0] - 2026-10-06
 
 ### Added
