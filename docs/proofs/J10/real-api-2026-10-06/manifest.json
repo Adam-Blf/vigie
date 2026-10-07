@@ -63,8 +63,8 @@
     },
     {
       "name": "manual run against Ministral 3B",
-      "output": ["ollama-replay.txt", "ollama-summary.json"],
-      "result": "see docs/redteam.md"
+      "output": "../ministral-2026-10-07/",
+      "result": "run on 2026-10-07 on a stratified sample of 72 attacks: PASS 0 %, 20 blocked, 52 refused, 0 error"
     }
   ]
 }
