@@ -33,8 +33,8 @@ export function bundledPackages(): Plugin {
     generateBundle(_options, bundle) {
       const names = new Set<string>();
       for (const output of Object.values(bundle)) {
-        // EN: assets count too, the Phosphor font is a file referenced from CSS.
-        // FR : les fichiers comptent aussi, la police Phosphor est référencée par le CSS.
+        // EN: assets count too, a package can ship files referenced from CSS.
+        // FR : les fichiers comptent aussi, un paquet peut livrer des fichiers référencés par le CSS.
         const ids = output.type === "chunk" ? output.moduleIds : output.originalFileNames;
         for (const id of ids) {
           const name = packageOf(id);

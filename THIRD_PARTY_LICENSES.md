@@ -101,9 +101,9 @@ données ne sont jamais copiés dans le dépôt.
 
 | Paquet | Version | Licence | Source |
 |---|---|---|---|
-| @phosphor-icons/web | 2.1.2 | MIT | git+https://github.com/phosphor-icons/web.git |
 | @rive-app/canvas | 2.44.0 | MIT | https://github.com/rive-app/rive-wasm/tree/master/js |
 | preact | 11.0.0 | MIT | preactjs/preact |
+| reicon | 1.2.5 | MIT | git+https://github.com/dqev/reicon.git |
 | workbox-core | 7.4.1 | MIT | git+https://github.com/googlechrome/workbox.git |
 | workbox-precaching | 7.4.1 | MIT | git+https://github.com/googlechrome/workbox.git |
 | workbox-routing | 7.4.1 | MIT | git+https://github.com/googlechrome/workbox.git |

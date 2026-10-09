@@ -7,7 +7,7 @@ fichier est mis à jour pour la suivre.
 ## Principes communs
 
 - **Pile** : Vite, TypeScript strict, Preact. Aucune ressource tierce chargée à
-  l'exécution : polices système, icônes Phosphor (graisse `regular` seulement) et runtime
+  l'exécution : polices système, icônes Reicon (graisse `Outline` seulement) et runtime
   Rive servis depuis l'application elle-même.
 - **Gabarit** : en-tête (logo, navigation, bascule de thème), bandeau de transparence
   permanent, contenu, pied de page avec la source EUR-Lex et la décision 2011/833/UE.

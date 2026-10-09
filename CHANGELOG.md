@@ -6,6 +6,19 @@ les notes reprennent la section correspondante.
 
 ## [Unreleased]
 
+## [0.20.0] - 2026-10-09
+
+### Changed
+
+- Migration des icônes vers Reicon : l'interface remplace la police d'icônes Phosphor par
+  les glyphes SVG du paquet `reicon` (graisse Outline), importés un par un pour garder le
+  bundle léger. Le thème « système » n'a pas d'équivalent Reicon (demi-cercle) et affiche
+  désormais son libellé à la place d'une icône.
+
+### Removed
+
+- Dépendance `@phosphor-icons/web`, script `build-icons.ts` et feuille `icons.css` générée.
+
 ## [0.19.0] - 2026-10-07
 
 ### Added

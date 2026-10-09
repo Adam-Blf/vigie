@@ -111,7 +111,7 @@ minimum légal, et ne rien promettre que le code n'applique pas. L'agent n'est p
 | 7 | « Textes non altérés » alors que `NOTICE` décrit une remise en forme | décision 2011/833/UE, article 6.2.b | « découpés par article et remis en forme, sans modification de leur contenu » |
 | 8 | « Système d'IA générative, conformément à l'article 50 » : formule qui suggère une conformité certifiée | pratique trompeuse | information factuelle, réponses automatiques, erreurs possibles |
 | 9 | Aucune sortie marquée lisible par machine | AI Act 50.2 | en-tête `X-AI-Generated`, `src/vigie/api/routes.py:38` |
-| 10 | Bundle web servi sans les mentions MIT de Preact, Workbox, Phosphor, Rive | licences MIT | `/third-party-licenses.txt` produit au build, politique bloquante |
+| 10 | Bundle web servi sans les mentions MIT de Preact, Workbox, Reicon, Rive | licences MIT | `/third-party-licenses.txt` produit au build, politique bloquante |
 | 11 | Projet de cours non dit sur l'interface comme écrit par les étudiants | confusion sur l'éditeur | clé `about.school` |
 | 12 | Pas de `/.well-known/security.txt` | brief 11.10 | `web/public/.well-known/security.txt` |
 
