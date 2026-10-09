@@ -12,7 +12,7 @@
 <!-- adam-badges:end -->
 </p>
 
-Version 0.19.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
+Version 0.20.0 - en construction, suivi jalon par jalon dans [docs/progress.md](docs/progress.md)
 
 Copilote de conformité pour les banques. Vigie répond aux questions sur DORA, l'AI Act, le
 RGPD et le règlement anti-blanchiment en citant l'article exact, dit quand il ne trouve

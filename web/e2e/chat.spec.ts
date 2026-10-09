@@ -60,7 +60,7 @@ test("shows the blocked badge and the blocked owl for an injection", async ({ pa
 
   const badge = page.locator(".bubble-blocked .badge");
   await expect(badge).toHaveText("Bloqué par Vigie");
-  await expect(badge.locator(".ph-shield-warning")).toHaveCount(1);
+  await expect(badge.locator(".reicon")).toHaveCount(1);
   await expect(page.locator(".bubble-blocked")).toContainText("tentative d'injection");
   await expect(page.locator(".conversation .mascot")).toHaveAttribute("data-state", "blocked");
 });

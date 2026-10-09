@@ -85,8 +85,9 @@ code {
   border: 0;
 }
 
-.ph {
-  font-size: 1.25em;
+.reicon {
+  width: 1.25em;
+  height: 1.25em;
   flex: none;
 }
 

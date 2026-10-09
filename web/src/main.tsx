@@ -11,7 +11,6 @@ import { getToken } from "./lib/token.ts";
 import { installTrustedTypesPolicy } from "./lib/trusted-types.ts";
 import { watchInstallPrompt } from "./pwa/install.ts";
 import "./styles/tokens.css";
-import "./styles/icons.css";
 import "./styles/base.css";
 import "./styles/layout.css";
 import "./styles/chat.css";
