@@ -155,11 +155,6 @@ code {
   background: var(--color-surface-sunken);
 }
 
-.theme-toggle:has(.theme-label) {
-  width: auto;
-  padding: 0 var(--space-3);
-}
-
 /* Badges */
 
 .badge {

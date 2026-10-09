@@ -12,8 +12,8 @@ les notes reprennent la section correspondante.
 
 - Migration des icônes vers Reicon : l'interface remplace la police d'icônes Phosphor par
   les glyphes SVG du paquet `reicon` (graisse Outline), importés un par un pour garder le
-  bundle léger. Le thème « système » n'a pas d'équivalent Reicon (demi-cercle) et affiche
-  désormais son libellé à la place d'une icône.
+  bundle léger. Le demi-cercle du thème « système » n'existe pas dans Reicon : il reste
+  un SVG local au même tracé.
 
 ### Removed
 

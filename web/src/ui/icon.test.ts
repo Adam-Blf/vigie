@@ -1,12 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { parseGlyph } from "./Icon.tsx";
-import { ICONS, type IconName } from "./icon-names.ts";
+import { ICONS, LOCAL_ICONS } from "./icon-names.ts";
 
 describe("Reicon glyphs", () => {
   it("parses every glyph the interface uses into at least one node", () => {
-    for (const name of Object.keys(ICONS) as IconName[]) {
+    for (const name of Object.keys(ICONS) as (keyof typeof ICONS)[]) {
       expect(parseGlyph(ICONS[name].iconData.O ?? "").length, name).toBeGreaterThan(0);
     }
+    for (const markup of Object.values(LOCAL_ICONS)) expect(parseGlyph(markup).length).toBeGreaterThan(0);
   });
 
   it("keeps the attributes and the nesting of a clipped glyph", () => {

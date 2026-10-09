@@ -1,5 +1,5 @@
 import { h, type ComponentChild } from "preact";
-import { ICONS, type IconName } from "./icon-names.ts";
+import { ICONS, LOCAL_ICONS, type IconName } from "./icon-names.ts";
 
 // The CSP requires Trusted Types and the app refuses every HTML sink, so the markup that
 // ships inside each Reicon glyph (a handful of SVG shapes) is turned into Preact nodes
@@ -39,7 +39,7 @@ const GLYPHS = new Map<IconName, ComponentChild[]>();
 function glyphOf(name: IconName): ComponentChild[] {
   let nodes = GLYPHS.get(name);
   if (!nodes) {
-    nodes = parseGlyph(ICONS[name].iconData.O ?? "");
+    nodes = parseGlyph(name in LOCAL_ICONS ? LOCAL_ICONS[name as keyof typeof LOCAL_ICONS] : (ICONS[name as keyof typeof ICONS].iconData.O ?? ""));
     GLYPHS.set(name, nodes);
   }
   return nodes;

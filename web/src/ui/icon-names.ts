@@ -24,6 +24,13 @@ import { Trash2 } from "reicon/icons/Trash2";
 import { WifiOff } from "reicon/icons/WifiOff";
 import { X } from "reicon/icons/X";
 
+// Reicon has no half-filled circle, so the "system" theme glyph stays a local SVG
+// (same 24 px grid and stroke as the Outline set).
+export const LOCAL_ICONS = {
+  "circle-half":
+    '<circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/>',
+} as const;
+
 export const ICONS = {
   "arrow-clockwise": RotateRight,
   "arrow-square-out": ArrowUpRightSquare,
@@ -48,4 +55,4 @@ export const ICONS = {
   x: X,
 } as const;
 
-export type IconName = keyof typeof ICONS;
+export type IconName = keyof typeof ICONS | keyof typeof LOCAL_ICONS;

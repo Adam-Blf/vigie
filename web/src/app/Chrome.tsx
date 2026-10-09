@@ -13,9 +13,8 @@ const NAV: readonly { route: RouteName; path: string; icon: IconName; label: "na
   { route: "about", path: ROUTES.about, icon: "info", label: "nav.about" },
 ];
 
-// Reicon has no half-filled circle, so the "system" choice shows its text label instead.
-const THEME_ICON: Record<ThemeChoice, IconName | null> = {
-  system: null,
+const THEME_ICON: Record<ThemeChoice, IconName> = {
+  system: "circle-half",
   light: "sun",
   dark: "moon",
 };
@@ -51,7 +50,7 @@ export function Header({ route }: { route: RouteName }) {
         aria-label={t("theme.toggle", { theme: t(`theme.${theme}`) })}
         onClick={() => setTheme(nextThemeChoice(theme))}
       >
-        {THEME_ICON[theme] ? <Icon name={THEME_ICON[theme]} /> : <span class="theme-label">{t("theme.system")}</span>}
+        <Icon name={THEME_ICON[theme]} />
       </button>
     </header>
   );
