@@ -43,9 +43,9 @@ bench = [
 ]
 tracking = ["mlflow>=2.16"]
 # Build-time only: fetch the guard classifier and quantize it (python -m vigie.guard.prepare).
-guard-model = ["huggingface-hub>=0.24", "onnx>=1.16"]
+guard-model = ["huggingface-hub>=0.24", "onnx>=1.23.2"]
 quant = [
-  "onnx>=1.16",
+  "onnx>=1.23.2",
   "onnxruntime>=1.18",
   "onnxscript>=0.5",
   "torch>=2.9",
