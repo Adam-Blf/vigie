@@ -33,7 +33,7 @@ dependencies = [
 
 [project.optional-dependencies]
 bench = [
-  "gliner2[local]>=2.0",
+  "gliner2[local]>=2.1.0",
   "transformers>=4.44,<6",
   "torch>=2.3",
   "presidio-analyzer>=2.2",
