@@ -23,20 +23,20 @@
     "capture": "node scripts/capture-proofs.ts"
   },
   "dependencies": {
-    "@rive-app/canvas": "^2.44.0",
-    "preact": "^11.0.0",
+    "@rive-app/canvas": "^2.49.4",
+    "preact": "^11.2.0",
     "reicon": "^1.2.5"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.13.0",
-    "@lhci/cli": "^0.15.1",
-    "@playwright/test": "^1.63.0",
+    "@axe-core/playwright": "^4.14.0",
+    "@lhci/cli": "^0.16.0",
+    "@playwright/test": "^1.65.0",
     "@preact/preset-vite": "^2.10.6",
-    "@types/node": "^26.6.4",
-    "@vitest/coverage-v8": "^5.0.3",
+    "@types/node": "^26.6.6",
+    "@vitest/coverage-v8": "^5.1.0",
     "jsdom": "^29.1.1",
     "typescript": "^7.0.2",
-    "vite": "^8.3.2",
+    "vite": "^8.3.7",
     "vite-plugin-pwa": "^1.3.0",
     "vitest": "^5.0.3",
     "workbox-window": "^7.4.1"
